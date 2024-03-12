@@ -60,7 +60,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 # position változót ad hozzá s sablonok contextéhez:
-                # 'innovativ.context_processors.position',
+                'innovativ.context_processors.position',
             ],
         },
     },

@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 # from .models import UserProfile
 from django_otp import verify_token, user_has_device
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from .models import Job
+from django.contrib.auth.signals import user_logged_in
+
 
 
 def login_user(request):
@@ -22,8 +25,13 @@ def login_user(request):
                     otp_device = TOTPDevice.objects.get(user=user)
                     verify_device = verify_token(user, otp_device.persistent_id, otp_token)
                     if otp_device == verify_device:
-                        login(request, user)
-                        messages.success(request, 'Sikeres bejelentkezés.')
+                        position = Job.objects.filter(user=user)
+                        if position:
+                            login(request, user)
+                            messages.success(request, 'Sikeres bejelentkezés.')
+                        else:
+                            messages.success(request, 'Ehhez a felhasználó névhez még nem tartozik munkakör. '
+                                                      'Kérj az adminisztrátortól. E nélkül nem tudsz belépni')
                         return redirect('home')
                     else:
                         messages.error(request, 'Érvénytelen Belépési token!')
