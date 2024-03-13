@@ -17,7 +17,7 @@ class Job(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)  # Munkakör hozzárendelése
 
     def __str__(self):
-        return str(self.position)
+        return str(self.user)
 
 
 # Projektek törzsadata (egy Projekthez több Munkakör is tartozhat!)
