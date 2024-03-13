@@ -12,11 +12,36 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
 <!--                Az alábbiak csak a bejelentkezés után jelennek meg-->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'update-password' %}">Jelszó módosítás</a>
+<!--                Lenyíló menü-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Projektek
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            {% for project in projects %}
+                                <li><a class="dropdown-item" href="{% url 'projects' project %}">{{ project }}</a></li>
+                            {% endfor %}
+<!--                        Még nem használt tétel-->
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Valami</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Kijelentkezés ({{ position }}: {{ user }})</a>
+<!--                Lenyíló menü-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ position }}: {{ user }}
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Kijelentkezés</a></li>
+                            <li><a class="dropdown-item" href="{% url 'update-password' %}">Jelszó módosítás</a></li>
+<!--                        Még nem használt tétel-->
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Valami</a></li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">

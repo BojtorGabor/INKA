@@ -11,7 +11,6 @@ from .models import Job
 from django.contrib.auth.signals import user_logged_in
 
 
-
 def login_user(request):
     if request.method == 'POST':
         form = LoginUserForm(request, request.POST)

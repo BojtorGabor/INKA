@@ -29,14 +29,14 @@ class Project(models.Model):
         return self.name
 
 
-# Projektekhez tartozó Munkakörök (egy Projekthez több Munkakör is tartozhat!)
-class ProjectPosition(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)  # Projekt hozzárendelése
+# Munkakörökhöz tartozó Projektek (egy Munkakörhöz több Projekt is tartozhat!)
+class PositionProject(models.Model):
     position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, default=None)  # Munkakör hozzárendelése
-
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)  # Projekt hozzárendelése
 
     def __str__(self):
         return str(self.project)
+
 
 # Feladatok - Projethez rendelve
 class Task(models.Model):

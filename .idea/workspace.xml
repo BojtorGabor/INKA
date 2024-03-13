@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA kezdet Job megjelenítéssel">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA projekt modellek kezdete">
+      <change afterPath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/inka/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/inka/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/inka/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/inka/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/views_members.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views_members.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -30,18 +32,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/- Munka -/INKA/inka/innovativ&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/- Munka -/INKA/inka/innovativ/templates"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\- Munka -\INKA\inka\innovativ" />
       <recent name="D:\- Munka -\INKA\inka\innovativ\templates" />
+      <recent name="D:\- Munka -\INKA\inka\innovativ" />
       <recent name="D:\- Munka -\INKA" />
     </key>
   </component>
@@ -77,12 +79,21 @@
       <option name="project" value="LOCAL" />
       <updated>1710240010286</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="INKA projekt modellek kezdete">
+      <option name="closed" value="true" />
+      <created>1710257748835</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710257748835</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="INKA kezdet" />
     <MESSAGE value="INKA kezdet Job megjelenítéssel" />
-    <option name="LAST_COMMIT_MESSAGE" value="INKA kezdet Job megjelenítéssel" />
+    <MESSAGE value="INKA projekt modellek kezdete" />
+    <option name="LAST_COMMIT_MESSAGE" value="INKA projekt modellek kezdete" />
   </component>
 </project>

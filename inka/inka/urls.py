@@ -7,7 +7,7 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 
-from innovativ.models import Position, Job, Project, ProjectPosition, Task
+from innovativ.models import Position, Job, Project, PositionProject, Task
 
 
 class OTPAdmin(OTPAdminSite):
@@ -26,8 +26,8 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-class ProjectPositionAdmin(admin.ModelAdmin):
-    list_display = ('project','position')
+class PositionProjectAdmin(admin.ModelAdmin):
+    list_display = ('position', 'project',)
 
 
 class TaskAdmin(admin.ModelAdmin):
@@ -40,7 +40,7 @@ admin_site.register(TOTPDevice, TOTPDeviceAdmin)
 admin_site.register(Position, PositionAdmin)
 admin_site.register(Job, JobAdmin)
 admin_site.register(Project, ProjectAdmin)
-admin_site.register(ProjectPosition, ProjectPositionAdmin)
+admin_site.register(PositionProject, PositionProjectAdmin)
 admin_site.register(Task, TaskAdmin)
 
 urlpatterns = [
