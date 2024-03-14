@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektek meghívása menüből - context processzorral, külön view hívásokkal">
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/context_processors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/inka/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/inka/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +19,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -34,15 +35,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/- Munka -/INKA/inka/innovativ/templates",
-    "settings.editor.selected.configurable": "Errors"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/- Munka -/INKA/inka/innovativ/templates&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\- Munka -\INKA\inka\innovativ\templates" />
@@ -114,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710409027559</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet">
+      <option name="closed" value="true" />
+      <created>1710421281768</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1710421281768</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -124,6 +134,7 @@
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektek meghívása menüből - kezdet." />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektek meghívása menüből - context processzorral" />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektek meghívása menüből - context processzorral, külön view hívásokkal" />
-    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektek meghívása menüből - context processzorral, külön view hívásokkal" />
+    <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet" />
+    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet" />
   </component>
 </project>
