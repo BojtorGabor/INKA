@@ -20,12 +20,12 @@
                         </a>
 <!--                    Lenyíló menü tételei-->
                         <ul class="dropdown-menu">
-                            {% for project in projects %}
-                                <li><a class="dropdown-item" href="{% url 'projects' project.project.view_name %}">{{ project.project }}</a></li>
+                            {% for position_project in position_projects %}
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project %}">{{ position_project }}</a></li>
                             {% endfor %}
 <!--                        Még nem használt tétel-->
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Ha kell még valami</a></li>
+                            <li><a class="dropdown-item" href="{% url 'projects' %}">Összes projekt</a></li>
                         </ul>
                     </li>
 <!--                Lenyíló menü-->

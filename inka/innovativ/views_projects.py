@@ -4,14 +4,14 @@ from django.contrib import messages
 
 def egyes_szamu_projekt(request):
     cont = 'Hurrá'
-    return render(request, 'projects.html', {'cont': cont})
+    return render(request, 'project_proba.html', {'cont': cont})
 
 
 def kettes_szamu_projekt(request):
     cont = 'Hurrá, hurrá'
-    return render(request, 'projects.html', {'cont': cont})
+    return render(request, 'project_proba.html', {'cont': cont})
 
 
 def harmas_szamu_projekt(request):
     cont = 'Hurrá, hurrá, hurrá'
-    return render(request, 'projects.html', {'cont': cont})
+    return render(request, 'project_proba.html', {'cont': cont})

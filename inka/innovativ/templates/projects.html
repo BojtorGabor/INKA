@@ -2,9 +2,20 @@
 
 {% block content %}
     <center>
-        <h1>{{ cont }}</h1>
+        <h1>Összes projekt</h1>
     </center>
-    <center>
-        Copyright (c) {{ current_year }}
-    </center>
+	{{ position }}
+	<br/>
+	{% for position_project in position_projects %}
+	{{ position_project }}
+	<br/>
+	{% for t in position_project.project.task_set.all %}
+		{{ t.comment }}
+		{{ t.created_at }}
+		<br/>
+	{% endfor %}
+	-----
+
+	<br/>
+	{% endfor %}
 {% endblock %}

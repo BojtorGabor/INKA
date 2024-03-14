@@ -8,22 +8,16 @@ from .models import Job, Position, PositionProject
 def menu_context(request):
     now = timezone.now()
     current_year = now.year
-    context = {'current_year': current_year}
 
     if request.user.is_authenticated:
         job = Job.objects.get(user=request.user)  # Felhasználó munkaköre
         position = Position.objects.get(pk=job.position.id)  # Munkakör megnevezése
-        projects = PositionProject.objects.filter(position=job.position).select_related('project')  # Munkakörhöz tartozó projektek
-        if not projects:
+        position_projects = PositionProject.objects.filter(position=job.position)  # Munkakörhöz tartozó projektek
+        if not position_projects:
             messages.success(request, 'Ehhez a munkakörhöz még nincs rendelve egyetlen projekt sem. '
                                       'Jelezd az adminisztrátornak!')
         else:
-            context['projects'] = [{'project': project.project, 'view_name': project.project.view_name} for project in projects]
-            # context['projects'] = ''
-        context['position'] = position
-        # return {'current_year': current_year, 'position': position, 'projects': projects}
+            return {'current_year': current_year, 'position': position, 'position_projects': position_projects}
+
     else:
-        context['projects'] = ''
-        context['position'] = ''
-        # return {'current_year': current_year, 'position': '', 'projects': ''}
-    return context
+        return {'current_year': current_year, 'position': '', 'projects': ''}
