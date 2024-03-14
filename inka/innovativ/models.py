@@ -23,6 +23,7 @@ class Job(models.Model):
 # Projektek törzsadata (egy Projekthez több Munkakör is tartozhat!)
 class Project(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Projekt megnevezése
+    view_name = models.CharField(max_length=50, unique=True)  # Projekthez tartozó view definíció megnevezése
 
 
     def __str__(self):

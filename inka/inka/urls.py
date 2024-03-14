@@ -23,7 +23,7 @@ class JobAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'view_name',)
 
 
 class PositionProjectAdmin(admin.ModelAdmin):

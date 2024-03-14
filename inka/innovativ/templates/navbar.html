@@ -21,11 +21,11 @@
 <!--                    Lenyíló menü tételei-->
                         <ul class="dropdown-menu">
                             {% for project in projects %}
-                                <li><a class="dropdown-item" href="{% url 'projects' project %}">{{ project }}</a></li>
+                                <li><a class="dropdown-item" href="{% url 'projects' project.project.view_name %}">{{ project.project }}</a></li>
                             {% endfor %}
 <!--                        Még nem használt tétel-->
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Valami</a></li>
+                            <li><a class="dropdown-item" href="#">Ha kell még valami</a></li>
                         </ul>
                     </li>
 <!--                Lenyíló menü-->
@@ -38,9 +38,6 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Kijelentkezés</a></li>
                             <li><a class="dropdown-item" href="{% url 'update-password' %}">Jelszó módosítás</a></li>
-<!--                        Még nem használt tétel-->
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Valami</a></li>
                         </ul>
                     </li>
                 {% else %}

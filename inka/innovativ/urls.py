@@ -9,5 +9,5 @@ urlpatterns = [
     path('register', views_members.register_user, name='register'),
     path('update_password', views_members.update_password, name='update-password'),
 
-    path('<str:text>/', views.projects, name='projects'),
+    path('<str:project_name>/', views.projects, name='projects'),
 ]
