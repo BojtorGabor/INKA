@@ -46,7 +46,7 @@ class Task(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
     def __str__(self):
-        return str(self.project)
+        return str(self.comment)
 
 
 # Ügyfelek törzsadata

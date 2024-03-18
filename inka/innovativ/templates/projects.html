@@ -6,24 +6,24 @@
     <center>
         <h1>{{ position }} - összes projekt</h1>
     </center>
-	{% for position_project in position_projects %}
+	{% for project, tasks in project_tasks.items %}
 		<div class="card mb-3">
 			<div class="card-header fs-5 badge bg-body-secondary text-wrap text-secondary p-3">
-				{{ position_project }}
+				{{ project }}
 			</div>
     		<div class="card-body">
 				<div class="card-text">
 					<div>
 						<div class="row">
 							<div class="col-8">
-								{% for t in position_project.project.task_set.all|dictsort:'created_at' %}
+								{% for task in tasks %}
 									<div class="card mb-3">
 										<div class="card-header fs-2 badge bg-body-secondary text-secondary p-1">
-											<h6 class="card-title mb-1">{{ t.created_at }}</h6>
+											<h6 class="card-title mb-1">{{ task.created_at }}</h6>
 										</div>
 										<div class="card-body">
 											<div style="text-align: justify">
-												<p class="card-text">{{ t.comment }}</p>
+												<p class="card-text">{{ task.comment }}</p>
 											</div>
 										</div>
 									</div>
