@@ -10,5 +10,6 @@ urlpatterns = [
     path('update_password', views_members.update_password, name='update-password'),
 
     path('<str:project_name>/', views.project_names, name='project_names'),
+    path('tasks', views.tasks, name='tasks'),
     path('projects', views.projects, name='projects'),
 ]

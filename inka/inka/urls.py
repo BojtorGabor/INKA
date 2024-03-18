@@ -31,7 +31,7 @@ class PositionProjectAdmin(admin.ModelAdmin):
 
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('project', 'comment', 'created_at',)
+    list_display = ('project', 'comment', 'created_user', 'created_at',)
 
 
 admin_site = OTPAdmin(name='OTPAdmin')

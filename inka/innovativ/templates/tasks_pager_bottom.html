@@ -1,0 +1,32 @@
+<!--Oldal lapozás-->
+<div class="p-1 flex-fill">
+	<nav aria-label="Page navigation example">
+		<ul class="pagination justify-content-center flex-wrap mb-4">
+			{% if tasks.has_previous %}
+				<li class="page-item">
+					<a class="page-link" href="?page={{ tasks.previous_page_number }}">&laquo;</a>
+				</li>
+			{% else %}
+				<li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+			{% endif %}
+			{% for i in page_range|default_if_none:tasks.paginator.get_elided_page_range %}
+				{% if tasks.number == i %}
+					<li class="active page-item"><span class="page-link">{{ i }}</span></li>
+				{% else %}
+					{% if i == tasks.paginator.ELLIPSIS %}
+						<li class="page-item"><span class="page-link">{{ i }}</span></li>
+					{% else %}
+						<li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+			{% if tasks.has_next %}
+				<li class="page-item">
+					<a class="page-link" href="?page={{ tasks.next_page_number }}">&raquo;</a>
+				</li>
+			{% else %}
+				<li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+			{% endif %}
+		</ul>
+	</nav>
+</div>

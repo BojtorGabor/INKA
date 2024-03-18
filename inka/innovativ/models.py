@@ -43,6 +43,7 @@ class PositionProject(models.Model):
 class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
     comment = models.TextField(max_length=500, null=True)  # Megjegyzés
+    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
     def __str__(self):

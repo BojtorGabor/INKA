@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet 2">
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat">
+      <change afterPath="$PROJECT_DIR$/inka/innovativ/templates/project_tasks_pager_bottom.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/context_processors.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/context_processors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
     </list>
@@ -133,7 +133,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710425794810</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat">
+      <option name="closed" value="true" />
+      <created>1710757346576</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1710757346576</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -145,6 +153,7 @@
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektek meghívása menüből - context processzorral, külön view hívásokkal" />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet" />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet 2" />
+    <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat" />
+    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat" />
   </component>
 </project>

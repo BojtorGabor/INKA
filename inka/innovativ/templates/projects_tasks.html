@@ -6,7 +6,8 @@
     <center>
         <h1>{{ position }} - összes projekt</h1>
     </center>
-	{% for project, tasks in project_tasks.items %}
+	<br/>
+	{% for project, tasks in projects_tasks %}
 		<div class="card mb-3">
 			<div class="card-header fs-5 badge bg-body-secondary text-wrap text-secondary p-3">
 				{{ project }}
@@ -41,4 +42,5 @@
 		<br/>
 	{% endfor %}
 	<br/>
+	{% include 'projects_tasks_pager_bottom.html' %}
 {% endblock %}
