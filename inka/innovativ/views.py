@@ -21,7 +21,7 @@ def project_names(request, project_name):
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
-        return desired_view(request, project)
+        return desired_view(request, project_name)
     else:
         messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})

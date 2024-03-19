@@ -52,9 +52,24 @@ class Task(models.Model):
 
 # Ügyfelek törzsadata
 class Customer(models.Model):
-    name = models.CharField(max_length=100)  # Ügyfél neve
-    email = models.EmailField(max_length=50)  # Ügyfél email címe
-    phone = models.CharField(max_length=15)  # Ügyfél telefonszáma
+    surname = models.CharField(max_length=100, default='')  # Ügyfél vezetékneve
+    name = models.CharField(max_length=100, default='')  # Ügyfél keresztneve
+    email = models.EmailField(max_length=50, default='')  # Ügyfél email címe
+    phone = models.CharField(max_length=15, default='')  # Ügyfél telefonszáma
+
+    def __str__(self):
+        return self.name
+
+
+# Importálandó Ügyfelek
+class CustomerImport(models.Model):
+    surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve
+    name = models.CharField(max_length=100, default='')  # Ügyfél által megadott keresztneve
+    email = models.EmailField(max_length=50, default='')  # Ügyfél által megadott email címe
+    phone = models.CharField(max_length=15, default='')  # Ügyfél által megadott telefonszáma
+    address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
+    rooftop = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
+    new_customer = models.BooleanField(default=True)  # Az új ügyfél jelzésére
 
     def __str__(self):
         return self.name

@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 
 
+# CSV file kiválasztása az ügyfelek importjához
 class CSVFileSelectForm(forms.Form):
     file = forms.FileField(label='Válassz ki egy új CSV fájlt',
                            widget=forms.ClearableFileInput(attrs={'accept': '.csv'}),
