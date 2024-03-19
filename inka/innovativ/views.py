@@ -1,11 +1,13 @@
-from collections import defaultdict
-
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
+
+from collections import defaultdict
 from . import views_projects as app_views
+
 from .context_processors import menu_context
-from .models import Project, Task, Job, Position, PositionProject
+
+from .models import Project, Task
 
 
 def home(request):
@@ -19,7 +21,7 @@ def project_names(request, project_name):
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
-        return desired_view(request)
+        return desired_view(request, project)
     else:
         messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})

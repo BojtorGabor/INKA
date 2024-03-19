@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat">
-      <change afterPath="$PROJECT_DIR$/inka/innovativ/templates/project_tasks_pager_bottom.html" afterDir="false" />
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat lista">
+      <change afterPath="$PROJECT_DIR$/inka/innovativ/forms_projects.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inka/innovativ/templates/p_01_1_ugyfel_adat_import.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/projects.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/project_proba.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/project_proba.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/views_projects.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views_projects.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -51,6 +56,9 @@
       <recent name="D:\- Munka -\INKA\inka\innovativ\templates" />
       <recent name="D:\- Munka -\INKA\inka\innovativ" />
       <recent name="D:\- Munka -\INKA" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\- Munka -\INKA\inka" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -141,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710757346576</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat lista">
+      <option name="closed" value="true" />
+      <created>1710767354175</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1710767354175</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -154,6 +170,7 @@
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet" />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat - kezdet 2" />
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat" />
-    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat" />
+    <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat lista" />
+    <option name="LAST_COMMIT_MESSAGE" value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat lista" />
   </component>
 </project>
