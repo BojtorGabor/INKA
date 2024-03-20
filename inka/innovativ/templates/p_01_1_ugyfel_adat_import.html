@@ -8,9 +8,15 @@
     <br/>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <br/>
-        <button type="submit" id="importButton">Feltöltés</button>
+        <div class="row mb-3">
+            <div class="col-md-2 mb-3">
+                {{ form.file.label_tag }}
+            </div>
+            <div class="col-md-2 mb-3">
+                {{ form.file }}
+            </div>
+        </div>
+        <button type="submit" id="importButton"  class="btn btn-secondary">Feltöltés</button>
     </form>
     <br/>
 {% endblock %}

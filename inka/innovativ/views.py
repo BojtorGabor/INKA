@@ -21,7 +21,7 @@ def project_names(request, project_name):
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
-        return desired_view(request, project_name)
+        return desired_view(request, project)
     else:
         messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})
@@ -31,7 +31,7 @@ def tasks(request):
     # Projektekhez tartozó feladatok kigyűjtése
     tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']).order_by('-created_at')
 
-    p = Paginator(tasks_set, 2)
+    p = Paginator(tasks_set, 10)
     page = request.GET.get('page', 1)
     tasks_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)

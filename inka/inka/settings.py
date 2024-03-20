@@ -29,6 +29,8 @@ INSTALLED_APPS = [
 
     'innovativ',
 
+    'channels',
+
     'django_otp',
     'django_otp.plugins.otp_totp',
 ]

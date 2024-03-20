@@ -41,6 +41,11 @@ class PositionProject(models.Model):
 
 # Feladatok - Projethez rendelve
 class Task(models.Model):
+    CHOICES = (
+        ('1:', 'Esemény'),
+        ('2:', 'Feladat')
+    )
+    type = models.CharField(max_length=7, choices=CHOICES, default='1:')
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
     comment = models.TextField(max_length=500, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
@@ -52,24 +57,12 @@ class Task(models.Model):
 
 # Ügyfelek törzsadata
 class Customer(models.Model):
-    surname = models.CharField(max_length=100, default='')  # Ügyfél vezetékneve
-    name = models.CharField(max_length=100, default='')  # Ügyfél keresztneve
-    email = models.EmailField(max_length=50, default='')  # Ügyfél email címe
-    phone = models.CharField(max_length=15, default='')  # Ügyfél telefonszáma
-
-    def __str__(self):
-        return self.name
-
-
-# Importálandó Ügyfelek
-class CustomerImport(models.Model):
     surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve
     name = models.CharField(max_length=100, default='')  # Ügyfél által megadott keresztneve
     email = models.EmailField(max_length=50, default='')  # Ügyfél által megadott email címe
     phone = models.CharField(max_length=15, default='')  # Ügyfél által megadott telefonszáma
     address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
     rooftop = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
-    new_customer = models.BooleanField(default=True)  # Az új ügyfél jelzésére
 
     def __str__(self):
         return self.name

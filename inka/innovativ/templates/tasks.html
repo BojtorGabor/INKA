@@ -4,20 +4,23 @@
 
 {% block content %}
     <center>
-        <h1>{{ position }} - összes feladat</h1>
+        <h1>{{ position }} - összes esemény / feladat</h1>
     </center>
 	<br/>
 
 	<div class="card mb-3">
-		<div class="card-header fs-5 badge bg-body-secondary text-wrap text-secondary p-3">
+		<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 			<div class="row">
 				<div class="col-2 text-start">
 					Projekt
 				</div>
-				<div class="col-6 text-start">
-					Feladat
+				<div class="col-1 text-start">
+					E. / F.
 				</div>
-				<div class="col-2 text-start">
+				<div class="col-6 text-start">
+					Szöveg
+				</div>
+				<div class="col-1 text-start">
 					Létrehozó
 				</div>
 				<div class="col-2 text-end">
@@ -33,10 +36,18 @@
 							<div class="col-2">
 								{{ task.project }}
 							</div>
-							<div class="col-6">
-								{{ task.comment }}
+							<div class="col-1">
+								{{ task.get_type_display }}
 							</div>
-							<div class="col-2">
+							{% if task.type == '2:' %}
+								<div class="col-6 text-success-emphasis bg-success-subtle border
+								 border-success-subtle rounded-2">
+							{% else %}
+								<div class="col-6">
+							{% endif %}
+								{{ task.comment }}
+								</div>
+							<div class="col-1">
 								{{ task.created_user }}
 							</div>
 							<div class="col-2 text-end">
