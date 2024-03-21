@@ -39,30 +39,6 @@ class PositionProject(models.Model):
         return str(self.project)
 
 
-# Feladatok - Projethez rendelve
-class Task(models.Model):
-    TYPE_CHOICES = (
-        ('0:', 'Esemény'),
-        ('1:', 'Figyelmeztetés'),
-        ('2:', 'Feladat')
-    )
-    COLOR_CHOICES = (
-        ('0:', 'px-2'),
-        ('1:', 'bg-primary-subtle border border-primary rounded-2 px-2'),
-        ('2:', 'bg-danger-subtle border border-danger rounded-2 px-2')
-    )
-
-    type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
-    type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
-    comment = models.TextField(max_length=500, null=True)  # Megjegyzés
-    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
-    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
-
-    def __str__(self):
-        return str(self.comment)
-
-
 # Ügyfelek törzsadata
 class Customer(models.Model):
     surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve
@@ -73,4 +49,32 @@ class Customer(models.Model):
     rooftop = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
 
     def __str__(self):
-        return self.name
+        return f"{self.surname} {self.name} (id: {self.id})"
+
+
+class Task(models.Model):
+    TYPE_CHOICES = (
+        ('0:', 'Esemény'),
+        ('1:', 'Figyelmeztetés'),
+        ('2:', 'Feladat'),
+        ('3:', 'Elkészült')
+    )
+    COLOR_CHOICES = (
+        ('0:', 'px-2'),
+        ('1:', 'bg-warning-subtle border border-warning rounded-2 px-2'),
+        ('2:', 'bg-danger-subtle border border-danger rounded-2 px-2'),
+        ('3:', 'bg-success-subtle border border-success rounded-2 px-2')
+    )
+
+    type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
+    type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
+    comment = models.TextField(max_length=500, null=True)  # Megjegyzés
+    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
+    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
+    completed_at = models.DateTimeField(null=True)  # befejezés időpontja
+
+    def __str__(self):
+        return str(self.comment)
+

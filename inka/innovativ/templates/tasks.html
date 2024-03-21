@@ -2,7 +2,7 @@
 
 {% block content %}
     <center>
-        <h1>{{ position }} - összes Esemény / Figyelmeztetés / Feladat</h1>
+        <h1>{{ position }}</h1>
     </center>
 	<br/>
 
@@ -15,13 +15,17 @@
 				<div class="col-7 text-start">
 					<span class="{{ type_color.0.1 }}">{{ type_choices.0.1 }}</span> /
 					<span class="{{ type_color.1.1 }}">{{ type_choices.1.1 }}</span> /
-					<span class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</span>
+					<span class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</span> /
+					<span class="{{ type_color.3.1 }}">{{ type_choices.3.1 }}</span>
 				</div>
 				<div class="col-1 text-start">
 					Létrehozó
 				</div>
-				<div class="col-2 text-end">
-					Létrehozás ideje
+				<div class="col-1 text-start">
+					Kezdet
+				</div>
+				<div class="col-1 text-start">
+					Kész
 				</div>
 			</div>
 		</div>
@@ -32,7 +36,12 @@
 					<div>
 						<div class="row">
 							<div class="col-2">
-								{{ task.project }}
+								{% if task.type == '2:' %}
+									<a href="#"
+									   class="btn btn-outline-danger">{{ task.project }}</a>
+								{% else %}
+									{{ task.project }}
+								{% endif %}
 							</div>
 							{% if task.type == '0:' %}
 								<div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
@@ -40,6 +49,8 @@
 								<div class="col-7 {{ type_color.1.1 }}" style="text-align: justify">
 							{% elif task.type == '2:' %}
 								<div class="col-7 {{ type_color.2.1 }}" style="text-align: justify">
+							{% elif task.type == '3:' %}
+								<div class="col-7 {{ type_color.3.1 }}" style="text-align: justify">
 							{% else %}
 								<div class="col-7" style="text-align: justify">
 							{% endif %}
@@ -48,8 +59,11 @@
 							<div class="col-1">
 								{{ task.created_user }}
 							</div>
-							<div class="col-2 text-end">
-								{{ task.created_at }}
+							<div class="col-1">
+								{{ task.created_at|date:"Y-m-d" }}
+							</div>
+							<div class="col-1">
+								{{ task.completed_at|date:"Y-m-d" }}
 							</div>
 						</div>
 					</div>
