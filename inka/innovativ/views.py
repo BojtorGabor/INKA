@@ -30,13 +30,16 @@ def project_names(request, project_name):
 def tasks(request):
     # Projektekhez tartozó feladatok kigyűjtése
     tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']).order_by('-created_at')
+    type_choices = Task.TYPE_CHOICES
+    type_color = Task.COLOR_CHOICES
 
     p = Paginator(tasks_set, 10)
     page = request.GET.get('page', 1)
     tasks_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-    return render(request, 'tasks.html', {'tasks': tasks_page, 'page_range': page_range})
+    return render(request, 'tasks.html', {'tasks': tasks_page, 'type_choices': type_choices,
+                                          'type_color': type_color, 'page_range': page_range})
 
 
 def projects(request):

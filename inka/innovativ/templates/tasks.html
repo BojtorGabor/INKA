@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load humanize %}
-
 {% block content %}
     <center>
         <h1>{{ position }} - összes esemény / feladat</h1>
@@ -14,11 +12,10 @@
 				<div class="col-2 text-start">
 					Projekt
 				</div>
-				<div class="col-1 text-start">
-					E. / F.
-				</div>
-				<div class="col-6 text-start">
-					Szöveg
+				<div class="col-7 text-start">
+					<span class="{{ type_color.0.1 }}">{{ type_choices.0.1 }}</span> /
+					<span class="{{ type_color.1.1 }}">{{ type_choices.1.1 }}</span> /
+					<span class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</span>
 				</div>
 				<div class="col-1 text-start">
 					Létrehozó
@@ -36,16 +33,16 @@
 							<div class="col-2">
 								{{ task.project }}
 							</div>
-							<div class="col-1">
-								{{ task.get_type_display }}
-							</div>
-							{% if task.type == '2:' %}
-								<div class="col-6 text-success-emphasis bg-success-subtle border
-								 border-success-subtle rounded-2">
+							{% if task.type == '0:' %}
+								<div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
+							{% elif task.type == '1:' %}
+								<div class="col-7 {{ type_color.1.1 }}"style="text-align: justify">
+							{% elif task.type == '2:' %}
+								<div class="col-7 {{ type_color.2.1 }}"style="text-align: justify">
 							{% else %}
-								<div class="col-6">
+								<div class="col-7"style="text-align: justify">
 							{% endif %}
-								{{ task.comment }}
+								{{ task.comment|linebreaksbr }}
 								</div>
 							<div class="col-1">
 								{{ task.created_user }}

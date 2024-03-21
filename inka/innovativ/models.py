@@ -41,11 +41,19 @@ class PositionProject(models.Model):
 
 # Feladatok - Projethez rendelve
 class Task(models.Model):
-    CHOICES = (
-        ('1:', 'Esemény'),
+    TYPE_CHOICES = (
+        ('0:', 'Esemény'),
+        ('1:', 'Figyelmeztetés'),
         ('2:', 'Feladat')
     )
-    type = models.CharField(max_length=7, choices=CHOICES, default='1:')
+    COLOR_CHOICES = (
+        ('0:', 'px-2'),
+        ('1:', 'bg-primary-subtle border border-primary rounded-2 px-2'),
+        ('2:', 'bg-danger-subtle border border-danger rounded-2 px-2')
+    )
+
+    type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
+    type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
     comment = models.TextField(max_length=500, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
@@ -53,6 +61,15 @@ class Task(models.Model):
 
     def __str__(self):
         return str(self.comment)
+
+
+def get_bootstrap_class(value):
+    bootstrap_classes = {
+        0: '',
+        1: 'text-emphasis bg-primary-subtle border border-primary rounded-2 px-2',
+        2: 'text-emphasis bg-danger-subtle border border-danger rounded-2 px-2'
+    }
+    return bootstrap_classes.get(value, '')
 
 
 # Ügyfelek törzsadata

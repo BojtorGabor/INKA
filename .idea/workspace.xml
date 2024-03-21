@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="p_01_1_ugyfel_adat_import projekt - csv tételei a CustomerImport táblában.">
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/p_01_1_ugyfel_adat_import.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/p_01_1_ugyfel_adat_import.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/views_projects.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views_projects.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,14 +41,14 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/- Munka -/INKA/inka/innovativ&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/- Munka -/INKA/inka/innovativ/templates&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\- Munka -\INKA\inka\innovativ" />
       <recent name="D:\- Munka -\INKA\inka\innovativ\templates" />
+      <recent name="D:\- Munka -\INKA\inka\innovativ" />
       <recent name="D:\- Munka -\INKA" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -168,7 +168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710870033007</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény.">
+      <option name="closed" value="true" />
+      <created>1710954365848</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1710954365848</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -184,6 +192,7 @@
     <MESSAGE value="INKA munkakörhöz kapcsolódó projektekhez tartozó összes feladat lista" />
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv fájl kiválasztva" />
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei a CustomerImport táblában." />
-    <option name="LAST_COMMIT_MESSAGE" value="p_01_1_ugyfel_adat_import projekt - csv tételei a CustomerImport táblában." />
+    <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény." />
+    <option name="LAST_COMMIT_MESSAGE" value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény." />
   </component>
 </project>
