@@ -2,7 +2,7 @@
 
 {% block content %}
     <center>
-        <h1>{{ position }} - összes esemény / feladat</h1>
+        <h1>{{ position }} - összes Esemény / Figyelmeztetés / Feladat</h1>
     </center>
 	<br/>
 
@@ -25,6 +25,7 @@
 				</div>
 			</div>
 		</div>
+
 		{% for task in tasks %}
     		<div class="card-body">
 				<div class="card-text">
@@ -36,11 +37,11 @@
 							{% if task.type == '0:' %}
 								<div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
 							{% elif task.type == '1:' %}
-								<div class="col-7 {{ type_color.1.1 }}"style="text-align: justify">
+								<div class="col-7 {{ type_color.1.1 }}" style="text-align: justify">
 							{% elif task.type == '2:' %}
-								<div class="col-7 {{ type_color.2.1 }}"style="text-align: justify">
+								<div class="col-7 {{ type_color.2.1 }}" style="text-align: justify">
 							{% else %}
-								<div class="col-7"style="text-align: justify">
+								<div class="col-7" style="text-align: justify">
 							{% endif %}
 								{{ task.comment|linebreaksbr }}
 								</div>

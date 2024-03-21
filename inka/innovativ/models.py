@@ -63,15 +63,6 @@ class Task(models.Model):
         return str(self.comment)
 
 
-def get_bootstrap_class(value):
-    bootstrap_classes = {
-        0: '',
-        1: 'text-emphasis bg-primary-subtle border border-primary rounded-2 px-2',
-        2: 'text-emphasis bg-danger-subtle border border-danger rounded-2 px-2'
-    }
-    return bootstrap_classes.get(value, '')
-
-
 # Ügyfelek törzsadata
 class Customer(models.Model):
     surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve

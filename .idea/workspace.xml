@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény.">
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény. Az esemény három fajtújó lehet (esemény, figyelmeztetés, feladat) ennek színes kijelzése.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/views_projects.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views_projects.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +176,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710954365848</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény. Az esemény három fajtújó lehet (esemény, figyelmeztetés, feladat) ennek színes kijelzése.">
+      <option name="closed" value="true" />
+      <created>1711015501110</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1711015501110</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -193,6 +201,7 @@
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv fájl kiválasztva" />
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei a CustomerImport táblában." />
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény." />
-    <option name="LAST_COMMIT_MESSAGE" value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény." />
+    <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény. Az esemény három fajtújó lehet (esemény, figyelmeztetés, feladat) ennek színes kijelzése." />
+    <option name="LAST_COMMIT_MESSAGE" value="p_01_1_ugyfel_adat_import projekt - csv tételei még feldolgozás előtt, de a task táblába már bekerült az esemény. Az esemény három fajtújó lehet (esemény, figyelmeztetés, feladat) ennek színes kijelzése." />
   </component>
 </project>

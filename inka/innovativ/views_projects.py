@@ -43,16 +43,27 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):
         total_rows = sum(1 for row in csv_reader)
         csv_file.seek(0)
 
-        Task.objects.create(type='1:', project= project, comment=f'{file_path} fájl importálása megtörtént.',
-                            created_user= request.user)
-
+        existing_emails = ''
         for row_number, row in enumerate(csv_reader, start=1):
-            # messages.info(request, f'Adatok importálása... ({row_number}/{total_rows})')
             surname, name, email, phone, address, rooftop = row
-            # CustomerImport.objects.create(surname= surname, name= name, email= email, phone=phone,
-            #                               address=address, rooftop=rooftop)
-        messages.success(request, 'Sikeres importálás.')
-
+            existing_customer = Customer.objects.filter(email=email)
+            if existing_customer.exists():
+                existing_emails = existing_emails + ' - ' + email
+            else:
+                Customer.objects.create(surname= surname, name= name, email= email, phone=phone,
+                                        address=address, rooftop=rooftop)
+        if existing_emails:
+            Task.objects.create(type='1:', type_color='1:', project=project,
+                                comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
+                                        f'nem kerültek be az ügyfél táblába:\n\n{existing_emails}',
+                                created_user=request.user)
+            messages.success(request, 'Az importálás csak részben sikeres, voltak duplikált email címek. '
+                                      'Ezeket az email címeket megtalálod a Figyelmeztés sorban. ')
+        else:
+            Task.objects.create(type='0:', type_color='0:', project=project,
+                                comment=f'{file_path} fájl importálása megtörtént.',
+                                created_user=request.user)
+            messages.success(request, 'Sikeres importálás.')
     return True
 
 
