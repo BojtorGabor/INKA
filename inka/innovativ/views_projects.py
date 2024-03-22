@@ -75,8 +75,8 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
             messages.success(request, 'Az importálás csak részben sikeres, voltak duplikált email címek. '
                                       'Ezeket az email címeket megtalálod a Figyelmeztés sorban. ')
         else:
-            Task.objects.create(type='0:',  # Sima esemény bejegyzés
-                                type_color='0:',
+            Task.objects.create(type='4:',  # Sima esemény bejegyzés
+                                type_color='4:',
                                 project=project,
                                 comment=f'{file_path}\n'
                                         f'Össszesen: {new_customer_number} új ügyfél importálása megtörtént.',

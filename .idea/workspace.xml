@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="Újabb menü szerkezet.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/navbar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="Újabb menü szerkezet folytatás." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -208,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711105491870</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Újabb menü szerkezet folytatás.">
+      <option name="closed" value="true" />
+      <created>1711108653071</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1711108653071</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -229,6 +232,7 @@
     <MESSAGE value="p_01_1_ugyfel_adat_import projekt - csv tételei importálva a customer táblába." />
     <MESSAGE value="Importálásból származó új ügyfelek bekerülnek a 02.1. Első megkeresés projektbe." />
     <MESSAGE value="Újabb menü szerkezet." />
-    <option name="LAST_COMMIT_MESSAGE" value="Újabb menü szerkezet." />
+    <MESSAGE value="Újabb menü szerkezet folytatás." />
+    <option name="LAST_COMMIT_MESSAGE" value="Újabb menü szerkezet folytatás." />
   </component>
 </project>
