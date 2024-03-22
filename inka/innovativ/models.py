@@ -56,14 +56,16 @@ class Task(models.Model):
     TYPE_CHOICES = (
         ('0:', 'Esemény'),
         ('1:', 'Figyelmeztetés'),
-        ('2:', 'Feladat'),
-        ('3:', 'Elkészült')
+        ('2:', 'Új feladat'),
+        ('3:', 'Folyamatban'),
+        ('4:', 'Elkészült'),
     )
     COLOR_CHOICES = (
         ('0:', 'px-2'),
-        ('1:', 'bg-warning-subtle border border-warning rounded-2 px-2'),
+        ('1:', 'bg-secondary-subtle border border-secondary rounded-2 px-2'),
         ('2:', 'bg-danger-subtle border border-danger rounded-2 px-2'),
-        ('3:', 'bg-success-subtle border border-success rounded-2 px-2')
+        ('3:', 'bg-warning-subtle border border-warning rounded-2 px-2'),
+        ('4:', 'bg-success-subtle border border-success rounded-2 px-2'),
     )
 
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')

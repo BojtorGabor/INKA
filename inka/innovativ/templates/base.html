@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hu">
+<html lang="hu" data-bs-theme="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
               crossorigin="anonymous">
         <title>INKA</title>
         <style>
-            body {background: #f4f4f4; }
+            body {background: #444444; }
         </style>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </head>
@@ -17,7 +17,7 @@
         {% include 'navbar.html' %}
         <br/>
 <!--    Ha van üzenet, ez jeleníti meg az oldal tetején-->
-        <div class="container">
+        <div class="container-fluid">
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">

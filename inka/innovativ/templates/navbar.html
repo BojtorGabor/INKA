@@ -16,22 +16,87 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Projektek
+                            Új feladatok
                         </a>
 <!--                    Lenyíló menü tételei-->
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'tasks' 'new' %}">Összes</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             {% for position_project in position_projects %}
-                                <li><a class="dropdown-item" href="{% url 'project_names' position_project %}">
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project 'new' %}">
                                     {{ position_project }}</a></li>
                             {% endfor %}
-<!--                        Még nem használt tétel-->
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'tasks' %}">
-                                {{ position }} - összes feladat</a></li>
-                            <li><a class="dropdown-item disabled" href="{% url 'projects' %}">
-                                {{ position }} - összes projekt/feladat</a></li>
                         </ul>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Folyamatban
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'tasks' 'in_progress' %}">Összes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for position_project in position_projects %}
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project 'in_progress' %}">
+                                    {{ position_project }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Elkészült
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'tasks' 'ready' %}">Összes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for position_project in position_projects %}
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project 'ready' %}">
+                                    {{ position_project }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Figyelmeztetések
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'tasks' 'warning' %}">Összes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for position_project in position_projects %}
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project 'warning' %}">
+                                    {{ position_project }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Események
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'tasks' 'event' %}">Összes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for position_project in position_projects %}
+                                <li><a class="dropdown-item" href="{% url 'project_names' position_project 'event' %}">
+                                    {{ position_project }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tasks' 'all' %}">Összes feladat</a>
+                    </li>
+
 <!--                Lenyíló menü-->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button"

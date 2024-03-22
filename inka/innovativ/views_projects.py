@@ -9,7 +9,7 @@ from .forms_projects import CSVFileSelectForm
 from .models import Customer, Task, Project
 
 
-def p_01_1_ugyfel_adat_import(request, project):  # Új ügyfelek importálása
+def p_01_1_ugyfel_adat_import(request, project, filter):  # Új ügyfelek importálása
     if request.method == 'POST':
         form = CSVFileSelectForm(request.POST, request.FILES)  # Import fájl kiválasztása
         if form.is_valid():
@@ -45,12 +45,14 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
         next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás a következő projektnek
         existing_emails = ''  # email ellenőrzéshez, ebben lesz felsorolva ha már volt ilyen email
+        new_customer_number = 0
         for row_number, row in enumerate(csv_reader, start=1):  # csv sorokon végigfut
             surname, name, email, phone, address, rooftop = row  # szétbontja a sort
             existing_customer = Customer.objects.filter(email=email)  # email keresés
             if existing_customer.exists():  # már volt ilyen a customer táblában,
-                existing_emails = existing_emails + ' - ' + email  # kigyűjti ezeket az emaileket
+                existing_emails = existing_emails + ' -> ' + email  # kigyűjti ezeket az emaileket
             else:  # tényleg új ügyfél
+                new_customer_number += 1
                 new_customer = Customer.objects.create(surname= surname,
                                                        name= name,
                                                        email= email,
@@ -63,41 +65,41 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                     customer= new_customer,  # ügyfél azonosító
                                     comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
                                     created_user=request.user)
-                # pass
         if existing_emails:  # volt ismétlődő email
-            # Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
-            #                     type_color='1:',
-            #                     project=project,
-            #                     comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
-            #                             f'nem kerültek be az ügyfél táblába:\n\n{existing_emails}',
-            #                     created_user=request.user)
+            Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
+                                type_color='1:',
+                                project=project,
+                                comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
+                                        f'nem kerültek be az ügyfél táblába:\n\n{existing_emails}',
+                                created_user=request.user)
             messages.success(request, 'Az importálás csak részben sikeres, voltak duplikált email címek. '
                                       'Ezeket az email címeket megtalálod a Figyelmeztés sorban. ')
         else:
-            # Task.objects.create(type='0:',  # Sima esemény bejegyzés
-            #                     type_color='0:',
-            #                     project=project,
-            #                     comment=f'{file_path} fájl importálása megtörtént.',
-            #                     created_user=request.user)
+            Task.objects.create(type='0:',  # Sima esemény bejegyzés
+                                type_color='0:',
+                                project=project,
+                                comment=f'{file_path}\n'
+                                        f'Össszesen: {new_customer_number} új ügyfél importálása megtörtént.',
+                                created_user=request.user)
             messages.success(request, 'Sikeres importálás.')
     return True
 
 
-def p_02_1_elso_megkereses(request, project):
+def p_02_1_elso_megkereses(request, project, filter):
     cont = '02.1.'
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_02_2_adatok_egyeztetese(request, project):
+def p_02_2_adatok_egyeztetese(request, project, filter):
     cont = '02.2.'
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_02_3_ugyfel_tipus_meghatarozasa(request, project):
+def p_02_3_ugyfel_tipus_meghatarozasa(request, project, filter):
     cont = '02.3.'
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_03_1_palyazat_tipusainak_folyamatai(request, project):
+def p_03_1_palyazat_tipusainak_folyamatai(request, project, filter):
     cont = '03.1.'
     return render(request, 'project_proba.html', {'project': project})
