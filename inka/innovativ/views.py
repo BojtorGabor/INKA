@@ -108,8 +108,9 @@ def tasks(request, filter, project_name):
     tasks_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-    return render(request, 'tasks.html', {'tasks': tasks_page, 'type_choices': type_choices,
-                                          'type_color': type_color, 'page_range': page_range,
+    return render(request, 'tasks.html', {'tasks': tasks_page,
+                                          'page_list': tasks_page, 'page_range': page_range,
+                                          'type_choices': type_choices, 'type_color': type_color,
                                           'project_name': project_name})
 
 
@@ -131,9 +132,9 @@ def tasks(request, filter, project_name):
 #     page = request.GET.get('page', 1)
 #     projects_tasks_page = p.get_page(page)
 #     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-
-    return render(request, 'projects_tasks.html', {'projects_tasks': projects_tasks_page,
-                                             'page_range': page_range})
+#
+#     return render(request, 'projects_tasks.html', {'projects_tasks': projects_tasks_page,
+#                                              'page_list': projects_tasks_page, 'page_range': page_range})
 
 
 '''A tasks egy listája a Task model objektumoknak, amelyeket korábban kigyűjtöttél az adott felhasználóhoz 
