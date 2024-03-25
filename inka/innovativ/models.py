@@ -25,14 +25,14 @@ class Project(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Projekt megnevezése
     view_name = models.CharField(max_length=50, unique=True)  # Projekthez tartozó view definíció megnevezése
 
-
     def __str__(self):
         return self.name
 
 
 # Munkakörökhöz tartozó Projektek (egy Munkakörhöz több Projekt is tartozhat!)
 class PositionProject(models.Model):
-    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, default=None)  # Munkakör hozzárendelése
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True,
+                                 default=None)  # Munkakör hozzárendelése
     project = models.ForeignKey(Project, on_delete=models.CASCADE)  # Projekt hozzárendelése
 
     def __str__(self):
@@ -80,3 +80,7 @@ class Task(models.Model):
     def __str__(self):
         return str(self.comment)
 
+    @property
+    def days_passed(self):  # számított mező: új és folyamatban feladatoknál mióta várakozik
+        difference = timezone.now() -self.created_at
+        return str(difference.days) + ' napja várakozik'

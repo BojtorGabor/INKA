@@ -15,16 +15,16 @@ def home(request):
 
 
 # Projekt név átvétele az url-ből, majd a Project-ben az ahhoz tartozó view_name definíció hívása
-# def project_names(request, project_name, filter):
-#     project = get_object_or_404(Project, name=project_name)  # Projekt rekord keresése a projekt név alapján
-#     view_name = project.view_name  # A rekordban a meghívandó view neve
-#
-#     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
-#         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
-#         return desired_view(request, project, filter)
-#     else:
-#         messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
-#         return render(request, 'home.html', {})
+def project_names(request, project_name, filter):
+    project = get_object_or_404(Project, name=project_name)  # Projekt rekord keresése a projekt név alapján
+    view_name = project.view_name  # A rekordban a meghívandó view neve
+
+    if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
+        desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
+        return desired_view(request, project, filter)
+    else:
+        messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
+        return render(request, 'home.html', {})
 #
 #
 # def tasks_old(request, filter):

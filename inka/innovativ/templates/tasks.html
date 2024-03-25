@@ -37,7 +37,7 @@
 					Kezdet
 				</div>
 				<div class="col-1 text-start">
-					Kész
+					Kész / Vár
 				</div>
 			</div>
 		</div>
@@ -49,10 +49,10 @@
 						<div class="row">
 							<div class="col-2">
 								{% if task.type == '2:' %}
-									<a href="#"
+									<a href="{% url 'project_names' task.project task.id %}"
 									   class="btn btn-outline-danger">{{ task.project }}</a>
 								{% elif task.type == '3:' %}
-									<a href="#"
+									<a href="{% url 'project_names' task.project task.id %}"
 									   class="btn btn-outline-warning">{{ task.project }}</a>
 								{% else %}
 									{{ task.project }}
@@ -80,7 +80,13 @@
 								{{ task.created_at|date:"Y-m-d" }}
 							</div>
 							<div class="col-1">
-								{{ task.completed_at|date:"Y-m-d" }}
+								{% if task.type == '2:' %}
+									{{ task.days_passed }}
+								{% elif task.type == '3:' %}
+									{{ task.days_passed }}
+								{% else %}
+									{{ task.completed_at|date:"Y-m-d" }}
+								{% endif %}
 							</div>
 						</div>
 					</div>

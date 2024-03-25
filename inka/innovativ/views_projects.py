@@ -10,6 +10,13 @@ from .models import Customer, Task, Project
 
 
 def p_01_1_ugyfel_adat_import(request, project, filter):  # Új ügyfelek importálása
+    task_comment = Task.objects.get(id=filter)
+    if str(task_comment) != 'Állandó feladat: szükség szerint új ügyfelek import fájl bedolgozása.':
+        messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
+        messages.success(request, 'Az ügyfél adat import állandó feladat nem található a táblában '
+                                  'vagy a szövege megváltozott.')
+        return render(request, 'home.html', {})
+
     if request.method == 'POST':
         form = CSVFileSelectForm(request.POST, request.FILES)  # Import fájl kiválasztása
         if form.is_valid():
