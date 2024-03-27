@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
 from collections import defaultdict
@@ -7,7 +7,7 @@ from . import views_projects as app_views
 
 from .context_processors import menu_context
 
-from .models import Project, Task
+from .models import Project, Task, Job
 
 
 def home(request):
@@ -16,7 +16,15 @@ def home(request):
 
 # Projekt név átvétele az url-ből, majd a Project-ben az ahhoz tartozó view_name definíció hívása
 def project_names(request, project_name, filter):
+    job = Job.objects.get(user=request.user)
     project = get_object_or_404(Project, name=project_name)  # Projekt rekord keresése a projekt név alapján
+
+    # Van-e ilyen pozicíója a felhasználónak?
+    is_assigned = job.position.positionproject_set.filter(project=project).exists()
+    if not is_assigned:
+        messages.success(request, 'Ehhez a munkakörhöz nincs jogosultságod. Jelezd az adminisztrátornak!')
+        return render(request, 'home.html', {})
+
     view_name = project.view_name  # A rekordban a meghívandó view neve
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
@@ -60,58 +68,62 @@ def project_names(request, project_name, filter):
 
 
 def tasks(request, filter, project_name):
-    if project_name == 'all':
-        if filter == 'new':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-                                            type='2:').order_by('-created_at')
-        elif filter == 'in_progress':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-                                            type='3:').order_by('-created_at')
-        elif filter == 'ready':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-                                            type='4:').order_by('-created_at')
-        elif filter == 'warning':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-                                            type='1:').order_by('-created_at')
-        elif filter == 'event':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-                                            type='0:').order_by('-created_at')
-        elif filter == 'all':
-            tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']
-                                            ).order_by('-created_at')
+    if request.user.is_authenticated:
+        if project_name == 'all':
+            if filter == 'new':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='2:').order_by('-created_at')
+            elif filter == 'in_progress':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='3:').order_by('-created_at')
+            elif filter == 'ready':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='4:').order_by('-created_at')
+            elif filter == 'warning':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='1:').order_by('-created_at')
+            elif filter == 'event':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='0:').order_by('-created_at')
+            elif filter == 'all':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']
+                                                ).order_by('-created_at')
+        else:
+            project = get_object_or_404(Project, name=project_name)
+            project_name = project
+            if filter == 'new':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='2:').order_by('-created_at')
+            elif filter == 'in_progress':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='3:').order_by('-created_at')
+            elif filter == 'ready':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='4:').order_by('-created_at')
+            elif filter == 'warning':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='1:').order_by('-created_at')
+            elif filter == 'event':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='0:').order_by('-created_at')
+            elif filter == 'all':
+                tasks_set = Task.objects.filter(project=project
+                                                ).order_by('-created_at')
+        type_choices = Task.TYPE_CHOICES
+        type_color = Task.COLOR_CHOICES
+
+        p = Paginator(tasks_set, 10)
+        page = request.GET.get('page', 1)
+        tasks_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        return render(request, 'tasks.html', {'tasks': tasks_page,
+                                              'page_list': tasks_page, 'page_range': page_range,
+                                              'type_choices': type_choices, 'type_color': type_color,
+                                              'project_name': project_name})
     else:
-        project = get_object_or_404(Project, name=project_name)
-        project_name = project
-        if filter == 'new':
-            tasks_set = Task.objects.filter(project=project,
-                                            type='2:').order_by('-created_at')
-        elif filter == 'in_progress':
-            tasks_set = Task.objects.filter(project=project,
-                                            type='3:').order_by('-created_at')
-        elif filter == 'ready':
-            tasks_set = Task.objects.filter(project=project,
-                                            type='4:').order_by('-created_at')
-        elif filter == 'warning':
-            tasks_set = Task.objects.filter(project=project,
-                                            type='1:').order_by('-created_at')
-        elif filter == 'event':
-            tasks_set = Task.objects.filter(project=project,
-                                            type='0:').order_by('-created_at')
-        elif filter == 'all':
-            tasks_set = Task.objects.filter(project=project
-                                            ).order_by('-created_at')
-    type_choices = Task.TYPE_CHOICES
-    type_color = Task.COLOR_CHOICES
-
-    p = Paginator(tasks_set, 10)
-    page = request.GET.get('page', 1)
-    tasks_page = p.get_page(page)
-    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-
-    return render(request, 'tasks.html', {'tasks': tasks_page,
-                                          'page_list': tasks_page, 'page_range': page_range,
-                                          'type_choices': type_choices, 'type_color': type_color,
-                                          'project_name': project_name})
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
 
 
 # def projects(request):

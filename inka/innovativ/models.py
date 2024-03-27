@@ -83,4 +83,4 @@ class Task(models.Model):
     @property
     def days_passed(self):  # számított mező: új és folyamatban feladatoknál mióta várakozik
         difference = timezone.now() -self.created_at
-        return str(difference.days) + ' napja várakozik'
+        return str(difference.days) + ' napja vár'
