@@ -4,13 +4,14 @@ from django.conf import settings
 
 from django.shortcuts import render
 from django.contrib import messages
+from django.utils import timezone
 
 from .forms_projects import CSVFileSelectForm
-from .models import Customer, Task, Project
+from .models import Customer, Task, Project, CustomerHistory
 
 
-def p_01_1_ugyfel_adat_import(request, project, filter):  # Új ügyfelek importálása
-    task_comment = Task.objects.get(id=filter)
+def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
+    task_comment = Task.objects.get(id=task_id)
     if str(task_comment) != 'Állandó feladat: szükség szerint új ügyfelek import fájl bedolgozása.':
         messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
         messages.success(request, 'Az ügyfél adat import állandó feladat nem található a táblában '
@@ -66,6 +67,9 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                                        phone=phone,
                                                        address=address,
                                                        rooftop=rooftop)  # ügyfél felvétele a customer táblába
+
+                CustomerHistory.objects.create(customer=new_customer, history='0.0:')  # Ügyfél történet felvétele
+
                 Task.objects.create(type='2:',  # Feladat típus
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
@@ -79,6 +83,7 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                 comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
                                         f'nem kerültek be az ügyfél táblába:\n\n{existing_emails}',
                                 created_user=request.user)
+
             messages.success(request, 'Az importálás csak részben sikeres, voltak duplikált email címek. '
                                       'Ezeket az email címeket megtalálod a Figyelmeztés sorban. ')
         else:
@@ -87,26 +92,34 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                 project=project,
                                 comment=f'{file_path}\n'
                                         f'Össszesen: {new_customer_number} új ügyfél importálása megtörtént.',
-                                created_user=request.user)
+                                created_user=request.user,
+                                completed_at=timezone.now().isoformat())
+
             messages.success(request, 'Sikeres importálás.')
     return True
 
 
-def p_02_1_elso_megkereses(request, project, filter):
-    cont = '02.1.'
+def p_02_1_elso_megkereses(request, project, task_id):
+    print('Project:', project)
+    print('Projekt típus:', type(project))
+    print('Task id', task_id)
+    print('Task id típus', type(task_id))
+    task_record = Task.objects.get(pk=task_id)
+    print('Task rekord:', task_record)
+    print('Ügyfél:', task_record.customer.email)
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_02_2_adatok_egyeztetese(request, project, filter):
+def p_02_2_adatok_egyeztetese(request, project, task_id):
     cont = '02.2.'
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_02_3_ugyfel_tipus_meghatarozasa(request, project, filter):
+def p_02_3_ugyfel_tipus_meghatarozasa(request, project, task_id):
     cont = '02.3.'
     return render(request, 'project_proba.html', {'project': project})
 
 
-def p_03_1_palyazat_tipusainak_folyamatai(request, project, filter):
+def p_03_1_palyazat_tipusainak_folyamatai(request, project, task_id):
     cont = '03.1.'
     return render(request, 'project_proba.html', {'project': project})

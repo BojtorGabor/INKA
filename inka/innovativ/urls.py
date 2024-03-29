@@ -10,7 +10,7 @@ urlpatterns = [
     path('register', views_members.register_user, name='register'),
     path('update_password', views_members.update_password, name='update_password'),
 
-    path('<str:project_name>/<int:filter>', views.project_names, name='project_names'),
+    path('<str:project_name>/<int:task_id>', views.project_names, name='project_names'),
     # path('/tasks_old/<str:filter>', views.tasks_old, name='tasks_old'),
     path('tasks/<str:filter>/<str:project_name>', views.tasks, name='tasks'),
     # path('projects', views.projects, name='projects'),

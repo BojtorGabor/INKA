@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="Task listán a gomb meghívja az aktuális view-t.">
+    <list default="true" id="1cf3dae2-a1a8-4f71-b7f3-d59e4f7fb492" name="Changes" comment="Jogosultságok (bejelentkezett, adott projekthez hozzáfér-e) figyelése.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/forms_projects.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/forms_projects.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/tasks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inka/innovativ/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inka/innovativ/views_projects.py" beforeDir="false" afterPath="$PROJECT_DIR$/inka/innovativ/views_projects.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -242,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711358711874</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Jogosultságok (bejelentkezett, adott projekthez hozzáfér-e) figyelése.">
+      <option name="closed" value="true" />
+      <created>1711538779680</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1711538779681</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -267,6 +276,7 @@
     <MESSAGE value="Új menü és task tábla szűrhetősége kész." />
     <MESSAGE value="Listák paginátora általánosítva." />
     <MESSAGE value="Task listán a gomb meghívja az aktuális view-t." />
-    <option name="LAST_COMMIT_MESSAGE" value="Task listán a gomb meghívja az aktuális view-t." />
+    <MESSAGE value="Jogosultságok (bejelentkezett, adott projekthez hozzáfér-e) figyelése." />
+    <option name="LAST_COMMIT_MESSAGE" value="Jogosultságok (bejelentkezett, adott projekthez hozzáfér-e) figyelése." />
   </component>
 </project>

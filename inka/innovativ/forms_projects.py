@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -19,3 +18,5 @@ class CSVFileSelectForm(forms.Form):
             if not file.name.endswith('.csv'):
                 raise forms.ValidationError('A kiválasztott file nem CSV formátum!')
         return file
+
+

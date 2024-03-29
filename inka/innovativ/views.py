@@ -15,7 +15,7 @@ def home(request):
 
 
 # Projekt név átvétele az url-ből, majd a Project-ben az ahhoz tartozó view_name definíció hívása
-def project_names(request, project_name, filter):
+def project_names(request, project_name, task_id):
     job = Job.objects.get(user=request.user)
     project = get_object_or_404(Project, name=project_name)  # Projekt rekord keresése a projekt név alapján
 
@@ -29,42 +29,10 @@ def project_names(request, project_name, filter):
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
-        return desired_view(request, project, filter)
+        return desired_view(request, project, task_id)
     else:
         messages.success(request, 'Hiba történt, nincs ilyen nézet a rendszerben. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})
-#
-#
-# def tasks_old(request, filter):
-#     # Projektekhez tartozó feladatok kigyűjtése
-#     if filter == 'new':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-#                                         type='2:').order_by('-created_at')
-#     elif filter == 'in_progress':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-#                                         type='3:').order_by('-created_at')
-#     elif filter == 'ready':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-#                                         type='4:').order_by('-created_at')
-#     elif filter == 'warning':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-#                                         type='1:').order_by('-created_at')
-#     elif filter == 'event':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
-#                                         type='0:').order_by('-created_at')
-#     elif filter == 'all':
-#         tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']
-#                                         ).order_by('-created_at')
-#     type_choices = Task.TYPE_CHOICES
-#     type_color = Task.COLOR_CHOICES
-#
-#     p = Paginator(tasks_set, 10)
-#     page = request.GET.get('page', 1)
-#     tasks_page = p.get_page(page)
-#     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-#
-#     return render(request, 'tasks.html', {'tasks': tasks_page, 'type_choices': type_choices,
-#                                           'type_color': type_color, 'page_range': page_range})
 
 
 def tasks(request, filter, project_name):

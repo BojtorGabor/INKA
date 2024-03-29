@@ -52,6 +52,15 @@ class Customer(models.Model):
         return f"{self.surname} {self.name} (id: {self.id})"
 
 
+class CustomerHistory(models.Model):
+    HISTORY_CHOICE = (
+        ('0.0:', 'Importálva'),
+    )
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)  # Ügyfél hozzárendelése
+    history = models.CharField(max_length=6, choices=HISTORY_CHOICE, default='0.0:')  # Ügyfelet érintő események
+    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
+
+
 class Task(models.Model):
     TYPE_CHOICES = (
         ('0:', 'Esemény'),
@@ -73,7 +82,7 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
     comment = models.TextField(max_length=500, null=True)  # Megjegyzés
-    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrahozta
+    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja
 
