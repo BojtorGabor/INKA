@@ -100,14 +100,16 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 
 def p_02_1_elso_megkereses(request, project, task_id):
-    print('Project:', project)
-    print('Projekt típus:', type(project))
-    print('Task id', task_id)
-    print('Task id típus', type(task_id))
-    task_record = Task.objects.get(pk=task_id)
-    print('Task rekord:', task_record)
-    print('Ügyfél:', task_record.customer.email)
-    return render(request, 'project_proba.html', {'project': project})
+    task = Task.objects.get(pk=task_id)
+    action = ''
+    if request.method == 'POST':
+        if 'phone' in request.POST:
+            action = 'phone'
+        elif 'email' in request.POST:
+            action = 'email'
+    print('Action:', action)
+    return render(request, 'p_02_1_elso_megkereses.html', {'project': project,
+                                                           'task': task, 'action:': action})
 
 
 def p_02_2_adatok_egyeztetese(request, project, task_id):
