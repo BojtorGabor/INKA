@@ -101,15 +101,8 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
-    action = ''
-    if request.method == 'POST':
-        if 'phone' in request.POST:
-            action = 'phone'
-        elif 'email' in request.POST:
-            action = 'email'
-    print('Action:', action)
     return render(request, 'p_02_1_elso_megkereses.html', {'project': project,
-                                                           'task': task, 'action:': action})
+                                                           'task': task})
 
 
 def p_02_2_adatok_egyeztetese(request, project, task_id):

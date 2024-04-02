@@ -11,13 +11,6 @@
 			{% include 'p_02_1_elso_megkereses_ugyfel_megadott_adata.html' %}
 		</div>
 
-		{% if action == 'phone' %}
-			<div class="col-2 mb-3 offset-md-4">
-				{% include 'p_02_1_elso_megkereses_ugyfel_megadott_adata.html' %}
-			</div>
-		{% elif action == 'email' %}
-		{% endif %}
-
 		<div class="col-2 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
@@ -27,30 +20,19 @@
 						</div>
 					</div>
 				</div>
-
 				<div class="card-body text-center">
 					<div class="row mb-2">
-								<form method="post" action="">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="">
-                                    <button type="submit" class="btn btn-outline-info btn-sm mb-3"
-                                            name="phone">Telefonos megkeresés</button>
-                                    <button type="submit" class="btn btn-outline-info btn-sm"
-                                            name="email">Email kérés elérhető telefonszámért</button>
-                                </form>
-<!--						<div class="col">-->
-<!--							<a href="#" class="btn btn-outline-info btn-sm" >Telefonos megkeresés</a>-->
-<!--						</div>-->
+						<div class="col">
+							<a href="#" class="btn btn-outline-info btn-sm" >Telefonos megkeresés</a>
+						</div>
 					</div>
-<!--					<div class="row">-->
-<!--						<div class="col">-->
-<!--							<a href="#" class="btn btn-outline-info btn-sm" >Email kérés elérhető telefonszámért</a>-->
-<!--						</div>-->
-<!--					</div>-->
+					<div class="row">
+						<div class="col">
+							<a href="#" class="btn btn-outline-info btn-sm" >Email kérés elérhető telefonszámért</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-
 	</div>
 {% endblock %}
