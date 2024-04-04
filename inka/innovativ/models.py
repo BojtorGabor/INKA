@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from tinymce import models as tinymce_models
+
 
 # Munkakörök törzsadata
 class Position(models.Model):
@@ -52,6 +54,7 @@ class Customer(models.Model):
         return f"{self.surname} {self.name} (id: {self.id})"
 
 
+# Ügyfelek különféle állapotai
 class CustomerHistory(models.Model):
     HISTORY_CHOICE = (
         ('0.0:', 'Importálva'),
@@ -61,6 +64,7 @@ class CustomerHistory(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
 
+# Feledatok
 class Task(models.Model):
     TYPE_CHOICES = (
         ('0:', 'Esemény'),
@@ -93,3 +97,12 @@ class Task(models.Model):
     def days_passed(self):  # számított mező: új és folyamatban feladatoknál mióta várakozik
         difference = timezone.now() -self.created_at
         return str(difference.days) + ' napja vár'
+
+
+# Email sablonok
+class EmailTemplate(models.Model):
+    title = models.CharField(max_length=150)
+    content = tinymce_models.HTMLField()
+
+    def __str__(self):
+        return self.title

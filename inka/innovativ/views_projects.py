@@ -101,8 +101,7 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
-    return render(request, 'p_02_1_elso_megkereses.html', {'project': project,
-                                                           'task': task})
+    return render(request, 'p_02_1_elso_megkereses.html', {'project': project, 'task': task})
 
 
 def p_02_2_adatok_egyeztetese(request, project, task_id):

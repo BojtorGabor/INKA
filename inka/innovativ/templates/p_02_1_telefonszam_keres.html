@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h1>{{ project }}</h1>
+		<h1>{{ email_template.title }}</h1>
 	</div>
 	<br/>
 
@@ -11,26 +11,18 @@
 			{% include 'p_02_1_elso_megkereses_ugyfel_megadott_adata.html' %}
 		</div>
 
-		<div class="col-2 mb-3">
+		<div class="col-6 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row">
 						<div class="text-center">
-							Következő lépés:
+							A kimenő email szövege:
 						</div>
 					</div>
 				</div>
-				<div class="card-body text-center">
+				<div class="card-body">
 					<div class="row mb-2">
-						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">Telefonos megkeresés</a>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col">
-							<a href="{% url 'p_02_1_telefonszam_keres'  task.id %}" class="btn btn-outline-info btn-sm">
-								Email kérés elérhető telefonszámért</a>
-						</div>
+						{{ rendered_content | safe }}
 					</div>
 				</div>
 			</div>

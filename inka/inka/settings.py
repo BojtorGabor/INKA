@@ -29,7 +29,9 @@ INSTALLED_APPS = [
 
     'innovativ',
 
-    'channels',
+    'tinymce',
+
+    # 'channels',
 
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -62,7 +64,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                # position változót ad hozzá s sablonok contextéhez:
+                # position változót ad hozzá a sablonok contextéhez:
                 'innovativ.context_processors.menu_context',
             ],
         },
@@ -127,3 +129,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'selector': 'textarea',
+    'resize': 'both',
+    'plugins': "link image table pagebreak emoticons preview lists",
+    'toolbar': 'undo redo | formatselect | bold italic | alignleft aligncenter alignright'
+               ' | bullist numlist outdent indent | link image'
+}
