@@ -15,7 +15,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -132,8 +131,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TINYMCE_DEFAULT_CONFIG = {
     'selector': 'textarea',
-    'resize': 'both',
+    # 'resize': 'both',
     'plugins': "link image table pagebreak emoticons preview lists",
     'toolbar': 'undo redo | formatselect | bold italic | alignleft aligncenter alignright'
-               ' | bullist numlist outdent indent | link image'
+               ' | bullist numlist outdent indent | link image',
 }
