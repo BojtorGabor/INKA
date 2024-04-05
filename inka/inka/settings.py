@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,3 +138,12 @@ TINYMCE_DEFAULT_CONFIG = {
     'toolbar': 'undo redo | formatselect | bold italic | alignleft aligncenter alignright'
                ' | bullist numlist outdent indent | link image',
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # SMTP szerver címe
+EMAIL_PORT = 587  # SMTP port
+EMAIL_USE_TLS = True  # TLS használata
+EMAIL_HOST_USER = 'bojtor.gabor@gmail.com'  # Az SMTP felhasználóneve
+EMAIL_HOST_PASSWORD = os.getenv("DJANGO_PASSWORD")  # Az SMTP jelszava
+DEFAULT_FROM_EMAIL = 'bojtor.gabor@gmail.com'  # Az alapértelmezett feladó e-mail címe

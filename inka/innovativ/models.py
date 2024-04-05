@@ -102,6 +102,7 @@ class Task(models.Model):
 # Email sablonok
 class EmailTemplate(models.Model):
     title = models.CharField(max_length=150)
+    subject = models.CharField(max_length=150, default='')
     content = tinymce_models.HTMLField()
 
     def __str__(self):

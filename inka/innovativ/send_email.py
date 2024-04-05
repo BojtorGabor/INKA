@@ -1,23 +1,12 @@
-# from send_email import send_email
-import smtplib, ssl
-import os
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.http import HttpResponse
 
 
-def send_email(message):
-    host = "smtp.gmail.com"
-    port = 465
-    username = "bojtor.gabor@gmail.com"
-    password = os.getenv("PYTHON_PASSWORD")
-    receiver = "bojtor.gabor@gmail.com"
-    sslcontext = ssl.create_default_context()
+def send_email(subject, message, to_email):
+    sent = send_mail(subject, message, to_email)
 
-#    message = f"""\
-#    Subject: New email from {user_email}
-#
-#    From: {user_email}
-#    {your message}
-#    """
-
-    with smtplib.SMTP_SSL(host, port, context=sslcontext) as server:
-        server.login(username, password)
-        server.sendmail(username, receiver, message.encode('utf-8'))
+    if sent:
+        return HttpResponse('E-mail sikeresen elküldve!')
+    else:
+        return HttpResponse('Hiba történt az e-mail küldése közben!')

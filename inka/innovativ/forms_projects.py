@@ -27,4 +27,11 @@ class EmailTemplateForm(forms.ModelForm):
 
     class Meta:
         model = EmailTemplate
-        fields = ['content']
+        fields = ['subject', 'content']
+        labels = {'subject': ''}
+
+    def __init__(self, *args, **kwargs):
+        super(EmailTemplateForm, self).__init__(*args, **kwargs)
+        self.fields['subject'].widget.attrs['class'] = 'form-control'
+        # self.fields['subject'].widget.attrs['readonly'] = True
+        self.fields['subject'].widget.attrs['style'] = 'width: 100%;'

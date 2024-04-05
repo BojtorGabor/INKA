@@ -7,6 +7,7 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 
+# from .inka.models import Position, Job, Project, PositionProject, Task, EmailTemplate
 from innovativ.models import Position, Job, Project, PositionProject, Task, EmailTemplate
 
 
