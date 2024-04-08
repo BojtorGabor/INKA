@@ -7,7 +7,7 @@ from . import views_projects as app_views
 
 from .context_processors import menu_context
 
-from .models import Project, Task, Job
+from .models import Project, Task, Job, Customer
 
 
 def home(request):
@@ -47,6 +47,9 @@ def tasks(request, filter, project_name):
             elif filter == 'ready':
                 tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
                                                 type='4:').order_by('-created_at')
+            elif filter == 'closed':
+                tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
+                                                type='5:').order_by('-created_at')
             elif filter == 'warning':
                 tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
                                                 type='1:').order_by('-created_at')
@@ -68,6 +71,9 @@ def tasks(request, filter, project_name):
             elif filter == 'ready':
                 tasks_set = Task.objects.filter(project=project,
                                                 type='4:').order_by('-created_at')
+            elif filter == 'closed':
+                tasks_set = Task.objects.filter(project=project,
+                                                type='5:').order_by('-created_at')
             elif filter == 'warning':
                 tasks_set = Task.objects.filter(project=project,
                                                 type='1:').order_by('-created_at')
@@ -88,7 +94,7 @@ def tasks(request, filter, project_name):
         return render(request, 'tasks.html', {'tasks': tasks_page,
                                               'page_list': tasks_page, 'page_range': page_range,
                                               'type_choices': type_choices, 'type_color': type_color,
-                                              'project_name': project_name})
+                                              'project_name': project_name,})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

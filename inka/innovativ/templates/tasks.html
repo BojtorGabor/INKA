@@ -6,95 +6,102 @@
 	</div>
 	<br/>
 
-<div class="col-sm-6">
-	<div class="card mb-3">
-		<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
-			<div class="row">
-				<div class="col-2 text-center">
-					{% if project_name == 'all' %}
-						Összes projekt
-					{% else %}
-						{{ project_name }}
-					{% endif %}
-				</div>
-				<div class="col-8 text-center">
-					<a href="{% url 'tasks' 'all' project_name %}"
-					   >Összes</a> /
-					<a href="{% url 'tasks' 'new' project_name %}"
-					   class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</a> /
-					<a href="{% url 'tasks' 'in_progress' project_name %}"
-					   class="{{ type_color.3.1 }}">{{ type_choices.3.1 }}</a> /
-					<a href="{% url 'tasks' 'ready' project_name %}"
-					   class="{{ type_color.4.1 }}">{{ type_choices.4.1 }}</a> /
-					<a href="{% url 'tasks' 'warning' project_name %}"
-					   class="{{ type_color.1.1 }}">{{ type_choices.1.1 }}</a> /
-					<a href="{% url 'tasks' 'event' project_name %}"
-					   class="{{ type_color.0.1 }}">{{ type_choices.0.1 }}</a>
+	<div class="col-sm-12">
+		<div class="card mb-3">
+			<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
+				<div class="row">
+					<div class="col-2 text-center">
+						{% if project_name == 'all' %}
+							Összes projekt
+						{% else %}
+							{{ project_name }}
+						{% endif %}
+					</div>
+					<div class="col-7 text-center">
+						<a href="{% url 'tasks' 'all' project_name %}"
+						   >Összes</a> /
+						<a href="{% url 'tasks' 'new' project_name %}"
+						   class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</a> /
+						<a href="{% url 'tasks' 'in_progress' project_name %}"
+						   class="{{ type_color.3.1 }}">{{ type_choices.3.1 }}</a> /
+						<a href="{% url 'tasks' 'ready' project_name %}"
+						   class="{{ type_color.4.1 }}">{{ type_choices.4.1 }}</a> /
+						<a href="{% url 'tasks' 'closed' project_name %}"
+						   class="{{ type_color.5.1 }}">{{ type_choices.5.1 }}</a> /
+						<a href="{% url 'tasks' 'warning' project_name %}"
+						   class="{{ type_color.1.1 }}">{{ type_choices.1.1 }}</a> /
+						<a href="{% url 'tasks' 'event' project_name %}"
+						   class="{{ type_color.0.1 }}">{{ type_choices.0.1 }}</a>
+						{{ filter }}
+					</div>
 				</div>
 			</div>
-		</div>
 
-		{% for task in tasks %}
-    		<div class="card-body">
-				<div class="card-text">
-					<div>
-						<div class="row">
-							<div class="col-2 text-center">
-								{% if task.type == '2:' %}
-									<a href="{% url 'project_names' task.project task.id %}"
-									   class="btn btn-outline-danger btn-sm">{{ task.project }}</a>
-								{% elif task.type == '3:' %}
-									<a href="{% url 'project_names' task.project task.id %}"
-									   class="btn btn-outline-warning btn-sm">{{ task.project }}</a>
-								{% else %}
-									{{ task.project }}
-								{% endif %}
-							</div>
-							{% if task.type == '0:' %}
-								<div class="col-8 {{ type_color.0.1 }}" style="text-align: justify">
-							{% elif task.type == '1:' %}
-								<div class="col-8 {{ type_color.1.1 }}" style="text-align: justify">
-							{% elif task.type == '2:' %}
-								<div class="col-8 {{ type_color.2.1 }}" style="text-align: justify">
-							{% elif task.type == '3:' %}
-								<div class="col-8 {{ type_color.3.1 }}" style="text-align: justify">
-							{% elif task.type == '4:' %}
-								<div class="col-8 {{ type_color.4.1 }}" style="text-align: justify">
-							{% else %}
-								<div class="col-8" style="text-align: justify">
-							{% endif %}
-								{{ task.comment|linebreaksbr }}
-								</div>
-							<div class="col-1" style="font-size: 10px;">
-								{{ task.created_user }}
-								<div>
-									{{ task.created_at|date:"Y-m-d" }}
-								</div>
-								<div>
+			{% for task in tasks %}
+				<div class="card-body">
+					<div class="card-text">
+						<div>
+							<div class="row">
+								<div class="col-2 text-center">
 									{% if task.type == '2:' %}
-										{{ task.days_passed }}
+										<a href="{% url 'project_names' task.project task.id %}"
+										   class="btn btn-outline-danger btn-sm">{{ task.project }}</a>
 									{% elif task.type == '3:' %}
-										{{ task.days_passed }}
+										<a href="{% url 'project_names' task.project task.id %}"
+										   class="btn btn-outline-warning btn-sm">{{ task.project }}</a>
 									{% else %}
-										{{ task.completed_at|date:"Y-m-d" }}
+										{{ task.project }}
 									{% endif %}
 								</div>
-							</div>
-							{% if task.customer_id %}
-								<div class="col-1">
-									<a href="#" class="btn btn-outline-info btn-sm">Ügyfél ----></a>
+								{% if task.type == '0:' %}
+									<div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
+								{% elif task.type == '1:' %}
+									<div class="col-7 {{ type_color.1.1 }}" style="text-align: justify">
+								{% elif task.type == '2:' %}
+									<div class="col-7 {{ type_color.2.1 }}" style="text-align: justify">
+								{% elif task.type == '3:' %}
+									<div class="col-7 {{ type_color.3.1 }}" style="text-align: justify">
+								{% elif task.type == '4:' %}
+									<div class="col-7 {{ type_color.4.1 }}" style="text-align: justify">
+								{% elif task.type == '5:' %}
+									<div class="col-7 {{ type_color.5.1 }}" style="text-align: justify">
+								{% else %}
+									<div class="col-7" style="text-align: justify">
+								{% endif %}
+									{{ task.comment|linebreaksbr }}
+									</div>
+								<div class="col-1" style="font-size: 10px;">
+									{{ task.created_user }}
+									<div>
+										{{ task.created_at|date:"Y-m-d" }}
+									</div>
+									<div>
+										{% if task.type == '2:' %}
+											{{ task.days_passed }}
+										{% elif task.type == '3:' %}
+											{{ task.days_passed }}
+										{% else %}
+											{{ task.completed_at|date:"Y-m-d" }}
+										{% endif %}
+									</div>
 								</div>
-							{% endif %}
+								{% if task.customer_id %}
+									<div class="col-2">
+										<a href="#"
+										   class="btn btn-outline-info btn-sm">{{ task.customer }}</a>
+									</div>
+								{% endif %}
+							</div>
 						</div>
+	<!--					<div class="card-footer text-body-secondary">-->
+	<!--						Lábléc-->
+	<!--					</div>-->
 					</div>
-<!--					<div class="card-footer text-body-secondary">-->
-<!--						Lábléc-->
-<!--					</div>-->
 				</div>
-			</div>
-		{% endfor %}
+			{% endfor %}
+			<br/>
+			{% include 'pager_bottom.html' %}
+		</div>
+		<br/>
 	</div>
-	<br/>
-	{% include 'pager_bottom.html' %}
-</div>
 {% endblock %}

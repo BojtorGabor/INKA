@@ -57,7 +57,7 @@ class Customer(models.Model):
 # Ügyfelek különféle állapotai
 class CustomerHistory(models.Model):
     HISTORY_CHOICE = (
-        ('0.0:', 'Importálva'),
+        ('1.0:', 'Importálva'),
     )
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)  # Ügyfél hozzárendelése
     history = models.CharField(max_length=6, choices=HISTORY_CHOICE, default='0.0:')  # Ügyfelet érintő események
@@ -72,6 +72,7 @@ class Task(models.Model):
         ('2:', 'Új feladat'),
         ('3:', 'Folyamatban'),
         ('4:', 'Elkészült'),
+        ('5:', 'Lezárt'),
     )
     COLOR_CHOICES = (
         ('0:', 'px-2'),
@@ -79,6 +80,7 @@ class Task(models.Model):
         ('2:', 'bg-danger-subtle border border-danger rounded-2 py-1 px-2'),
         ('3:', 'bg-warning-subtle border border-warning rounded-2 py-1 px-2'),
         ('4:', 'bg-success-subtle border border-success rounded-2 py-1 px-2'),
+        ('5:', 'bg-success-subtle border border-primary rounded-2 py-1 px-2'),
     )
 
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')

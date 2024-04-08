@@ -7,8 +7,7 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 
-# from .inka.models import Position, Job, Project, PositionProject, Task, EmailTemplate
-from innovativ.models import Position, Job, Project, PositionProject, Task, EmailTemplate
+from innovativ.models import Position, Job, Project, PositionProject, EmailTemplate
 
 
 class OTPAdmin(OTPAdminSite):
@@ -31,10 +30,6 @@ class PositionProjectAdmin(admin.ModelAdmin):
     list_display = ('position', 'project',)
 
 
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ('project', 'comment', 'created_user', 'created_at',)
-
-
 class EmailTemplateAdmin(admin.ModelAdmin):
     list_display = ('title', 'content',)
 
@@ -46,7 +41,6 @@ admin_site.register(Position, PositionAdmin)
 admin_site.register(Job, JobAdmin)
 admin_site.register(Project, ProjectAdmin)
 admin_site.register(PositionProject, PositionProjectAdmin)
-admin_site.register(Task, TaskAdmin)
 admin_site.register(EmailTemplate, EmailTemplateAdmin)
 
 urlpatterns = [

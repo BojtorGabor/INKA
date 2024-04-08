@@ -32,6 +32,15 @@ def p_02_1_telefonszam_keres(request, task_id):
             if sent:
                 messages.success(request, 'E-mail sikeresen elküldve!')
             else:
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+                Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
+                                    type_color='1:',
+                                    project=task.project,
+                                    customer=task.customer,
+                                    comment=f'{task.customer} ügyfélnek sikertelen lett az email küldés.',
+                                    created_user=request.user)
                 messages.success(request,'Hiba történt az e-mail küldése közben!')
             return render(request, 'home.html', {})
 

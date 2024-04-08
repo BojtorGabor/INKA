@@ -104,7 +104,7 @@ def p_02_1_elso_megkereses(request, project, task_id):
     return render(request, 'p_02_1_elso_megkereses.html', {'project': project, 'task': task})
 
 
-def p_02_2_adatok_egyeztetese(request, project, task_id):
+def p_02_2_indikativ_arajanlat(request, project, task_id):
     cont = '02.2.'
     return render(request, 'project_proba.html', {'project': project})
 
