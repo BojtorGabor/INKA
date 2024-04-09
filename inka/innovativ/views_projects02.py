@@ -29,12 +29,20 @@ def p_02_1_telefonszam_keres(request, task_id):
             message = form['content'].value()
             to_email = [task.customer.email]
             sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
+            # Az új feladat jelzőből Folyamatban jelző lesz
+            task.type = '3:'
+            task.type_color = '3:'
+            task.save()
             if sent:
                 messages.success(request, 'E-mail sikeresen elküldve!')
+                Task.objects.create(type='0:',  # Esemény bejegyzésés
+                                    type_color='0:',
+                                    project=task.project,
+                                    customer=task.customer,
+                                    comment=f'{task.customer} ügyfélnek - 02.1. Email kérés elérhető telefonszámért - '
+                                            f'nevű sablon email kiküldve.',
+                                    created_user=request.user)
             else:
-                task.type = '3:'
-                task.type_color = '3:'
-                task.save()
                 Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
                                     type_color='1:',
                                     project=task.project,

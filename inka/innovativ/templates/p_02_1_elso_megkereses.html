@@ -7,11 +7,7 @@
 	<br/>
 
     <div class="row">
-		<div class="col-2 mb-3">
-			{% include 'p_02_1_elso_megkereses_ugyfel_megadott_adata.html' %}
-		</div>
-
-		<div class="col-3 mb-3">
+		<div class="col-4 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row">
@@ -34,11 +30,139 @@
 					</div>
 					<div class="row mb">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">Az ügyfél elérhetetlen - adatlap törlés kérelem</a>
+							<a href="#" class="btn btn-outline-info btn-sm">
+								Az ügyfél elérhetetlen - adatlap törlés kérelem</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br/>
+
+			<div class="accordion" id="accordionExample">
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+							{{ task.customer }}
+						</button>
+					</h2>
+					<div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+							<div class="row">
+								Vezeték név: {{ task.customer.surname }}
+							</div>
+							<div class="row">
+								Kereszt név: {{ task.customer.name }}
+							</div>
+							<div class="row">
+								Email: {{ task.customer.email }}
+							</div>
+							<div class="row">
+								Telefon: {{ task.customer.phone }}
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+							Ingatlan
+						</button>
+					</h2>
+					<div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+							<div class="row">
+								Cím: {{ task.customer.address }}
+							</div>
+							<div class="row">
+								Tető: {{ task.customer.rooftop }}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-item">
+					<h2 class="accordion-header">
+						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+								data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+							Szerződő
+						</button>
+					</h2>
+					<div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+						<div class="accordion-body">
+							Szerződéssal kapcsolatos adatok
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<div class="col-sm-8">
+			<div class="card mb-3">
+				<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row">
+						<div class="col-2 text-center">
+							Összes projekt
+						</div>
+						<div class="col-9 text-center">
+							{{ task.customer }}
+						</div>
+					</div>
+				</div>
+
+				{% for task in tasks %}
+					<div class="card-body">
+						<div class="card-text">
+							<div>
+								<div class="row">
+									<div class="col-2 text-center">
+										{{ task.project }}
+									</div>
+									{% if task.type == '0:' %}
+										<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
+									{% elif task.type == '1:' %}
+										<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
+									{% elif task.type == '2:' %}
+										<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
+									{% elif task.type == '3:' %}
+										<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
+									{% elif task.type == '4:' %}
+										<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
+									{% elif task.type == '5:' %}
+										<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
+									{% else %}
+										<div class="col-9" style="text-align: justify">
+									{% endif %}
+										{{ task.comment|linebreaksbr }}
+										</div>
+									<div class="col-1" style="font-size: 10px;">
+										{{ task.created_user }}
+										<div>
+											{{ task.created_at|date:"Y-m-d" }}
+										</div>
+										<div>
+											{% if task.type == '2:' %}
+												{{ task.days_passed }}
+											{% elif task.type == '3:' %}
+												{{ task.days_passed }}
+											{% else %}
+												{{ task.completed_at|date:"Y-m-d" }}
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
+		<!--					<div class="card-footer text-body-secondary">-->
+		<!--						Lábléc-->
+		<!--					</div>-->
+						</div>
+					</div>
+				{% endfor %}
+				<br/>
+				{% include 'pager_bottom.html' %}
+			</div>
+		<br/>
+	</div>
 	</div>
 {% endblock %}

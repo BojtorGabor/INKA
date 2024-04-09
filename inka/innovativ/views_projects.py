@@ -1,6 +1,7 @@
 import csv
 import os
 from django.conf import settings
+from django.core.paginator import Paginator
 
 from django.shortcuts import render
 from django.contrib import messages
@@ -101,7 +102,21 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
-    return render(request, 'p_02_1_elso_megkereses.html', {'project': project, 'task': task})
+    customer_set = task.customer
+    tasks_set = Task.objects.filter(customer=task.customer).order_by('-created_at')
+
+    type_choices = Task.TYPE_CHOICES
+    type_color = Task.COLOR_CHOICES
+
+    p = Paginator(tasks_set, 10)
+    page = request.GET.get('page', 1)
+    tasks_page = p.get_page(page)
+    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+    return render(request, 'p_02_1_elso_megkereses.html',
+                  {'project': project, 'task': task, 'tasks': tasks_set,
+                   'page_list': tasks_page, 'page_range': page_range,
+                   'type_choices': type_choices, 'type_color': type_color,})
 
 
 def p_02_2_indikativ_arajanlat(request, project, task_id):
