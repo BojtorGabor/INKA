@@ -56,7 +56,7 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
         existing_emails = ''  # email ellenőrzéshez, ebben lesz felsorolva ha már volt ilyen email
         new_customer_number = 0
         for row_number, row in enumerate(csv_reader, start=1):  # csv sorokon végigfut
-            surname, name, email, phone, address, rooftop = row  # szétbontja a sort
+            surname, name, email, phone, address, surface = row  # szétbontja a sort
             existing_customer = Customer.objects.filter(email=email)  # email keresés
             if existing_customer.exists():  # már volt ilyen a customer táblában,
                 existing_emails = existing_emails + ' -> ' + email  # kigyűjti ezeket az emaileket
@@ -67,7 +67,7 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                                        email= email,
                                                        phone=phone,
                                                        address=address,
-                                                       rooftop=rooftop)  # ügyfél felvétele a customer táblába
+                                                       surface=surface)  # ügyfél felvétele a customer táblába
 
                 CustomerHistory.objects.create(customer=new_customer, history='0.0:')  # Ügyfél történet felvétele
 
@@ -102,8 +102,8 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
-    customer_set = task.customer
-    tasks_set = Task.objects.filter(customer=task.customer).order_by('-created_at')
+    customer = task.customer
+    tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
 
     type_choices = Task.TYPE_CHOICES
     type_color = Task.COLOR_CHOICES
@@ -114,7 +114,7 @@ def p_02_1_elso_megkereses(request, project, task_id):
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
     return render(request, 'p_02_1_elso_megkereses.html',
-                  {'project': project, 'task': task, 'tasks': tasks_set,
+                  {'project': project, 'task': task, 'tasks': tasks_page,
                    'page_list': tasks_page, 'page_range': page_range,
                    'type_choices': type_choices, 'type_color': type_color,})
 

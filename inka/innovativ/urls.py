@@ -13,5 +13,7 @@ urlpatterns = [
     path('tasks/<str:filter>/<str:project_name>', views.tasks, name='tasks'),
     path('p_02_1_telefonszam_keres/<int:task_id>/', views_projects02.p_02_1_telefonszam_keres,
          name='p_02_1_telefonszam_keres'),
+    path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
+         name='p_02_1_telefonos_megkereses'),
     # path('projects', views.projects, name='projects'),
 ]

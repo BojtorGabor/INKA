@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+		<h3>Telefonos megkeresés</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-2 mb-3">
+			{% include 'p_02_1_ugyfel_altal_megadott_adatok.html' %}
+		</div>
+
+		<div class="col-6 mb-3">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row">
+						<div class="text-center">
+							Ügyfél adatainak aktualizálása
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row mb-2">
+						<form method="POST">
+							{% csrf_token %}
+							<div class="accordion accordion-flush" id="accordionFlushExample">
+								<div class="accordion-item">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+												data-bs-target="#flush-collapse01" aria-expanded="false"
+												aria-controls="flush-collapse01">
+											{{ task.customer }}
+										</button>
+									</h2>
+									<div id="flush-collapse01" class="accordion-collapse collapse"
+										 data-bs-parent="#accordionFlushExample">
+										<div class="accordion-body">
+											<div class="row mb-3">
+												<div class="col-6">
+													Vezetéknév: {{ form.surname }}
+												</div>
+												<div class="col-6">
+													Keresztnév: {{ form.name }}
+												</div>
+											</div>
+											<div class="row mb-3">
+												<div class="col-6">
+													Email: {{ form.email }}
+												</div>
+												<div class="col-6">
+													Telefon: {{ form.phone }}
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+												data-bs-target="#flush-collapse02" aria-expanded="false"
+												aria-controls="flush-collapse02">
+											Ingatlan
+										</button>
+									</h2>
+									<div id="flush-collapse02" class="accordion-collapse collapse"
+										 data-bs-parent="#accordionFlushExample">
+										<div class="accordion-body">
+											<div class="row mb-3">
+												Cím: {{ form.address }}
+											</div>
+											<div class="row mb-3">
+												Telepítés címe: {{ form.installation_address }}
+											</div>
+											<div class="row mb-3">
+												Felület: {{ form.surface }}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+												data-bs-target="#flush-collapse03" aria-expanded="false"
+												aria-controls="flush-collapse03">
+											Kapcsolattartó
+										</button>
+									</h2>
+									<div id="flush-collapse03" class="accordion-collapse collapse"
+										 data-bs-parent="#accordionFlushExample">
+										<div class="accordion-body">
+											Kapcsolattartó adatok
+										</div>
+									</div>
+								</div>
+								<div class="accordion-item">
+									<h2 class="accordion-header">
+										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+												data-bs-target="#flush-collapse04" aria-expanded="false"
+												aria-controls="flush-collapse04">
+											Szerződő
+										</button>
+									</h2>
+									<div id="flush-collapse04" class="accordion-collapse collapse"
+										 data-bs-parent="#accordionFlushExample">
+										<div class="accordion-body">
+											Szerződéssal kapcsolatos adatok
+										</div>
+									</div>
+								</div>
+							</div>
+							<br/>
+							<button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

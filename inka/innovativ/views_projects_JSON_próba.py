@@ -34,7 +34,7 @@ def p_01_1_ugyfel_adat_import(request, project):
                         surname, name, email, phone, address, rooftop = row
                         sleep(0.1)
                         # CustomerImport.objects.create(surname=surname, name=name, email=email, phone=phone,
-                        #                               address=address, rooftop=rooftop)
+                        #                               address=address, surface=surface)
 
                         progress = row_number / total_rows * 100
                         print(f'Progress: {progress}')
@@ -62,9 +62,9 @@ def p_01_1_ugyfel_adat_import(request, project):
 #
 #         for row_number, row in enumerate(csv_reader, start=1):
 #             # messages.info(request, f'Adatok importálása... ({row_number}/{total_rows})')
-#             surname, name, email, phone, address, rooftop = row
+#             surname, name, email, phone, address, surface = row
 #             CustomerImport.objects.create(surname= surname, name= name, email= email, phone=phone,
-#                                           address=address, rooftop=rooftop)
+#                                           address=address, surface=surface)
 #
 #
 #         messages.success(request, 'Sikeres importálás.')

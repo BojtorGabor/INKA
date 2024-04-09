@@ -54,19 +54,19 @@
 									{% endif %}
 								</div>
 								{% if task.type == '0:' %}
-									<div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
 								{% elif task.type == '1:' %}
-									<div class="col-7 {{ type_color.1.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
 								{% elif task.type == '2:' %}
-									<div class="col-7 {{ type_color.2.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
 								{% elif task.type == '3:' %}
-									<div class="col-7 {{ type_color.3.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
 								{% elif task.type == '4:' %}
-									<div class="col-7 {{ type_color.4.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
 								{% elif task.type == '5:' %}
-									<div class="col-7 {{ type_color.5.1 }}" style="text-align: justify">
+									<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
 								{% else %}
-									<div class="col-7" style="text-align: justify">
+									<div class="col-9" style="text-align: justify">
 								{% endif %}
 									{{ task.comment|linebreaksbr }}
 									</div>
@@ -85,12 +85,6 @@
 										{% endif %}
 									</div>
 								</div>
-								{% if task.customer_id %}
-									<div class="col-2">
-										<a href="#"
-										   class="btn btn-outline-info btn-sm">{{ task.customer }}</a>
-									</div>
-								{% endif %}
 							</div>
 						</div>
 	<!--					<div class="card-footer text-body-secondary">-->

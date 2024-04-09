@@ -1,6 +1,6 @@
 from django import forms
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate
+from .models import EmailTemplate, Customer
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -35,3 +35,21 @@ class EmailTemplateForm(forms.ModelForm):
         self.fields['subject'].widget.attrs['class'] = 'form-control'
         # self.fields['subject'].widget.attrs['readonly'] = True
         self.fields['subject'].widget.attrs['style'] = 'width: 100%;'
+
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['surname', 'name', 'email','phone', 'address', 'surface', 'installation_address']
+        labels = {'surname': 'Vezetéknév', 'name': 'Keresztnév', 'email': 'Email', 'phone': 'Telefon',
+                  'address': 'Cím', 'surface': 'Felület', 'installation_address': 'Telepítési cím'}
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerForm, self).__init__(*args, **kwargs)
+        self.fields['surname'].widget.attrs['class'] = 'form-control'
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['phone'].widget.attrs['class'] = 'form-control'
+        self.fields['address'].widget.attrs['class'] = 'form-control'
+        self.fields['surface'].widget.attrs['class'] = 'form-control'
+        self.fields['installation_address'].widget.attrs['class'] = 'form-control'
