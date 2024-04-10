@@ -23,7 +23,7 @@
                             <li><a class="dropdown-item" href="{% url 'tasks' 'all' 'all' %}">Összes projekt</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% for position_project in position_projects %}
-                                <li><a class="dropdown-item" href="{% url 'tasks' 'all' position_project %}">
+                                <li><a class="dropdown-item" href="{% url 'tasks' 'all' position_project.view_name %}">
                                     {{ position_project }}</a></li>
                             {% endfor %}
                         </ul>

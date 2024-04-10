@@ -44,10 +44,10 @@
 							<div class="row">
 								<div class="col-2 text-center">
 									{% if task.type == '2:' %}
-										<a href="{% url 'project_names' task.project task.id %}"
+										<a href="{% url 'view_names' task.project.view_name task.id %}"
 										   class="btn btn-outline-danger btn-sm">{{ task.project }}</a>
 									{% elif task.type == '3:' %}
-										<a href="{% url 'project_names' task.project task.id %}"
+										<a href="{% url 'view_names' task.project.view_name task.id %}"
 										   class="btn btn-outline-warning btn-sm">{{ task.project }}</a>
 									{% else %}
 										{{ task.project }}

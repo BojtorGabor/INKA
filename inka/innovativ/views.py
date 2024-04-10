@@ -15,9 +15,9 @@ def home(request):
 
 
 # Projekt név átvétele az url-ből, majd a Project-ben az ahhoz tartozó view_name definíció hívása
-def project_names(request, project_name, task_id):
+def view_names(request, view_name, task_id):
     job = Job.objects.get(user=request.user)
-    project = get_object_or_404(Project, name=project_name)  # Projekt rekord keresése a projekt név alapján
+    project = get_object_or_404(Project, view_name=view_name)  # Projekt rekord keresése a view név alapján
 
     # Van-e ilyen pozicíója a felhasználónak?
     is_assigned = job.position.positionproject_set.filter(project=project).exists()
@@ -25,7 +25,7 @@ def project_names(request, project_name, task_id):
         messages.success(request, 'Ehhez a munkakörhöz nincs jogosultságod. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})
 
-    view_name = project.view_name  # A rekordban a meghívandó view neve
+    # view_name = project.view_name  # A rekordban a meghívandó view neve
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
@@ -60,7 +60,7 @@ def tasks(request, filter, project_name):
                 tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']
                                                 ).order_by('-created_at')
         else:
-            project = get_object_or_404(Project, name=project_name)
+            project = get_object_or_404(Project, view_name=project_name)
             project_name = project
             if filter == 'new':
                 tasks_set = Task.objects.filter(project=project,
