@@ -35,9 +35,10 @@ def view_names(request, view_name, task_id):
         return render(request, 'home.html', {})
 
 
-def tasks(request, filter, project_name):
+def tasks(request, filter, view_name):
     if request.user.is_authenticated:
-        if project_name == 'all':
+        if view_name == 'all':
+            project_name = 'all'
             if filter == 'new':
                 tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects'],
                                                 type='2:').order_by('-created_at')
@@ -60,7 +61,7 @@ def tasks(request, filter, project_name):
                 tasks_set = Task.objects.filter(project__in=menu_context(request)['position_projects']
                                                 ).order_by('-created_at')
         else:
-            project = get_object_or_404(Project, view_name=project_name)
+            project = get_object_or_404(Project, view_name=view_name)
             project_name = project
             if filter == 'new':
                 tasks_set = Task.objects.filter(project=project,
@@ -83,6 +84,7 @@ def tasks(request, filter, project_name):
             elif filter == 'all':
                 tasks_set = Task.objects.filter(project=project
                                                 ).order_by('-created_at')
+
         type_choices = Task.TYPE_CHOICES
         type_color = Task.COLOR_CHOICES
 
@@ -94,7 +96,7 @@ def tasks(request, filter, project_name):
         return render(request, 'tasks.html', {'tasks': tasks_page,
                                               'page_list': tasks_page, 'page_range': page_range,
                                               'type_choices': type_choices, 'type_color': type_color,
-                                              'project_name': project_name,})
+                                              'project_name': project_name, 'view_name': view_name})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

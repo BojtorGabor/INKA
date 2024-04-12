@@ -160,3 +160,13 @@ EMAIL_USE_TLS = True  # TLS használata
 EMAIL_HOST_USER = 'bojtor.gabor@gmail.com'  # Az SMTP felhasználóneve
 EMAIL_HOST_PASSWORD = os.getenv("DJANGO_PASSWORD")  # Az SMTP jelszava
 DEFAULT_FROM_EMAIL = 'bojtor.gabor@gmail.com'  # Az alapértelmezett feladó e-mail címe
+
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'cdjyocle.loginssl.com'  # SMTP szerver címe
+# EMAIL_PORT = 465  # SMTP port
+# EMAIL_USE_TLS = True  # TLS használata
+# EMAIL_HOST_USER = '_mainaccount@flyover.corex.bg'  # Az SMTP felhasználóneve
+# EMAIL_HOST_PASSWORD = os.getenv("DJANGO_PASSWORD")  # Az SMTP jelszava
+# EMAIL_HOST_PASSWORD = 'Rcb(oQ292LM)7b'  # Az SMTP jelszava
+# DEFAULT_FROM_EMAIL = 'ugyfelszolgalat@innovativnapelem.hu'  # Az alapértelmezett feladó e-mail címe

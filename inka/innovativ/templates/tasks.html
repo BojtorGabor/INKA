@@ -18,19 +18,19 @@
 						{% endif %}
 					</div>
 					<div class="col-7 text-center">
-						<a href="{% url 'tasks' 'all' project_name %}"
+						<a href="{% url 'tasks' 'all' view_name %}"
 						   >Összes</a> /
-						<a href="{% url 'tasks' 'new' project_name %}"
+						<a href="{% url 'tasks' 'new' view_name %}"
 						   class="{{ type_color.2.1 }}">{{ type_choices.2.1 }}</a> /
-						<a href="{% url 'tasks' 'in_progress' project_name %}"
+						<a href="{% url 'tasks' 'in_progress' view_name %}"
 						   class="{{ type_color.3.1 }}">{{ type_choices.3.1 }}</a> /
-						<a href="{% url 'tasks' 'ready' project_name %}"
+						<a href="{% url 'tasks' 'ready' view_name %}"
 						   class="{{ type_color.4.1 }}">{{ type_choices.4.1 }}</a> /
-						<a href="{% url 'tasks' 'closed' project_name %}"
+						<a href="{% url 'tasks' 'closed' view_name %}"
 						   class="{{ type_color.5.1 }}">{{ type_choices.5.1 }}</a> /
-						<a href="{% url 'tasks' 'warning' project_name %}"
+						<a href="{% url 'tasks' 'warning' view_name %}"
 						   class="{{ type_color.1.1 }}">{{ type_choices.1.1 }}</a> /
-						<a href="{% url 'tasks' 'event' project_name %}"
+						<a href="{% url 'tasks' 'event' view_name %}"
 						   class="{{ type_color.0.1 }}">{{ type_choices.0.1 }}</a>
 						{{ filter }}
 					</div>
