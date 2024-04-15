@@ -37,6 +37,22 @@ class EmailTemplateForm(forms.ModelForm):
         self.fields['subject'].widget.attrs['style'] = 'width: 100%;'
 
 
+class CustomerHandInputForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['surname', 'name', 'email','phone', 'address', 'surface',]
+        labels = {'surname': 'Vezetéknév', 'name': 'Keresztnév', 'email': 'Email', 'phone': 'Telefon',
+                  'address': 'Cím', 'surface': 'Felület',}
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerHandInputForm, self).__init__(*args, **kwargs)
+        self.fields['surname'].widget.attrs['class'] = 'form-control'
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['phone'].widget.attrs['class'] = 'form-control'
+        self.fields['address'].widget.attrs['class'] = 'form-control'
+        self.fields['surface'].widget.attrs['class'] = 'form-control'
+
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer

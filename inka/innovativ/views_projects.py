@@ -7,13 +7,13 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.utils import timezone
 
-from .forms_projects import CSVFileSelectForm
+from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
 from .models import Customer, Task, Project, CustomerHistory
 
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
     task_comment = Task.objects.get(id=task_id)
-    if str(task_comment) != 'Állandó feladat: szükség szerint új ügyfelek import fájl bedolgozása.':
+    if str(task_comment) != 'Állandó feladat: új ügyfelek import fájl bedolgozása.':
         messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
         messages.success(request, 'Az ügyfél adat import állandó feladat nem található a táblában '
                                   'vagy a szövege megváltozott.')
@@ -99,6 +99,30 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
             messages.success(request, 'Sikeres importálás.')
     return True
 
+
+def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfél kézi felvétele
+    task_comment = Task.objects.get(id=task_id)
+    if str(task_comment) != 'Állandó feladat: új ügyfél kézi felvétele.':
+        messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
+        messages.success(request, 'Az ügyfél kézi felvétele állandó feladat nem található a táblában '
+                                  'vagy a szövege megváltozott.')
+        return render(request, 'home.html', {})
+    if request.method == 'POST':
+        form = CustomerHandInputForm(request.POST)
+        if form.is_valid():
+            customer = form.save()
+            Task.objects.create(type='4:',  # Sima esemény bejegyzés
+                                type_color='4:',
+                                project=project,
+                                comment=f'{customer}\n'
+                                        f'nevű új ügyfél kézi felvétele megtörtént.',
+                                created_user=request.user,
+                                completed_at=timezone.now().isoformat())
+            messages.success(request, 'Sikeres új ügyfél felvétel.')
+    else:
+        form = CustomerHandInputForm(request.POST)
+    return render(request, 'p_01_1_ugyfel_adat_kezi_felvetele.html', {'project': project,
+                                                                      'form': form})
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
