@@ -8,6 +8,36 @@ from django.core.mail import send_mail
 
 from inka.settings import DEFAULT_FROM_EMAIL
 
+
+
+
+def p_02_1_telefonos_megkereses(request, task_id):
+    # az aktuális ügyfél
+    task = Task.objects.get(pk=task_id)
+    customer = task.customer
+
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            task.type = '3:'  # Feladat átállítása Folyamatban értékre
+            task.type_color = '3:'
+            task.save()
+
+            messages.success(request, 'Ügyfél adatai aktualizálva.')
+            Task.objects.create(type='0:',  # Esemény bejegyzésés
+                                type_color='0:',
+                                project=task.project,
+                                customer=task.customer,
+                                comment=f'{task.customer} ügyfél adatainak aktualizálása történt.',
+                                created_user=request.user)
+            return render(request, 'home.html', {})
+    else:
+        form = CustomerForm(instance=customer)
+
+    return render(request, 'p_02_1_telefonos_megkereses.html', {'task': task, 'form': form})
+
+
 def p_02_1_telefonszam_keres(request, task_id):
     # az aktuális ügyfél
     task = Task.objects.get(pk=task_id)
@@ -29,8 +59,8 @@ def p_02_1_telefonszam_keres(request, task_id):
             message = form['content'].value()
             to_email = [task.customer.email]
             sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
-            # Az Új feladat jelzőből Folyamatban jelző lesz
-            task.type = '3:'
+
+            task.type = '3:'  # Feladat átállítása Folyamatban értékre
             task.type_color = '3:'
             task.save()
             if sent:
@@ -56,26 +86,3 @@ def p_02_1_telefonszam_keres(request, task_id):
         form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
 
     return render(request, 'p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
-
-
-def p_02_1_telefonos_megkereses(request, task_id):
-    # az aktuális ügyfél
-    task = Task.objects.get(pk=task_id)
-    customer = task.customer
-
-    if request.method == 'POST':
-        form = CustomerForm(request.POST, instance=customer)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Ügyfél adatai aktualizálva.')
-            Task.objects.create(type='0:',  # Esemény bejegyzésés
-                                type_color='0:',
-                                project=task.project,
-                                customer=task.customer,
-                                comment=f'{task.customer} ügyfél adatainak aktualizálása történt.',
-                                created_user=request.user)
-            return render(request, 'home.html', {})
-    else:
-        form = CustomerForm(instance=customer)
-
-    return render(request, 'p_02_1_telefonos_megkereses.html', {'task': task, 'form': form})

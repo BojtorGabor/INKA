@@ -71,14 +71,14 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
                 CustomerHistory.objects.create(customer=new_customer, history='0.0:')  # Ügyfél történet felvétele
 
-                Task.objects.create(type='2:',  # Feladat típus
+                Task.objects.create(type='2:',  # Új feladat
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer= new_customer,  # ügyfél azonosító
                                     comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
                                     created_user=request.user)
         if existing_emails:  # volt ismétlődő email
-            Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
+            Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
                                 type_color='1:',
                                 project=project,
                                 comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
@@ -110,15 +110,23 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
     if request.method == 'POST':
         form = CustomerHandInputForm(request.POST)
         if form.is_valid():
-            customer = form.save()
+            new_customer = form.save()
             Task.objects.create(type='4:',  # Sima esemény bejegyzés
                                 type_color='4:',
                                 project=project,
-                                comment=f'{customer}\n'
+                                comment=f'{new_customer}\n'
                                         f'nevű új ügyfél kézi felvétele megtörtént.',
                                 created_user=request.user,
                                 completed_at=timezone.now().isoformat())
+            next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás a következő projektnek
+            Task.objects.create(type='2:',  # Új feladat
+                                type_color='2:',
+                                project=next_project[0],  # következő projekt
+                                customer=new_customer,  # ügyfél azonosító
+                                comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                created_user=request.user)
             messages.success(request, 'Sikeres új ügyfél felvétel.')
+            return render(request, 'home.html', {})  # sikeres
     else:
         form = CustomerHandInputForm(request.POST)
     return render(request, 'p_01_1_ugyfel_adat_kezi_felvetele.html', {'project': project,
