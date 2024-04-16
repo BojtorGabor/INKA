@@ -45,7 +45,7 @@ class PositionProject(models.Model):
 class Customer(models.Model):
     surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve
     name = models.CharField(max_length=100, default='')  # Ügyfél által megadott keresztneve
-    email = models.EmailField(max_length=50, default='')  # Ügyfél által megadott email címe
+    email = models.EmailField(max_length=50, unique=True, default='')  # Ügyfél által megadott email címe
     phone = models.CharField(max_length=15, default='')  # Ügyfél által megadott telefonszáma
     address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
     surface = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet

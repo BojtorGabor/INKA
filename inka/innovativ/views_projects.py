@@ -1,6 +1,7 @@
 import csv
 import os
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 
 from django.shortcuts import render
@@ -8,7 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
-from .models import Customer, Task, Project, CustomerHistory
+from .models import Customer, Task, Project
 
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
@@ -57,10 +58,10 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
         new_customer_number = 0
         for row_number, row in enumerate(csv_reader, start=1):  # csv sorokon végigfut
             surname, name, email, phone, address, surface = row  # szétbontja a sort
-            existing_customer = Customer.objects.filter(email=email)  # email keresés
-            if existing_customer.exists():  # már volt ilyen a customer táblában,
+            try:
+                Customer.objects.get(email=email)  # email keresés
                 existing_emails = existing_emails + ' -> ' + email  # kigyűjti ezeket az emaileket
-            else:  # tényleg új ügyfél
+            except ObjectDoesNotExist:  # új ügyfél
                 new_customer_number += 1
                 new_customer = Customer.objects.create(surname= surname,
                                                        name= name,
@@ -108,17 +109,29 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
     if request.method == 'POST':
         form = CustomerHandInputForm(request.POST)
         if form.is_valid():
-            customer = form.save()
+            new_customer = form.save()
+            next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás a következő projektnek
             Task.objects.create(type='4:',  # Sima esemény bejegyzés
                                 type_color='4:',
                                 project=project,
-                                comment=f'{customer}\n'
+                                comment=f'{new_customer}\n'
                                         f'nevű új ügyfél kézi felvétele megtörtént.',
                                 created_user=request.user,
                                 completed_at=timezone.now().isoformat())
+            Task.objects.create(type='2:',  # Feladat típus
+                                type_color='2:',
+                                project=next_project[0],  # következő projekt
+                                customer= new_customer,  # ügyfél azonosító
+                                comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                created_user=request.user)
             messages.success(request, 'Sikeres új ügyfél felvétel.')
+            return render(request, 'home.html', {})
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Hiba a(z) {form.fields[field].label} mezőben: {error}')
     else:
-        form = CustomerHandInputForm(request.POST)
+        form = CustomerHandInputForm()
     return render(request, 'p_01_1_ugyfel_adat_kezi_felvetele.html', {'project': project,
                                                                       'form': form})
 

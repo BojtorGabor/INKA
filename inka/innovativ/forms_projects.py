@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from tinymce.widgets import TinyMCE
 from .models import EmailTemplate, Customer
 
@@ -52,6 +53,15 @@ class CustomerHandInputForm(forms.ModelForm):
         self.fields['phone'].widget.attrs['class'] = 'form-control'
         self.fields['address'].widget.attrs['class'] = 'form-control'
         self.fields['surface'].widget.attrs['class'] = 'form-control'
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        try:
+            Customer.objects.get(email=email)
+            raise forms.ValidationError("Ez az email cím már létezik az adatbázisban!")
+        except ObjectDoesNotExist:
+            return email
+
 
 class CustomerForm(forms.ModelForm):
     class Meta:

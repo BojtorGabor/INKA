@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.template import Template, Context
 
@@ -62,19 +63,36 @@ def p_02_1_telefonos_megkereses(request, task_id):
     # az aktuális ügyfél
     task = Task.objects.get(pk=task_id)
     customer = task.customer
+    old_email = customer.email
+    ok = False
 
     if request.method == 'POST':
         form = CustomerForm(request.POST, instance=customer)
-        if form.is_valid():
+        email = request.POST.get('email')
+        if old_email != email:  # ha változott az email cím
+            try:
+                Customer.objects.get(email=email)  # az új email már létezik a rendszerben
+                messages.success(request, f'A(z) {email} email cím már szerepel a rendszerben.')
+            except ObjectDoesNotExist:  # az új email még nincs a rendszerben
+                ok = True
+        else:
+            ok = True
+
+        if ok and form.is_valid():
             form.save()
             messages.success(request, 'Ügyfél adatai aktualizálva.')
+            # Feladat átállítva Folyamatban értékre
+            task.type = '3:'
+            task.type_color = '3:'
+            task.save()
+
             Task.objects.create(type='0:',  # Esemény bejegyzésés
                                 type_color='0:',
                                 project=task.project,
                                 customer=task.customer,
                                 comment=f'{task.customer} ügyfél adatainak aktualizálása történt.',
                                 created_user=request.user)
-            return render(request, 'home.html', {})
+        return render(request, 'home.html', {})
     else:
         form = CustomerForm(instance=customer)
 
