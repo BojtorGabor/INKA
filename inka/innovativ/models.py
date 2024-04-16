@@ -55,16 +55,6 @@ class Customer(models.Model):
         return f"{self.surname} {self.name} (id: {self.id})"
 
 
-# Ügyfelek különféle állapotai
-class CustomerHistory(models.Model):
-    HISTORY_CHOICE = (
-        ('1.0:', 'Importálva'),
-    )
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)  # Ügyfél hozzárendelése
-    history = models.CharField(max_length=6, choices=HISTORY_CHOICE, default='0.0:')  # Ügyfelet érintő események
-    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
-
-
 # Feledatok
 class Task(models.Model):
     TYPE_CHOICES = (

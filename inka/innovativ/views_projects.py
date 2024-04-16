@@ -69,8 +69,6 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                                        address=address,
                                                        surface=surface)  # ügyfél felvétele a customer táblába
 
-                CustomerHistory.objects.create(customer=new_customer, history='0.0:')  # Ügyfél történet felvétele
-
                 Task.objects.create(type='2:',  # Feladat típus
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
