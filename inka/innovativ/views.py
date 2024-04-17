@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
@@ -35,6 +36,7 @@ def view_names(request, view_name, task_id):
         return render(request, 'home.html', {})
 
 
+# Feladatok listázása különféle szűrőkkel
 def tasks(request, filter, view_name):
     if request.user.is_authenticated:
         if view_name == 'all':
@@ -102,9 +104,25 @@ def tasks(request, filter, view_name):
         return redirect('login')
 
 
-def customers(request, filter):
+# keresés eredménye a Customer tábla szűrésével
+def customers(request):
     if request.user.is_authenticated:
-        customer_set = Customer.objects.all().order_by('surname', 'name')
+        if request.method == 'POST':
+            # Névben, címben és telefonszámban is keresünk
+            searched = request.POST['searched']
+            if searched == '':
+                messages.success(request, 'Üres a Keresés mező.')
+                return render(request, 'home.html', {})
+            else:
+                customer_set = (Customer.objects.filter(
+                    Q(surname__icontains=searched) |
+                    Q(name__icontains=searched) |
+                    Q(email__icontains=searched) |
+                    Q(phone__icontains=searched) |
+                    Q(address__icontains=searched) |
+                    Q(installation_address__icontains=searched))
+                                .order_by('surname', 'name'))
+        # customer_set = Customer.objects.all().order_by('surname', 'name')
 
         p = Paginator(customer_set, 10)
         page = request.GET.get('page', 1)
@@ -112,12 +130,14 @@ def customers(request, filter):
         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
         return render(request, 'customers.html', {'customers': customer_page,
-                                              'page_list': customer_page, 'page_range': page_range,})
+                                              'page_list': customer_page, 'page_range': page_range,
+                                              'searched': searched})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')
 
 
+# Customer történet
 def customer_history(request, customer_id):
     if request.user.is_authenticated:
         tasks_set = Task.objects.filter(customer=customer_id).order_by('-created_at')

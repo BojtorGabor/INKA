@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>Összes ügyfél</h3>
+        <h3>Keresés: {{ searched }}</h3>
 	</div>
 	<br/>
 
@@ -32,7 +32,7 @@
 							<div class="row">
 								<div class="col-2">
 									<a href="{% url 'customer_history' customer.id %}"
-									   class="btn btn-outline-success btn-sm">{{ customer }}</a>
+									   class="btn btn-outline-primary btn-sm">{{ customer }}</a>
 								</div>
 								<div class="col-2">
 									{{ customer.email }}

@@ -19,7 +19,7 @@ urlpatterns = [
     path('p_02_1_ugyfel_elerhetetlen/<int:task_id>/', views_projects02.p_02_1_ugyfel_elerhetetlen,
          name='p_02_1_ugyfel_elerhetetlen'),
 
-    path('customers/<str:filter>',views.customers, name='customers'),
+    path('customers',views.customers, name='customers'),
     path('customer_history/<int:customer_id>/',views.customer_history, name='customer_history'),
     # path('projects', views.projects, name='projects'),
 ]
