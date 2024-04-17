@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>Összes ügyfél</h3>
+	</div>
+	<br/>
+
+	<div class="col-sm-12">
+		<div class="card mb-3">
+			<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
+				<div class="row text-start">
+					<div class="col-2">
+						Név
+					</div>
+					<div class="col-2">
+                        Email
+					</div>
+					<div class="col-1">
+                        Telefon
+					</div>
+					<div class="col-7">
+                        Cím
+					</div>
+				</div>
+			</div>
+
+			{% for customer in customers %}
+				<div class="card-body">
+					<div class="card-text">
+						<div>
+							<div class="row">
+								<div class="col-2">
+									<a href="{% url 'customer_history' customer.id %}"
+									   class="btn btn-outline-success btn-sm">{{ customer }}</a>
+								</div>
+								<div class="col-2">
+									{{ customer.email }}
+								</div>
+								<div class="col-1">
+									{{ customer.phone }}
+								</div>
+								<div class="col-7">
+									{{ customer.address }}
+								</div>
+							</div>
+						</div>
+	<!--					<div class="card-footer text-body-secondary">-->
+	<!--						Lábléc-->
+	<!--					</div>-->
+					</div>
+				</div>
+			{% endfor %}
+			<br/>
+			{% include 'pager_bottom.html' %}
+		</div>
+		<br/>
+	</div>
+{% endblock %}

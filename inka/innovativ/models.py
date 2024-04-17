@@ -49,7 +49,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, default='')  # Ügyfél által megadott telefonszáma
     address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
     surface = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
-    installation_address = models.CharField(max_length=150, default='')  # Telepítés címe
+    installation_address = models.CharField(max_length=150, blank=True, default='')  # Telepítés címe
 
     def __str__(self):
         return f"{self.surname} {self.name} (id: {self.id})"

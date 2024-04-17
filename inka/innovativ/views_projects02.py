@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.template import Template, Context
+from django.utils import timezone
 
-from .forms_projects import EmailTemplateForm, CustomerForm
-from .models import Task, EmailTemplate, Customer
+from .forms_projects import EmailTemplateForm, CustomerForm, CustomerDelete
+from .models import Task, EmailTemplate, Customer, Project
 from django.core.mail import send_mail
 
 from inka.settings import DEFAULT_FROM_EMAIL
@@ -79,21 +80,50 @@ def p_02_1_telefonos_megkereses(request, task_id):
             ok = True
 
         if ok and form.is_valid():
-            form.save()
-            messages.success(request, 'Ügyfél adatai aktualizálva.')
-            # Feladat átállítva Folyamatban értékre
-            task.type = '3:'
-            task.type_color = '3:'
-            task.save()
+            if form.has_changed():
+                form.save()
+                messages.success(request, 'Ügyfél adatai aktualizálva.')
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
 
-            Task.objects.create(type='0:',  # Esemény bejegyzésés
-                                type_color='0:',
-                                project=task.project,
-                                customer=task.customer,
-                                comment=f'{task.customer} ügyfél adatainak aktualizálása történt.',
-                                created_user=request.user)
+                Task.objects.create(type='0:',  # Esemény bejegyzésés
+                                    type_color='0:',
+                                    project=task.project,
+                                    customer=task.customer,
+                                    comment=f'{task.customer} ügyfél adatainak aktualizálása történt.',
+                                    created_user=request.user)
+            else:
+                messages.success(request, 'Ügyfél adatai nem változtak.')
         return render(request, 'home.html', {})
     else:
         form = CustomerForm(instance=customer)
 
     return render(request, 'p_02_1_telefonos_megkereses.html', {'task': task, 'form': form})
+
+
+def p_02_1_ugyfel_elerhetetlen(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if request.method == 'POST':
+        form = CustomerDelete(request.POST)
+        if form.is_valid():
+            task.type = '4:'
+            task.type_color = '4:'
+            task.completed_at = timezone.now().isoformat()
+            task.save()
+
+            # feladat adás az Ügyfél adatlap megszüntetése projektnek
+            next_project = Project.objects.filter(name__startswith='20.1.')
+            Task.objects.create(type='2:',  # Feladat típus
+                                type_color='2:',
+                                project=next_project[0],  # következő projekt
+                                customer=task.customer,  # ügyfél azonosító
+                                comment=f'{ task.customer } - Az ügyfél elérhetetlen, kérem az adatlap törlését.\n'
+                                        f'{form['reason'].value()}',
+                                created_user=request.user)
+            return render(request, 'home.html', {})
+    else:
+        form = CustomerDelete()
+
+    return render(request, 'p_02_1_ugyfel_elerhetetlen.html', {'task': task, 'form': form})

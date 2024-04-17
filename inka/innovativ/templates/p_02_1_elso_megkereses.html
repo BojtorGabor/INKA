@@ -46,7 +46,8 @@
 					<hr>
 					<div class="row mb">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">
+							<a href="{% url 'p_02_1_ugyfel_elerhetetlen' task.id %}"
+							   class="btn btn-outline-info btn-sm">
 								Az ügyfél elérhetetlen - adatlap törlés kérelem</a>
 						</div>
 					</div>
@@ -57,9 +58,9 @@
 			<!--Ügyfél adatlap-->
 			{% include 'ugyfel_adatlap.html' %}
 		</div>
-
 		<!--Ügyfél történet-->
-	<div class="col-sm-9">
-		{% include 'ugyfel_tortenet.html' %}
+		<div class="col-sm-9">
+			{% include 'ugyfel_tortenet.html' %}
+		</div>
 	</div>
 {% endblock %}

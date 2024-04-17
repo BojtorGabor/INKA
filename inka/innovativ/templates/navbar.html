@@ -28,6 +28,22 @@
                             {% endfor %}
                         </ul>
                     </li>
+<!--                Lenyíló menü-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Ügyfél történet
+                        </a>
+<!--                    Lenyíló menü tételei-->
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Keresés név szerint</a></li>
+                            <li><a class="dropdown-item" href="#">Keresés email szerint</a></li>
+                            <li><a class="dropdown-item" href="#">Keresés telefonszám szerint</a></li>
+                            <li><a class="dropdown-item" href="#">Keresés cím szerint</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'customers' 'all' %}">Összes ügyfél</a></li>
+                        </ul>
+                    </li>
 
 <!--                Lenyíló menü-->
                     <li class="nav-item dropdown">

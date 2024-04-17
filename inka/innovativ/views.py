@@ -102,6 +102,45 @@ def tasks(request, filter, view_name):
         return redirect('login')
 
 
+def customers(request, filter):
+    if request.user.is_authenticated:
+        customer_set = Customer.objects.all().order_by('surname', 'name')
+
+        p = Paginator(customer_set, 10)
+        page = request.GET.get('page', 1)
+        customer_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        return render(request, 'customers.html', {'customers': customer_page,
+                                              'page_list': customer_page, 'page_range': page_range,})
+    else:
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
+
+
+def customer_history(request, customer_id):
+    if request.user.is_authenticated:
+        tasks_set = Task.objects.filter(customer=customer_id).order_by('-created_at')
+
+        customer = Customer.objects.get(pk=customer_id)
+
+        type_choices = Task.TYPE_CHOICES
+        type_color = Task.COLOR_CHOICES
+
+        p = Paginator(tasks_set, 10)
+        page = request.GET.get('page', 1)
+        tasks_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        return render(request, 'customer_history.html', {'tasks': tasks_page,
+                                             'type_choices': type_choices, 'type_color': type_color,
+                                             'page_list': tasks_page, 'page_range': page_range,
+                                             'customer': customer})
+    else:
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
+
+
 # def projects(request):
 #     # Projektekhez tartozó feladatok kigyűjtése
 #     task_set = Task.objects.filter(project__in=menu_context(request)['position_projects'])

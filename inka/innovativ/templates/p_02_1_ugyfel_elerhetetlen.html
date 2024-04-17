@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer }} - Az ügyfél elérhetetlen - adatlap törlés kérelem</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-2 mb-3">
+			{% include 'p_02_1_ugyfel_altal_megadott_adatok.html' %}
+		</div>
+
+		<div class="col-6 mb-3">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row">
+						<div class="text-center">
+							Törlés indoklása
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row mb-2">
+						<form method="POST">
+							{% csrf_token %}
+							{{ form.reason }}
+							<br/>
+							<button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+									data-bs-target="#exampleModal">Rögzítés</button>
+							<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+								 aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h1 class="modal-title fs-5" id="exampleModalLabel">
+												Mehet a Minőségbiztosításnak a törlés kérelem?</h1>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											{{ task.customer }} - Az ügyfél elérhetetlen, kérem az adatlap törlését.
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Mégse</button>
+											<button type="submit" class="btn btn-outline-danger btn-sm">Törlés</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+{% endblock %}

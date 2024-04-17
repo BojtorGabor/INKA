@@ -34,6 +34,10 @@ def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek impor
                 else:
                     render(request, 'p_01_1_ugyfel_adat_import.html',
                            {'project': project, 'form': form})  # sikertelen, adatszerkezet hiba?
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Hiba a(z) {form.fields[field].label} mezőben: {error}')
     else:
         form = CSVFileSelectForm()
     return render(request, 'p_01_1_ugyfel_adat_import.html', {'project': project, 'form': form})
@@ -53,7 +57,7 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
         csv_file.seek(0)  # fájl kurzor előre állítása
 
-        next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás a következő projektnek
+        next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás az Első megkeresés projektnek
         existing_emails = ''  # email ellenőrzéshez, ebben lesz felsorolva ha már volt ilyen email
         new_customer_number = 0
         for row_number, row in enumerate(csv_reader, start=1):  # csv sorokon végigfut
