@@ -33,13 +33,13 @@
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">
-								Ügyfél átadása - Indikatív árajánlat projektnek</a>
+							<a href="{% url 'p_02_1_ugyfelnek_elozetes_arajanlat' task.id %}"
+							   class="btn btn-outline-info btn-sm">Ügyfél átadása - Előzetes árajánlat projektnek</a>
 						</div>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">
+							<a href="{% url 'p_02_1_ugyfelnek_felmeres' task.id %}" class="btn btn-outline-info btn-sm">
 								Ügyfél átadása - Felmérés projektnek</a>
 						</div>
 					</div>

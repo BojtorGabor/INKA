@@ -15,7 +15,10 @@ SECRET_KEY = 'django-insecure-%6no6+8!lu43k$zf(oso&28z8z=@8em=tcn8s-c%d)f_=k%#xb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# helyi
 ALLOWED_HOSTS = []
+# innovatív.hu
+# ALLOWED_HOSTS = ['https://dev.innovativnapelem.hu/']
 
 # Application definition
 
@@ -40,14 +43,16 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    # innovatív.hu
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 
     'django_otp.middleware.OTPMiddleware',
-
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -83,9 +88,11 @@ WSGI_APPLICATION = 'inka.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+        # helyi
         'NAME': 'inka',
         'USER': 'root',
         'PASSWORD': 'gg580219',
+        # innovatív.hu
         # 'NAME': 'cdjyocle_inka',
         # 'USER': 'cdjyocle',
         # 'PASSWORD': 'Rcb(oQ292LM)7b',
@@ -131,10 +138,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# innovatív.hu
 # STATIC_ROOT = BASE_DIR / 'static'
 #
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STORAGES = {
+#     # ...
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 
+#helyi
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

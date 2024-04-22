@@ -81,9 +81,9 @@ class CustomerForm(forms.ModelForm):
         self.fields['installation_address'].widget.attrs['class'] = 'form-control'
 
 
-class CustomerDelete(forms.Form):
-    reason = forms.CharField(label='Indoklás', max_length=150, required=True)
+class Reason(forms.Form):
+    reason = forms.CharField(label='Üzenet', max_length=150, required=True)
 
     def __init__(self, *args, **kwargs):
-        super(CustomerDelete, self).__init__(*args, **kwargs)
+        super(Reason, self).__init__(*args, **kwargs)
         self.fields['reason'].widget.attrs['class'] = 'form-control'

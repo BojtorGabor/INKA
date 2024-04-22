@@ -12,10 +12,14 @@ urlpatterns = [
     path('<str:view_name>/<int:task_id>', views.view_names, name='view_names'),
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),
 
-    path('p_02_1_telefonszam_keres/<int:task_id>/', views_projects02.p_02_1_telefonszam_keres,
-         name='p_02_1_telefonszam_keres'),
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),
+    path('p_02_1_telefonszam_keres/<int:task_id>/', views_projects02.p_02_1_telefonszam_keres,
+         name='p_02_1_telefonszam_keres'),
+    path('p_02_1_ugyfelnek_elozetes_arajanlat/<int:task_id>/', views_projects02.p_02_1_ugyfelnek_elozetes_arajanlat,
+         name='p_02_1_ugyfelnek_elozetes_arajanlat'),
+    path('p_02_1_ugyfelnek_felmeres/<int:task_id>/', views_projects02.p_02_1_ugyfelnek_felmeres,
+         name='p_02_1_ugyfelnek_felmeres'),
     path('p_02_1_ugyfel_elerhetetlen/<int:task_id>/', views_projects02.p_02_1_ugyfel_elerhetetlen,
          name='p_02_1_ugyfel_elerhetetlen'),
 

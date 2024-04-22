@@ -155,7 +155,7 @@ def customer_history(request, customer_id):
         return render(request, 'customer_history.html', {'tasks': tasks_page,
                                              'type_choices': type_choices, 'type_color': type_color,
                                              'page_list': tasks_page, 'page_range': page_range,
-                                             'customer': customer})
+                                             'task': tasks_set[0], 'customer': customer})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

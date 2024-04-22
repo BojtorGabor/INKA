@@ -6,67 +6,74 @@
 	</div>
 	<br/>
 
-	<div class="col-sm-12">
-		<div class="card mb-3">
-			<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
-				<div class="row">
-					<div class="col-2 text-center">
-						Összes projekt
+    <div class="row">
+		<div class="col-3 mb-3">
+			<!--Ügyfél adatlap-->
+			{% include 'ugyfel_adatlap.html' %}
+		</div>
+
+		<div class="col-sm-9">
+			<div class="card mb-3">
+				<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row">
+						<div class="col-2 text-center">
+							Összes projekt
+						</div>
 					</div>
 				</div>
-			</div>
 
-			{% for task in tasks %}
-				<div class="card-body">
-					<div class="card-text">
-						<div>
-							<div class="row">
-								<div class="col-2 text-center">
-									{{ task.project }}
-								</div>
-								{% if task.type == '0:' %}
-									<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
-								{% elif task.type == '1:' %}
-									<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
-								{% elif task.type == '2:' %}
-									<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
-								{% elif task.type == '3:' %}
-									<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
-								{% elif task.type == '4:' %}
-									<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
-								{% elif task.type == '5:' %}
-									<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
-								{% else %}
-									<div class="col-9" style="text-align: justify">
-								{% endif %}
-									{{ task.comment|linebreaksbr }}
+				{% for task in tasks %}
+					<div class="card-body">
+						<div class="card-text">
+							<div>
+								<div class="row">
+									<div class="col-2 text-center">
+										{{ task.project }}
 									</div>
-								<div class="col-1" style="font-size: 10px;">
-									{{ task.created_user }}
-									<div>
-										{{ task.created_at|date:"Y-m-d" }}
-									</div>
-									<div>
-										{% if task.type == '2:' %}
-											{{ task.days_passed }}
-										{% elif task.type == '3:' %}
-											{{ task.days_passed }}
-										{% else %}
-											{{ task.completed_at|date:"Y-m-d" }}
-										{% endif %}
+									{% if task.type == '0:' %}
+										<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
+									{% elif task.type == '1:' %}
+										<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
+									{% elif task.type == '2:' %}
+										<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
+									{% elif task.type == '3:' %}
+										<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
+									{% elif task.type == '4:' %}
+										<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
+									{% elif task.type == '5:' %}
+										<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
+									{% else %}
+										<div class="col-9" style="text-align: justify">
+									{% endif %}
+										{{ task.comment|linebreaksbr }}
+										</div>
+									<div class="col-1" style="font-size: 10px;">
+										{{ task.created_user }}
+										<div>
+											{{ task.created_at|date:"Y-m-d" }}
+										</div>
+										<div>
+											{% if task.type == '2:' %}
+												{{ task.days_passed }}
+											{% elif task.type == '3:' %}
+												{{ task.days_passed }}
+											{% else %}
+												{{ task.completed_at|date:"Y-m-d" }}
+											{% endif %}
+										</div>
 									</div>
 								</div>
 							</div>
+		<!--					<div class="card-footer text-body-secondary">-->
+		<!--						Lábléc-->
+		<!--					</div>-->
 						</div>
-	<!--					<div class="card-footer text-body-secondary">-->
-	<!--						Lábléc-->
-	<!--					</div>-->
 					</div>
-				</div>
-			{% endfor %}
+				{% endfor %}
+				<br/>
+				{% include 'pager_bottom.html' %}
+			</div>
 			<br/>
-			{% include 'pager_bottom.html' %}
 		</div>
-		<br/>
 	</div>
 {% endblock %}

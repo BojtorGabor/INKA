@@ -15,27 +15,27 @@ class OTPAdmin(OTPAdminSite):
 
 
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'id')
     ordering = ['name']
 
 
 class JobAdmin(admin.ModelAdmin):
-    list_display = ('user', 'position',)
+    list_display = ('user', 'position', 'id')
     ordering = ['user', 'position']
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'view_name',)
+    list_display = ('name', 'view_name', 'id')
     ordering = ['name', 'view_name']
 
 
 class PositionProjectAdmin(admin.ModelAdmin):
-    list_display = ('position', 'project',)
+    list_display = ('position', 'project', 'id')
     ordering = ['position', 'project']
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):
-    list_display = ('title', 'content',)
+    list_display = ('title', 'content', 'id')
     ordering = ['title']
 
 

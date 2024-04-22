@@ -156,18 +156,3 @@ def p_02_1_elso_megkereses(request, project, task_id):
                   {'project': project, 'task': task, 'tasks': tasks_page,
                    'page_list': tasks_page, 'page_range': page_range,
                    'type_choices': type_choices, 'type_color': type_color,})
-
-
-def p_02_2_indikativ_arajanlat(request, project, task_id):
-    cont = '02.2.'
-    return render(request, 'project_proba.html', {'project': project})
-
-
-def p_02_3_ugyfel_tipus_meghatarozasa(request, project, task_id):
-    cont = '02.3.'
-    return render(request, 'project_proba.html', {'project': project})
-
-
-def p_03_1_palyazat_tipusainak_folyamatai(request, project, task_id):
-    cont = '03.1.'
-    return render(request, 'project_proba.html', {'project': project})
