@@ -141,18 +141,23 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
 
 def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
-    customer = task.customer
-    tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        customer = task.customer
+        tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
 
-    type_choices = Task.TYPE_CHOICES
-    type_color = Task.COLOR_CHOICES
+        type_choices = Task.TYPE_CHOICES
+        type_color = Task.COLOR_CHOICES
 
-    p = Paginator(tasks_set, 10)
-    page = request.GET.get('page', 1)
-    tasks_page = p.get_page(page)
-    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+        p = Paginator(tasks_set, 10)
+        page = request.GET.get('page', 1)
+        tasks_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-    return render(request, 'p_02_1_elso_megkereses.html',
-                  {'project': project, 'task': task, 'tasks': tasks_page,
-                   'page_list': tasks_page, 'page_range': page_range,
-                   'type_choices': type_choices, 'type_color': type_color,})
+        return render(request, 'p_02_1_elso_megkereses.html',
+                      {'project': project, 'task': task, 'tasks': tasks_page,
+                       'page_list': tasks_page, 'page_range': page_range,
+                       'type_choices': type_choices, 'type_color': type_color,})
