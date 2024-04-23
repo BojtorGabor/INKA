@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views_members, views, views_projects02, views_projects
+from . import views_members, views, views_projects02, views_projects04, views_projects05
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -22,6 +22,12 @@ urlpatterns = [
          name='p_02_1_ugyfelnek_felmeres'),
     path('p_02_1_ugyfel_elerhetetlen/<int:task_id>/', views_projects02.p_02_1_ugyfel_elerhetetlen,
          name='p_02_1_ugyfel_elerhetetlen'),
+
+    path('p_04_1_ugyfel_visszaadása_02_nek/<int:task_id>/', views_projects04.p_04_1_ugyfel_visszaadása_02_nek,
+         name='p_04_1_ugyfel_visszaadása_02_nek'),
+
+    path('p_05_1_ugyfel_visszaadása_02_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadása_02_nek,
+         name='p_05_1_ugyfel_visszaadása_02_nek'),
 
     path('customers',views.customers, name='customers'),
     path('customer_history/<int:customer_id>/',views.customer_history, name='customer_history'),

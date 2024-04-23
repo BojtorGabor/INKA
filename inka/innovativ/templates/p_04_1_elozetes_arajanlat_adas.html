@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer }} - {{ project }}</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-3 mb-3">
+			<!--Menü a további műveletekhez-->
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row">
+						<div class="text-center">
+							Következő lépés:
+						</div>
+					</div>
+				</div>
+				<div class="card-body text-center">
+					<div class="row mb-3">
+						<div class="col">
+							<a href="#"
+							   class="btn btn-outline-info btn-sm">1. feladat</a>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="#"
+							   class="btn btn-outline-info btn-sm">2. feladat</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="#"
+							   class="btn btn-outline-info btn-sm">3. feladat</a>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="#" class="btn btn-outline-info btn-sm">4. feladat</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb">
+						<div class="col">
+							<a href="{% url 'p_04_1_ugyfel_visszaadása_02_nek' task.id %}"
+							   class="btn btn-outline-info btn-sm">Ügyfél visszaadása az 02. Ügyfél adatainak felelőséhez</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br/>
+
+			<!--Ügyfél adatlap-->
+			{% include 'ugyfel_adatlap.html' %}
+		</div>
+		<!--Ügyfél történet-->
+		<div class="col-sm-9">
+			{% include 'ugyfel_tortenet.html' %}
+		</div>
+	</div>
+{% endblock %}
