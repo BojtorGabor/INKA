@@ -16,7 +16,7 @@ def p_02_1_telefonos_megkereses(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         customer = task.customer
@@ -64,7 +64,7 @@ def p_02_1_telefonszam_keres(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         # a feladathoz tartozó email sablon
@@ -117,7 +117,7 @@ def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
@@ -134,7 +134,7 @@ def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer=task.customer,  # ügyfél azonosító
-                                    comment=f'{ task.customer } - ügyfelünknek adj előzetes árajánlatot.\n{form['reason'].value()}',
+                                    comment=f'{ task.customer } - ügyfelünknek adj előzetes árajánlatot.\n{form["reason"].value()}',
                                     created_user=request.user)
                 return render(request, 'home.html', {})
         else:
@@ -148,7 +148,7 @@ def p_02_1_ugyfelnek_felmeres(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
@@ -165,7 +165,7 @@ def p_02_1_ugyfelnek_felmeres(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer=task.customer,  # ügyfél azonosító
-                                    comment=f'{ task.customer } - ügyfelünknek szervezz felmérést.\n{form['reason'].value()}',
+                                    comment=f'{ task.customer } - ügyfelünknek szervezz felmérést.\n{form["reason"].value()}',
                                     created_user=request.user)
                 return render(request, 'home.html', {})
         else:
@@ -179,7 +179,7 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
@@ -197,7 +197,7 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
                                     project=next_project[0],  # következő projekt
                                     customer=task.customer,  # ügyfél azonosító
                                     comment=f'{ task.customer } - Az ügyfél elérhetetlen, kérem az adatlap törlését.\n'
-                                            f'{form['reason'].value()}',
+                                            f'{form["reason"].value()}',
                                     created_user=request.user)
                 return render(request, 'home.html', {})
         else:

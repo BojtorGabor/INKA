@@ -144,7 +144,7 @@ def p_02_1_elso_megkereses(request, project, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         customer = task.customer
@@ -168,7 +168,7 @@ def p_04_1_elozetes_arajanlat_adas(request, project, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         customer = task.customer
@@ -192,7 +192,7 @@ def p_05_1_felmeres(request, project, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         customer = task.customer

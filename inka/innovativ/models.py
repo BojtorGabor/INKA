@@ -78,7 +78,7 @@ class Task(models.Model):
     type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
-    comment = models.TextField(max_length=500, null=True)  # Megjegyzés
+    comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja
@@ -100,3 +100,25 @@ class EmailTemplate(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# Árajánlatok
+class PriceOffer(models.Model):
+    TYPE_CHOICES = (
+        ('0:', 'Előzetes árajánlat'),
+        ('1:', 'Kiküldött előzetes árajánlat'),
+        ('2:', 'Elfogadott előzetes árajánlat'),
+        ('3:', 'Végleges árajánlat'),
+        ('4:', 'Kiküldött végleges árajánlat'),
+        ('5:', 'Elfogadott végleges árajánlat'),
+    )
+
+    type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
+    file_path = models.CharField(max_length=100)  # Árajánlat fájl útvonala
+    comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
+    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
+    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
+
+    def __str__(self):
+        return str(self.file_path)

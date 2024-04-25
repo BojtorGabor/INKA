@@ -78,4 +78,29 @@
             </div>
         </div>
     </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapse05" aria-expanded="false"
+                    aria-controls="flush-collapse05">
+                Árajánlatok
+            </button>
+        </h2>
+        <div id="flush-collapse05" class="accordion-collapse collapse"
+             data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                {% for price_offer in task.customer.priceoffer_set.all %}
+                    <div class="row mb-2">
+                        <div class="col">
+                            {{ price_offer.get_type_display }}:
+                        </div>
+                        <div class="col text-end">
+                            <a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
+                               class="btn btn-outline-primary btn-sm" target="_blank">{{ price_offer.file_path }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>

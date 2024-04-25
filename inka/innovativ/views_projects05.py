@@ -6,11 +6,11 @@ from innovativ.forms_projects import Reason
 from innovativ.models import Task, Project
 
 
-def p_05_1_ugyfel_visszaadása_02_nek(request, task_id):
+def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime('%Y.%m.%d. %H:%M')}-kor.')
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
@@ -28,7 +28,7 @@ def p_05_1_ugyfel_visszaadása_02_nek(request, task_id):
                                     project=next_project[0],  # következő projekt
                                     customer=task.customer,  # ügyfél azonosító
                                     comment=f'{task.customer} - A felmérés nem végezhető el.\n'
-                                            f'{form['reason'].value()}',
+                                            f'{form["reason"].value()}',
                                     created_user=request.user)
                 return render(request, 'home.html', {})
         else:

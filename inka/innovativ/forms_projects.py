@@ -82,7 +82,7 @@ class CustomerForm(forms.ModelForm):
 
 
 class Reason(forms.Form):
-    reason = forms.CharField(label='Üzenet', max_length=150, required=True)
+    reason = forms.CharField(label='Üzenet', max_length=1000, required=True, widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         super(Reason, self).__init__(*args, **kwargs)

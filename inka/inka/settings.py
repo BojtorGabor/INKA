@@ -5,7 +5,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -17,8 +16,8 @@ DEBUG = True
 
 # helyi
 ALLOWED_HOSTS = []
-# innovatív.hu
-# ALLOWED_HOSTS = ['https://dev.innovativnapelem.hu/']
+########################################### innovatív.hu
+# ALLOWED_HOSTS = ['dev.innovativnapelem.hu']
 
 # Application definition
 
@@ -44,7 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 
-    # innovatív.hu
+    ########################################### innovatív.hu
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -74,6 +73,7 @@ TEMPLATES = [
 
                 # position változót ad hozzá a sablonok contextéhez:
                 'innovativ.context_processors.menu_context',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'inka',
         'USER': 'root',
         'PASSWORD': 'gg580219',
-        # innovatív.hu
+        ########################################### innovatív.hu
         # 'NAME': 'cdjyocle_inka',
         # 'USER': 'cdjyocle',
         # 'PASSWORD': 'Rcb(oQ292LM)7b',
@@ -137,22 +137,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
-# innovatív.hu
-# STATIC_ROOT = BASE_DIR / 'static'
-#
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static',]
+########################################### innovatív.hu
 # STORAGES = {
-#     # ...
+#     "default": {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#     },
 #     "staticfiles": {
 #         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 #     },
 # }
 
-#helyi
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
