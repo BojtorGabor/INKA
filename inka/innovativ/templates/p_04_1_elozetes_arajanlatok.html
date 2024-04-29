@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer }} - Előzetes árajánlatok kezelése</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-3 mb-3">
+			{% include 'ugyfel_adatlap.html' %}
+		</div>
+
+		<div class="col-5 mb-2">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row text-start">
+						<div class="col-2">
+							Készült
+						</div>
+						<div class="col-4">
+							Állapot
+						</div>
+						<div class="col-6">
+							Műveletek
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					{% for price_offer in task.customer.priceoffer_set.all %}
+						<div class="row mb-2">
+							<div class="col-2">
+								{{ price_offer.created_at | date:"Y.m.d" }}
+							</div>
+							<div class="col-4 text-start">
+								<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
+								   class="btn btn-outline-primary btn-sm" target="_blank">
+									{{ price_offer.get_type_display }}</a>
+							</div>
+							<div class="col-6">
+								<div class="row">
+									{% if price_offer.type == '0:' %}
+										<div class="col">
+											<a href="#" class="btn btn-outline-primary btn-sm">Ebből új készítés</a>
+											<a href="#" class="btn btn-outline-primary btn-sm">Módosítás</a>
+											<a href="#" class="btn btn-outline-primary btn-sm">Törlés</a>
+											<a href="#" class="btn btn-outline-primary btn-sm">Küldés</a>
+										</div>
+									{% endif %}
+									{% if price_offer.type == '1:' %}
+										<div class="col">
+											<a href="#" class="btn btn-outline-primary btn-sm">Ebből új készítés</a>
+											<a href="#" class="btn btn-outline-primary btn-sm">Elfogadás</a>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+					<hr>
+					<div class="row mb-2">
+						<div class="col-6">
+						</div>
+						<div class="col-6">
+							<a href="#" class="btn btn-outline-primary btn-sm">Új előzetes árajánlat készítése</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+    </div>
+{% endblock %}>

@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-%6no6+8!lu43k$zf(oso&28z8z=@8em=tcn8s-c%d)f_=k%#xb
 DEBUG = True
 
 # helyi
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 ########################################### innovatív.hu
 # ALLOWED_HOSTS = ['dev.innovativnapelem.hu']
 

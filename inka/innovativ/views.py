@@ -1,6 +1,3 @@
-import os
-
-from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -159,15 +156,6 @@ def customer_history(request, customer_id):
                                              'type_choices': type_choices, 'type_color': type_color,
                                              'page_list': tasks_page, 'page_range': page_range,
                                              'task': tasks_set[0], 'customer': customer,})
-    else:
-        messages.success(request, 'Nincs jogosultságod.')
-        return redirect('login')
-
-
-def customer_price_offer(request, price_offer_id):
-    if request.user.is_authenticated:
-        print('Árajánlat', price_offer_id)
-        return render(request, 'home.html', {})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

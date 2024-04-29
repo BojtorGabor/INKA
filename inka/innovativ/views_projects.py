@@ -11,6 +11,9 @@ from django.utils import timezone
 from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
 from .models import Customer, Task, Project
 
+import random
+import string
+
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
     task_comment = Task.objects.get(id=task_id)
@@ -210,3 +213,9 @@ def p_05_1_felmeres(request, project, task_id):
                       {'project': project, 'task': task, 'tasks': tasks_page,
                        'page_list': tasks_page, 'page_range': page_range,
                        'type_choices': type_choices, 'type_color': type_color, })
+
+
+def generate_random_string():
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choice(characters) for _ in range(20))
+    return random_string

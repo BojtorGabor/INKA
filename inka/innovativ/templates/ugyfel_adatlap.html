@@ -92,11 +92,11 @@
                 {% for price_offer in task.customer.priceoffer_set.all %}
                     <div class="row mb-2">
                         <div class="col">
-                            {{ price_offer.get_type_display }}:
+                            {{ price_offer.created_at | date:"Y.m.d" }}
                         </div>
                         <div class="col text-end">
                             <a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
-                               class="btn btn-outline-primary btn-sm" target="_blank">{{ price_offer.file_path }}</a>
+                               class="btn btn-outline-primary btn-sm" target="_blank">{{ price_offer.get_type_display }}</a>
                         </div>
                     </div>
                 {% endfor %}

@@ -6,6 +6,10 @@ from innovativ.forms_projects import Reason
 from innovativ.models import Task, Project
 
 
+def p_04_1_elozetes_arajanlatok(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    return render(request, 'p_04_1_elozetes_arajanlatok.html', {'task': task})
+
 def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
