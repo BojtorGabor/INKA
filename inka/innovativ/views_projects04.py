@@ -8,6 +8,16 @@ from innovativ.models import Task, Project
 
 def p_04_1_elozetes_arajanlatok(request, task_id):
     task = Task.objects.get(pk=task_id)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action:
+            # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+            action_parts = action.split('_')
+            action_name = action_parts[0]
+            price_offer_id = action_parts[1]
+
+            print('Művelet', action_name)
+            print('Árajánlat id', price_offer_id)
     return render(request, 'p_04_1_elozetes_arajanlatok.html', {'task': task})
 
 def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
