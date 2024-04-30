@@ -16,8 +16,14 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
             action_name = action_parts[0]
             price_offer_id = action_parts[1]
 
-            print('Művelet', action_name)
-            print('Árajánlat id', price_offer_id)
+            if action_name == 'new':
+                pass
+            elif action_name == 'update':
+                pass
+            elif action_name == 'send':
+                pass
+            elif action_name == 'accept':
+                pass
     return render(request, 'p_04_1_elozetes_arajanlatok.html', {'task': task})
 
 def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):

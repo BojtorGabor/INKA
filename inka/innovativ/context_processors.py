@@ -11,15 +11,13 @@ def menu_context(request):
 
     if request.user.is_authenticated:
         job = Job.objects.get(user=request.user)  # Felhasználó munkaköre
-        position = Position.objects.get(pk=job.position.id)  # Munkakör megnevezése
+        position = str(Position.objects.get(pk=job.position.id))  # Munkakör megnevezése
         position_projects = PositionProject.objects.filter(position=job.position)  # Munkakörhöz tartozó projektek
-        projects = [pp.project for pp in position_projects]
-
         if not position_projects:
             messages.success(request, 'Ehhez a munkakörhöz még nincs rendelve egyetlen projekt sem. '
                                       'Jelezd az adminisztrátornak!')
         else:
+            projects = [pp.project for pp in position_projects]
             return {'current_year': current_year, 'position': position, 'position_projects': projects}
-
     else:
         return {'current_year': current_year, 'position': '', 'projects': ''}

@@ -113,12 +113,63 @@ class PriceOffer(models.Model):
         ('5:', 'Elfogadott végleges árajánlat'),
     )
 
+    CURRENCY_CHOICE = (
+        ('HUF', 'Forint'),
+        ('EUR', 'Euro'),
+        ('USD', 'Dollár'),
+    )
+
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
     file_path = models.CharField(max_length=100)  # Árajánlat fájl útvonala
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICE, default='HUF')  # Valuta
     comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
     def __str__(self):
         return str(self.file_path)
+
+
+#  Termék csoportok
+class ProductGroup(models.Model):
+    group_name = models.CharField(max_length=100)  ## Termék csoport neve
+
+    def __str__(self):
+        return self.group_name
+
+
+# Termékek
+class Product(models.Model):
+    UNIT_CHOICE = (
+        ('db', 'darab'),
+        ('m', 'méter'),
+        ('cs', 'csomag'),
+        ('pár', 'pár'),
+    )
+    group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True)  # Termék csoportja
+    name = models.CharField(max_length=150)  # Termék neve
+    unit = models.CharField(max_length=3, choices=UNIT_CHOICE, default='db')  # Mértékegysége
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # Egységár forintban
+    comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
+
+    def __str__(self):
+        return self.name
+
+
+#  Árajánlat tételei
+class PriceOfferItem(models.Model):
+    CURRENCY_CHOICE = (
+        ('HUF', 'Forint'),
+        ('EUR', 'Euro'),
+        ('USD', 'Dollár'),
+    )
+
+    price_offer = models.ForeignKey(PriceOffer, on_delete=models.CASCADE)  # Árajánlat
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)  # Termék
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Mennyiség
+    price = models.DecimalField(max_digits=10, decimal_places=2)  # Egységár forintban
+    comment = models.CharField(max_length=150, null=True, blank=True)  # Megjegyzés
+
+    def __str__(self):
+        return self.product.name if self.product else 'N/A'
