@@ -1,4 +1,4 @@
-from . import views_members, views, views_projects02, views_projects04, views_projects05
+from . import views_members, views, views_crud, views_projects02, views_projects04, views_projects05
 
 from django.urls import path
 from django.conf import settings
@@ -14,6 +14,8 @@ urlpatterns = [
 
     path('<str:view_name>/<int:task_id>', views.view_names, name='view_names'),
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),
+
+    path('product_group_crud', views_crud.product_group_crud, name='product_group_crud'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),

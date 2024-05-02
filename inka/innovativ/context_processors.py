@@ -16,6 +16,7 @@ def menu_context(request):
         if not position_projects:
             messages.success(request, 'Ehhez a munkakörhöz még nincs rendelve egyetlen projekt sem. '
                                       'Jelezd az adminisztrátornak!')
+            return {'current_year': current_year, 'position': position, 'position_projects': []}
         else:
             projects = [pp.project for pp in position_projects]
             return {'current_year': current_year, 'position': position, 'position_projects': projects}

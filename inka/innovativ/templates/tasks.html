@@ -40,56 +40,54 @@
 			{% for task in tasks %}
 				<div class="card-body">
 					<div class="card-text">
-						<div>
-							<div class="row">
-								<div class="col-2 text-center">
-									{% if task.type == '2:' %}
-										<a href="{% url 'view_names' task.project.view_name task.id %}"
-										   class="btn btn-outline-danger btn-sm">{{ task.project }}</a>
-									{% elif task.type == '3:' %}
-										<a href="{% url 'view_names' task.project.view_name task.id %}"
-										   class="btn btn-outline-warning btn-sm">{{ task.project }}</a>
-									{% else %}
-										{{ task.project }}
-									{% endif %}
-								</div>
-								{% if task.type == '0:' %}
-									<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
-								{% elif task.type == '1:' %}
-									<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
-								{% elif task.type == '2:' %}
-									<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
+						<div class="row">
+							<div class="col-2 text-center">
+								{% if task.type == '2:' %}
+									<a href="{% url 'view_names' task.project.view_name task.id %}"
+									   class="btn btn-outline-danger btn-sm">{{ task.project }}</a>
 								{% elif task.type == '3:' %}
-									<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
-								{% elif task.type == '4:' %}
-									<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
-								{% elif task.type == '5:' %}
-									<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
+									<a href="{% url 'view_names' task.project.view_name task.id %}"
+									   class="btn btn-outline-warning btn-sm">{{ task.project }}</a>
 								{% else %}
-									<div class="col-9" style="text-align: justify">
+									{{ task.project }}
 								{% endif %}
-									{{ task.comment|linebreaksbr }}
-									</div>
-								<div class="col-1" style="font-size: 10px;">
-									{{ task.created_user }}
-									<div>
-										{{ task.created_at|date:"Y-m-d" }}
-									</div>
-									<div>
-										{% if task.type == '2:' %}
-											{{ task.days_passed }}
-										{% elif task.type == '3:' %}
-											{{ task.days_passed }}
-										{% else %}
-											{{ task.completed_at|date:"Y-m-d" }}
-										{% endif %}
-									</div>
+							</div>
+							{% if task.type == '0:' %}
+								<div class="col-9 {{ type_color.0.1 }}" style="text-align: justify">
+							{% elif task.type == '1:' %}
+								<div class="col-9 {{ type_color.1.1 }}" style="text-align: justify">
+							{% elif task.type == '2:' %}
+								<div class="col-9 {{ type_color.2.1 }}" style="text-align: justify">
+							{% elif task.type == '3:' %}
+								<div class="col-9 {{ type_color.3.1 }}" style="text-align: justify">
+							{% elif task.type == '4:' %}
+								<div class="col-9 {{ type_color.4.1 }}" style="text-align: justify">
+							{% elif task.type == '5:' %}
+								<div class="col-9 {{ type_color.5.1 }}" style="text-align: justify">
+							{% else %}
+								<div class="col-9" style="text-align: justify">
+							{% endif %}
+								{{ task.comment|linebreaksbr }}
+								</div>
+							<div class="col-1" style="font-size: 10px;">
+								{{ task.created_user }}
+								<div>
+									{{ task.created_at|date:"Y-m-d" }}
+								</div>
+								<div>
+									{% if task.type == '2:' %}
+										{{ task.days_passed }}
+									{% elif task.type == '3:' %}
+										{{ task.days_passed }}
+									{% else %}
+										{{ task.completed_at|date:"Y-m-d" }}
+									{% endif %}
 								</div>
 							</div>
 						</div>
-	<!--					<div class="card-footer text-body-secondary">-->
-	<!--						Lábléc-->
-	<!--					</div>-->
+<!--					<div class="card-footer text-body-secondary">-->
+<!--						Lábléc-->
+<!--					</div>-->
 					</div>
 				</div>
 			{% endfor %}

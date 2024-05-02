@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>Termék csoportok karbantatása</h3>
+	</div>
+	<br/>
+    <div class="row justify-content-center">
+		<div class="col-6 mb-2">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row text-start">
+						<div class="col-8">
+							Csoport neve
+						</div>
+						<div class="col-4">
+							Műveletek
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					{% for product_group in product_groups %}
+						<div class="row mb-2">
+							<div class="col-8">
+								{{ product_group }}
+							</div>
+							<div class="col-4">
+								<form method="POST">
+									{% csrf_token %}
+										<button type="submit" name="action" value="new_{{ product_group.id }}"
+												class="btn btn-outline-primary btn-sm">Új termék csoport
+										</button>
+										<button type="submit" name="action" value="update_{{ product_group.id }}"
+												class="btn btn-outline-primary btn-sm">Módosítás
+										</button>
+										<button type="button" class="btn btn-outline-primary btn-sm"
+												data-bs-toggle="modal" data-bs-target="#Modal{{ product_group.id }}">Törlés
+										</button>
+										<div class="modal fade" id="Modal{{ product_group.id }}" tabindex="-1"
+											 aria-labelledby="ModalLabel{{ product_group.id }}" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="ModalLabel{{ product_group.id }}">
+															Törölhetem a termék csoportot?</h1>
+														<button type="button" class="btn-close"
+																data-bs-dismiss="modal"	aria-label="Close">
+														</button>
+													</div>
+													<div class="modal-body">
+														{{ product_group }} - termék csoport törlés
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-outline-secondary btn-sm"
+																data-bs-dismiss="modal">Mégse
+														</button>
+														<button type="submit" class="btn btn-outline-danger btn-sm"
+														 name="action" value="delete_{{ product_group.id }}">Törlés
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+								</form>
+							</div>
+						</div>
+                    {% endfor %}
+                    <br/>
+                    {% include 'pager_bottom.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}>
