@@ -16,6 +16,8 @@ urlpatterns = [
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),
 
     path('product_group_crud', views_crud.product_group_crud, name='product_group_crud'),
+    path('product_group_update/<int:product_group_id>/<str:action_name>/', views_crud.product_group_update,
+         name='product_group_update'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),

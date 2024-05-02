@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from innovativ.form_crud import ProductGroupForm
 from innovativ.models import ProductGroup
 
 
@@ -19,15 +21,33 @@ def product_group_crud(request):
             action_name = action_parts[0]
             product_group_id = action_parts[1]
 
-            print('Action', action_name)
-            print('Termék csoport id', product_group_id)
-
-            if action_name == 'new':
-                pass
-            elif action_name == 'update':
-                pass
+            if action_name == 'new' or action_name == 'update':
+                return redirect('product_group_update', product_group_id=product_group_id, action_name=action_name)
             elif action_name == 'delete':
                 pass
 
     return render(request, 'product_group_crud.html', {'product_groups': product_group_page,
                                                        'page_list': product_group_page, 'page_range': page_range, })
+
+
+def product_group_update(request, product_group_id, action_name):
+    if action_name == 'update':
+        product_group = ProductGroup.objects.get(id=product_group_id)
+    elif action_name == 'new':
+        product_group = ''
+
+    if request.method == 'POST':
+        if action_name == 'update':
+            form = ProductGroupForm(request.POST or None, instance=product_group)
+        elif action_name == 'new':
+            form = ProductGroupForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('product_group_crud')
+    else:
+        if action_name == 'update':
+            form = ProductGroupForm(instance=product_group)
+        elif action_name == 'new':
+            form = ProductGroupForm()
+    return render(request, 'product_group_update.html', {'form': form})

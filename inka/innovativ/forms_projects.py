@@ -25,7 +25,6 @@ class CSVFileSelectForm(forms.Form):
 
 class EmailTemplateForm(forms.ModelForm):
     content = forms.CharField(widget=TinyMCE(), label=False)
-
     class Meta:
         model = EmailTemplate
         fields = ['subject', 'content']
