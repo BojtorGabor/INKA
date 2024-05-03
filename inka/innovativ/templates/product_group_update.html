@@ -12,7 +12,11 @@
                     <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
                         <div class="row">
                             <div class="text-center">
-                                Termék csoport név módosítása
+                                {% if action == 'new' %}
+                                    Új termék csoport
+                                {% else %}
+                                    Termék csoport név módosítása
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -151,7 +151,7 @@ class Product(models.Model):
     name = models.CharField(max_length=150)  # Termék neve
     unit = models.CharField(max_length=3, choices=UNIT_CHOICE, default='db')  # Mértékegysége
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Egységár forintban
-    comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
+    comment = models.TextField(max_length=1000, null=True, blank=True)  # Megjegyzés
 
     def __str__(self):
         return self.name
