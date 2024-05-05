@@ -15,12 +15,14 @@ urlpatterns = [
     path('<str:view_name>/<int:task_id>', views.view_names, name='view_names'),
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),
 
-    path('product_crud', views_crud.product_crud, name='product_crud'),
+    path('product_crud/', views_crud.product_crud, name='product_crud'),
     path('product_update/<int:product_id>/<str:action_name>/', views_crud.product_update,
          name='product_update'),
-    path('product_group_crud', views_crud.product_group_crud, name='product_group_crud'),
+    path('product_group_crud/', views_crud.product_group_crud, name='product_group_crud'),
     path('product_group_update/<int:product_group_id>/<str:action_name>/', views_crud.product_group_update,
          name='product_group_update'),
+
+    path('price_offer_update/<int:price_offer_id>/', views_crud.price_offer_update, name='price_offer_update'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),

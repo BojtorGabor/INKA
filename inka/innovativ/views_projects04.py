@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from innovativ.forms_projects import Reason
@@ -19,7 +19,7 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
             if action_name == 'new':
                 pass
             elif action_name == 'update':
-                pass
+                return redirect('price_offer_update', price_offer_id=price_offer_id)
             elif action_name == 'send':
                 pass
             elif action_name == 'accept':

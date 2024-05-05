@@ -1,8 +1,9 @@
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from innovativ.form_crud import ProductForm, ProductGroupForm
-from innovativ.models import Product, ProductGroup
+from innovativ.models import Product, ProductGroup, PriceOffer
 
 
 def product_crud(request):
@@ -101,3 +102,8 @@ def product_group_update(request, product_group_id, action_name):
         elif action_name == 'new':
             form = ProductGroupForm()
     return render(request, 'product_group_update.html', {'form': form, 'action': action_name})
+
+
+def price_offer_update(request, price_offer_id):
+    price_offer = PriceOffer.objects.get(pk=price_offer_id)
+    return render(request, 'price_offer_update.html', {'price_offer': price_offer})
