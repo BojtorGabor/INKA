@@ -11,43 +11,49 @@
 			{% include 'ugyfel_adatlap.html' %}
 		</div>
 
-		<div class="col-6 mb-2">
+		<div class="col-7 mb-2">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row text-start">
 						<div class="col-2">
 							Készült
 						</div>
+						<div class="col-1">
+							ID
+						</div>
 						<div class="col-3">
 							Állapot
 						</div>
-						<div class="col-7">
+						<div class="col-6">
 							Műveletek
 						</div>
 					</div>
 				</div>
 				<div class="card-body">
-					{% for price_offer in task.customer.priceoffer_set.all %}
-						<div class="row mb-2">
-							<div class="col-2">
-								{{ price_offer.created_at | date:"Y.m.d" }}
-							</div>
-							<div class="col-3">
-								<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
-								   class="btn btn-outline-primary btn-sm" target="_blank">
-									{{ price_offer.get_type_display }}</a>
-							</div>
-							<div class="col-7">
-								<div class="row">
-									{% if price_offer.type == '0:' %}
-										<div class="col-7">
-											<form method="POST">
-												{% csrf_token %}
-												<button type="submit" name="action" value="new_{{ price_offer.id }}"
-														class="btn btn-outline-primary btn-sm">Ebből új készítés
+					<form method="POST">
+						{% csrf_token %}
+						{% for price_offer in price_offers %}
+							<div class="row mb-2">
+								<div class="col-2">
+									{{ price_offer.created_at | date:"Y.m.d" }}
+								</div>
+								<div class="col-1">
+									{{ price_offer.id }}
+								</div>
+								<div class="col-3">
+									<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
+									   class="btn btn-outline-primary btn-sm" target="_blank">
+										{{ price_offer.get_type_display }}</a>
+								</div>
+								<div class="col-6">
+									<div class="row">
+										{% if price_offer.type == '0:' %}
+											<div class="col-8">
+												<button type="submit" name="action" value="makenew_{{ price_offer.id }}"
+														class="btn btn-outline-primary btn-sm me-2">Ebből új előzetes készítés
 												</button>
 												<button type="submit" name="action" value="update_{{ price_offer.id }}"
-														class="btn btn-outline-primary btn-sm">Módosítás
+														class="btn btn-outline-primary btn-sm me-2">Módosítás
 												</button>
 												<button type="button" class="btn btn-outline-primary btn-sm"
 														data-bs-toggle="modal" data-bs-target="#Modal01">Törlés
@@ -78,29 +84,20 @@
 														</div>
 													</div>
 												</div>
-											</form>
-										</div>
-										<div class="col-5">
-											<form method="POST">
-												{% csrf_token %}
+											</div>
+											<div class="col-4">
 												<button type="submit" name="action" value="send_{{ price_offer.id }}"
 														class="btn btn-outline-primary btn-sm">Küldés
 												</button>
-											</form>
-										</div>
-									{% endif %}
-									{% if price_offer.type == '1:' %}
-										<div class="col-7">
-											<form method="POST">
-												{% csrf_token %}
-												<button type="submit" name="action" value="new_{{ price_offer.id }}"
-														class="btn btn-outline-primary btn-sm">Ebből új készítés
+											</div>
+										{% endif %}
+										{% if price_offer.type == '1:' %}
+											<div class="col-8">
+												<button type="submit" name="action" value="makenew_{{ price_offer.id }}"
+														class="btn btn-outline-primary btn-sm">Ebből új előzetes készítés
 												</button>
-											</form>
-										</div>
-										<div class="col-5">
-											<form method="POST">
-												{% csrf_token %}
+											</div>
+											<div class="col-4">
 												<button type="button" class="btn btn-outline-primary btn-sm"
 												data-bs-toggle="modal" data-bs-target="#Modal02">Elfogadás
 												</button>
@@ -130,24 +127,24 @@
 														</div>
 													</div>
 												</div>
-											</form>
-										</div>
-									{% endif %}
+											</div>
+										{% endif %}
+									</div>
 								</div>
 							</div>
+						{% endfor %}
+						<hr>
+						<div class="row mb-2">
+							<div class="col">
+								<button type="submit" class="btn btn-outline-primary btn-sm"
+								 name="action" value="new_0">Új előzetes árajánlat készítése
+								</button>
+							</div>
 						</div>
-					{% endfor %}
-					<hr>
-					<div class="row mb-2">
-						<div class="col-5">
-						</div>
-						<div class="col-7">
-							<a href="#" class="btn btn-outline-primary btn-sm">Új előzetes árajánlat készítése</a>
-						</div>
-					</div>
+					</form>
+					{% include 'pager_bottom.html' %}
 				</div>
 			</div>
-
 		</div>
     </div>
 {% endblock %}>
