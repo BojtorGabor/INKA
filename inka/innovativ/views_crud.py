@@ -3,7 +3,7 @@ from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 
 from innovativ.form_crud import ProductForm, ProductGroupForm
-from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem
+from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Customer
 
 
 def product_crud(request):
@@ -115,28 +115,26 @@ def price_offer_update(request, price_offer_id):
     price_offer_item_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-
     if request.method == 'POST':
-        action = request.POST.get('action')
-        if action:
+        item_action = request.POST.get('item_action')
+        if item_action:
             # Szétválasztjuk az egyedi azonosítót és a művelet nevét
-            action_parts = action.split('_')
-            action_name = action_parts[0]
-            price_offer_item_id = action_parts[1]
+            item_action_parts = item_action.split('_')
+            item_action_name = item_action_parts[0]
+            price_offer_item_id = item_action_parts[1]
 
-            print('árajánlat tétel akció', action_name)
+            print('árajánlat tétel akció', item_action_name)
             print('Árajánlat tétel', price_offer_item_id)
 
-            if action_name == 'new' or action_name == 'update':
+            if item_action_name == 'new' or item_action_name == 'update':
                 # return redirect('product_update', product_id=product_id, action_name=action_name)
                 pass
-            elif action_name == 'delete':
+            elif item_action_name == 'delete':
                 pass
-            elif action_name == 'comment':
+            elif item_action_name == 'comment':
                 pass
-            elif action_name == 'makepdf':
+            elif item_action_name == 'makepdf':
                 pass
-
     return render(request, 'price_offer_update.html',
                   {'price_offer': price_offer, 'price_offer_items': price_offer_item_page,
                    'price_offer_sum_value': price_offer_sum_value['value__sum'],

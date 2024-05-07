@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="text-center">
         <h3>{{ price_offer.customer }} - {{ price_offer.created_at | date:"Y.m.d" }} -
-			{{ price_offer.id }}. számú előzetes árajánlat módosítása</h3>
+			{{ price_offer.id }}. számú előzetes árajánlat</h3>
 	</div>
 	<br/>
     <div class="row justify-content-center">
@@ -67,7 +67,7 @@
 									{{ price_offer_item.value | floatformat:2 }}
 								</div>
 								<div class="col-2">
-									<button type="submit" name="action" value="update_{{ price_offer_item.id }}"
+									<button type="submit" name="item_action" value="update_{{ price_offer_item.id }}"
 											class="btn btn-outline-primary btn-sm me-2">Módosítás
 									</button>
 									<button type="button" class="btn btn-outline-primary btn-sm"
@@ -92,7 +92,7 @@
 															data-bs-dismiss="modal">Mégse
 													</button>
 													<button type="submit" class="btn btn-outline-danger btn-sm"
-													 name="action" value="delete_{{ price_offer_item.id }}">Törlés
+													 name="item_action" value="delete_{{ price_offer_item.id }}">Törlés
 													</button>
 												</div>
 											</div>
@@ -120,14 +120,14 @@
 						</div>
 						<div class="row">
 							<div class="col">
-								<button type="submit" name="action" value="new_0"
+								<button type="submit" name="item_action" value="new_0"
 										class="btn btn-outline-primary btn-sm me-2">Új tétel
 								</button>
-								<button type="submit" name="action" value="comment_0"
+								<button type="submit" name="item_action" value="comment_0"
 										class="btn btn-outline-primary btn-sm me-2">Árajánlat megjegyzés
 								</button>
-								<button type="submit" name="action" value="makepdf_0"
-										class="btn btn-outline-primary btn-sm">PDF file készítés ügyfél részére
+								<button type="submit" name="item_action" value="makepdf_0"
+										class="btn btn-outline-primary btn-sm">PDF file aktualizálása
 								</button>
 							</div>
 						</div>

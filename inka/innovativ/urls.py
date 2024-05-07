@@ -19,7 +19,7 @@ urlpatterns = [
     path('product_update/<int:product_id>/<str:action_name>/', views_crud.product_update,
          name='product_update'),
     path('product_group_crud/', views_crud.product_group_crud, name='product_group_crud'),
-    path('product_group_update/<int:product_group_id>/<str:action_name>/', views_crud.product_group_update,
+    path('product_group_update/<int:product_group_id>/', views_crud.product_group_update,
          name='product_group_update'),
 
     path('price_offer_update/<int:price_offer_id>/', views_crud.price_offer_update, name='price_offer_update'),
