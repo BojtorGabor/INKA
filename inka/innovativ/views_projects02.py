@@ -68,7 +68,8 @@ def p_02_1_telefonszam_keres(request, task_id):
         return render(request, 'home.html', {})
     else:
         # a feladathoz tartozó email sablon
-        email_template = EmailTemplate.objects.get(title='02.1. Email kérés elérhető telefonszámért')
+        email_template_name = '02.1. Email kérés elérhető telefonszámért'
+        email_template = EmailTemplate.objects.get(title=email_template_name)
 
         # szerkeszthető szöveg a sblon alapján
         template = Template(email_template.content)
@@ -90,26 +91,25 @@ def p_02_1_telefonszam_keres(request, task_id):
                 task.save()
                 if sent:
                     messages.success(request, 'E-mail sikeresen elküldve.')
-                    Task.objects.create(type='0:',  # Esemény bejegyzésés
+                    Task.objects.create(type='0:',  # Esemény bejegyzés
                                         type_color='0:',
                                         project=task.project,
                                         customer=task.customer,
-                                        comment=f'{task.customer} ügyfélnek - 02.1. Email kérés elérhető telefonszámért - '
+                                        comment=f'{task.customer} ügyfélnek - {email_template_name} - '
                                                 f'nevű sablon email sikeresen kiküldve.',
                                         created_user=request.user)
                 else:
-                    Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
+                    Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
                                         type_color='1:',
                                         project=task.project,
                                         customer=task.customer,
-                                        comment=f'{task.customer} ügyfélnek sikertelen lett az email küldés.',
+                                        comment=f'{task.customer} ügyfélnek - {email_template_name} - '
+                                            f'nevű sablon küldése nem sikerült.',
                                         created_user=request.user)
                     messages.success(request,'Hiba történt az e-mail küldése közben!')
                 return render(request, 'home.html', {})
-
         else:
             form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
-
         return render(request, 'p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
 
 

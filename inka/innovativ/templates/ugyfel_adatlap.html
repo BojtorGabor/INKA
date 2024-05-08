@@ -91,10 +91,13 @@
             <div class="accordion-body">
                 {% for price_offer in task.customer.priceoffer_set.all %}
                     <div class="row mb-2">
-                        <div class="col">
+                        <div class="col-2">
                             {{ price_offer.created_at | date:"Y.m.d" }}
                         </div>
-                        <div class="col text-end">
+                        <div class="col-2 text-end">
+                            {{ price_offer.id }}
+                        </div>
+                        <div class="col-8 text-end">
                             <a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
                                class="btn btn-outline-primary btn-sm" target="_blank">{{ price_offer.get_type_display }}</a>
                         </div>

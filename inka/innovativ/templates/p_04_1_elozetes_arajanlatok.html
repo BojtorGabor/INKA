@@ -15,7 +15,7 @@
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row text-start">
-						<div class="col-2">
+						<div class="col-1">
 							Készült
 						</div>
 						<div class="col-1">
@@ -34,7 +34,7 @@
 						{% csrf_token %}
 						{% for price_offer in price_offers %}
 							<div class="row mb-2">
-								<div class="col-2">
+								<div class="col-1">
 									{{ price_offer.created_at | date:"Y.m.d" }}
 								</div>
 								<div class="col-1">
@@ -71,7 +71,8 @@
 															</div>
 															<div class="modal-body">
 																{{ price_offer.created_at | date:"Y.m.d" }} -
-																{{ price_offer.id }}. számú árajánlat törlés.
+																{{ price_offer.id }}. számú
+																{{ price_offer.get_type_display }}törlés.
 															</div>
 															<div class="modal-footer">
 																<button type="button" class="btn btn-outline-secondary btn-sm"
@@ -85,7 +86,7 @@
 													</div>
 												</div>
 											</div>
-											<div class="col-4">
+											<div class="col-4 text-end">
 												<button type="submit" name="action" value="send_{{ price_offer.id }}"
 														class="btn btn-outline-primary btn-sm">Küldés
 												</button>
@@ -97,9 +98,9 @@
 														class="btn btn-outline-primary btn-sm">Ebből új előzetes készítés
 												</button>
 											</div>
-											<div class="col-4">
+											<div class="col-4 text-end">
 												<button type="button" class="btn btn-outline-primary btn-sm"
-												data-bs-toggle="modal" data-bs-target="#Modal02">Elfogadás
+												data-bs-toggle="modal" data-bs-target="#Modal02{{ price_offer.id }}">Elfogadás
 												</button>
 												<div class="modal fade" id="Modal02{{ price_offer.id }}" tabindex="-1"
 													 aria-labelledby="ModalLabel02{{ price_offer.id }}" aria-hidden="true">
@@ -113,8 +114,11 @@
 																</button>
 															</div>
 															<div class="modal-body">
-																{{ price_offer.created_at | date:"Y.m.d" }} -
-																{{ price_offer.get_type_display }} elfogadás.
+																<div class=" text-start">
+																	{{ price_offer.created_at | date:"Y.m.d" }} -
+																	{{ price_offer.id }}. számú
+																	{{ price_offer.get_type_display }} elfogadás.
+																</div>
 															</div>
 															<div class="modal-footer">
 																<button type="button" class="btn btn-outline-secondary btn-sm"
@@ -122,6 +126,48 @@
 																</button>
 																<button type="submit" class="btn btn-outline-danger btn-sm"
 																 name="action" value="accept_{{ price_offer.id }}">Elfogadás
+																</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
+										{% if price_offer.type == '2:' %}
+											<div class="col-8">
+												<button type="submit" name="action" value="makenew_{{ price_offer.id }}"
+														class="btn btn-outline-primary btn-sm">Ebből új előzetes készítés
+												</button>
+											</div>
+											<div class="col-4 text-end">
+												<button type="button" class="btn btn-outline-primary btn-sm"
+												data-bs-toggle="modal" data-bs-target="#Modal03{{ price_offer.id }}">
+													Visszavonás
+												</button>
+												<div class="modal fade" id="Modal03{{ price_offer.id }}" tabindex="-1"
+													 aria-labelledby="ModalLabel03{{ price_offer.id }}" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h1 class="modal-title fs-5" id="ModalLabel03{{ price_offer.id }}">
+																	Visszavonod az Előzetes árajánlat elfogadását?</h1>
+																<button type="button" class="btn-close"
+																		data-bs-dismiss="modal"	aria-label="Close">
+																</button>
+															</div>
+															<div class="modal-body">
+																<div class=" text-start">
+																	{{ price_offer.created_at | date:"Y.m.d" }} -
+																	{{ price_offer.id }}. számú
+																	{{ price_offer.get_type_display }} visszavonás.
+																</div>
+															</div>
+															<div class="modal-footer">
+																<button type="button" class="btn btn-outline-secondary btn-sm"
+																		data-bs-dismiss="modal">Mégse
+																</button>
+																<button type="submit" class="btn btn-outline-danger btn-sm"
+																 name="action" value="storno_{{ price_offer.id }}">Visszavonás
 																</button>
 															</div>
 														</div>

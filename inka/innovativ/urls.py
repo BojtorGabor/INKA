@@ -37,6 +37,9 @@ urlpatterns = [
 
     path('p_04_1_elozetes_arajanlatok/<int:task_id>/', views_projects04.p_04_1_elozetes_arajanlatok,
          name='p_04_1_elozetes_arajanlatok'),
+    path('p_04_1_elozetes_arajanlat_kuldes/<int:task_id>/<int:price_offer_id>/',
+         views_projects04.p_04_1_elozetes_arajanlat_kuldes,
+         name='p_04_1_elozetes_arajanlat_kuldes'),
     path('p_04_1_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects04.p_04_1_ugyfel_visszaadasa_02_nek,
          name='p_04_1_ugyfel_visszaadasa_02_nek'),
 
