@@ -11,38 +11,38 @@
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row mb-1 text-start">
-						<div class="col-5">
+						<div class="col-4">
 							Termék neve
 						</div>
-						<div class="col-2 text-end">
-							Mennyiség
+						<div class="col-1 text-end">
+							Menny.
 						</div>
 						<div class="col-1 text-start">
 							Egység
 						</div>
-						<div class="col-1 text-end">
+						<div class="col-2 text-end">
 							Egységár
 						</div>
-						<div class="col-1 text-end">
+						<div class="col-2 text-end">
 							Összeg
-						</div>
-						<div class="col-2">
-							Műveletek
 						</div>
 					</div>
 					<div class="row text-start">
 						<div class="col-1">
 						</div>
-						<div class="col-5">
-							Megjegyzés
+						<div class="col-4">
+							Termék megjegyzés
 						</div>
 						<div class="col-2">
 						</div>
 						<div class="col-1 text-end">
 							({{ price_offer.get_currency_display }})
 						</div>
-						<div class="col-1 text-end">
+						<div class="col-2 text-end">
 							({{ price_offer.get_currency_display }})
+						</div>
+						<div class="col-2 text-end">
+							Tétel törlés
 						</div>
 					</div>
 				</div>
@@ -51,25 +51,46 @@
 						{% csrf_token %}
 						{% for price_offer_item in price_offer_items %}
 							<div class="row mb-2">
-								<div class="col-5">
+								<div class="col-4">
 									{{ price_offer_item }}
 								</div>
-								<div class="col-2 text-end">
+								<div class="col-1 text-end">
 									{{ price_offer_item.amount }}
 								</div>
 								<div class="col-1 text-start">
 									{{ price_offer_item.product.get_unit_display }}
 								</div>
-								<div class="col-1 text-end">
+								<div class="col-2 text-end">
 									{{ price_offer_item.price }}
 								</div>
-								<div class="col-1 text-end">
+								<div class="col-2 text-end">
 									{{ price_offer_item.value | floatformat:2 }}
 								</div>
-								<div class="col-2">
-									<button type="submit" name="item_action" value="update_{{ price_offer_item.id }}"
-											class="btn btn-outline-primary btn-sm me-2">Módosítás
+							</div>
+							<div class="row mb-2">
+								<div class="col-1">
+									<button type="submit" name="item_action" value="product_{{ price_offer_item.id }}"
+											class="btn btn-outline-primary btn-sm">Termék
 									</button>
+								</div>
+								<div class="col-3">
+									{{ price_offer_item.product.comment }}
+								</div>
+								<div class="col-1 text-end">
+									<button type="submit" name="item_action" value="amount_{{ price_offer_item.id }}"
+											class="btn btn-outline-primary btn-sm">Menny.
+									</button>
+								</div>
+								<div class="col-2">
+								</div>
+								<div class="col-1 text-end">
+									<button type="submit" name="item_action" value="price_{{ price_offer_item.id }}"
+											class="btn btn-outline-primary btn-sm">Egységár
+									</button>
+								</div>
+								<div class="col-2">
+								</div>
+								<div class="col-2 text-end">
 									<button type="button" class="btn btn-outline-primary btn-sm"
 											data-bs-toggle="modal" data-bs-target="#Modal{{ price_offer_item.id }}">Törlés
 									</button>
@@ -84,7 +105,7 @@
 															data-bs-dismiss="modal"	aria-label="Close">
 													</button>
 												</div>
-												<div class="modal-body">
+												<div class="modal-body text-start">
 													{{ price_offer_item }} - termék törlés
 												</div>
 												<div class="modal-footer">
@@ -100,21 +121,14 @@
 									</div>
 								</div>
 							</div>
-							<div class="row mb-2">
-								<div class="col-1">
-								</div>
-								<div class="col-3">
-									{{ price_offer_item.product.comment }}
-								</div>
-							</div>
 							<div class="row">
 								<hr>
 							</div>
 						{% endfor %}
 						<div class="row mb-2">
-							<div class="col-9">
+							<div class="col-8">
 							</div>
-							<div class="h6 col-1 text-end">
+							<div class="h6 col-2 text-end">
 								{{ price_offer_sum_value | floatformat:2 }}
 							</div>
 						</div>
@@ -126,6 +140,9 @@
 								<button type="submit" name="item_action" value="comment_0"
 										class="btn btn-outline-primary btn-sm me-2">Árajánlat megjegyzés
 								</button>
+								<button type="submit" name="item_action" value="changemoney_0"
+										class="btn btn-outline-primary btn-sm me-2">Valuta váltás
+								</button>
 								<a href="{{ MEDIA_URL }}{{ price_offer.customer.id }}/{{ price_offer.file_path }}"
 								   class="btn btn-outline-primary btn-sm me-2" target="_blank">
 									PDF file megtekintése</a>
@@ -135,6 +152,7 @@
 							</div>
 						</div>
 					</form>
+					<br/>
 					{% include 'pager_bottom.html' %}
 				</div>
 			</div>

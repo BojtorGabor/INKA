@@ -28,3 +28,25 @@ class ProductGroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductGroupForm, self).__init__(*args, **kwargs)
         self.fields['group_name'].widget.attrs['class'] = 'form-control'
+
+
+# class PriceOfferItemForm(forms.Form):
+#     amount = forms.DecimalField(max_digits=10, decimal_places=2, label='Mennyiség')
+#     price = forms.DecimalField(max_digits=10, decimal_places=2, label='Egységár')
+#     comment = forms.CharField(required=False, label='Megjegyzés')
+#
+#     def __init__(self, *args, **kwargs):
+#         super(PriceOfferItemForm, self).__init__(*args, **kwargs)
+
+
+# class PriceOfferItemForm(forms.ModelForm):
+#     class Meta:
+#         model = PriceOfferItem
+#         fields = ['product', 'amount', 'price', 'comment']
+#
+#     def __init__(self, *args, **kwargs):
+#         super(PriceOfferItemForm, self).__init__(*args, **kwargs)
+#         self.fields['product'].widget.attrs['class'] = 'form-control'
+#         self.fields['amount'].widget.attrs['class'] = 'form-control'
+#         self.fields['price'].widget.attrs['class'] = 'form-control'
+#         self.fields['comment'].widget.attrs['class'] = 'form-control'

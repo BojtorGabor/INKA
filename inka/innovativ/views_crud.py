@@ -3,7 +3,7 @@ from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 
 from innovativ.form_crud import ProductForm, ProductGroupForm
-from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Customer
+from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem
 
 
 def product_crud(request):
@@ -123,19 +123,39 @@ def price_offer_update(request, price_offer_id):
             item_action_name = item_action_parts[0]
             price_offer_item_id = item_action_parts[1]
 
-            print('árajánlat tétel akció', item_action_name)
-            print('Árajánlat tétel', price_offer_item_id)
-
-            if item_action_name == 'new' or item_action_name == 'update':
-                # return redirect('product_update', product_id=product_id, action_name=action_name)
+            if item_action_name == 'product':  # Árajánlat tételének Termék kiválasztása
+                return redirect('price_offer_item_product', price_offer_id=price_offer_id,
+                                price_offer_item_id=price_offer_item_id)
+            elif item_action_name == 'amount':
+                pass
+            elif item_action_name == 'price':
                 pass
             elif item_action_name == 'delete':
                 pass
+            elif item_action_name == 'new':  # Új árajánlat tételt vesz fel
+                PriceOfferItem.objects.create(price_offer=price_offer,)
             elif item_action_name == 'comment':
+                pass
+            elif item_action_name == 'changemoney':
                 pass
             elif item_action_name == 'makepdf':
                 pass
+        return redirect(request.path)  # Frissül az oldal
     return render(request, 'price_offer_update.html',
                   {'price_offer': price_offer, 'price_offer_items': price_offer_item_page,
                    'price_offer_sum_value': price_offer_sum_value['value__sum'],
                    'page_list': price_offer_item_page, 'page_range': page_range,})
+
+
+def price_offer_item_product(request, price_offer_id, price_offer_item_id):
+    product_group = ProductGroup.objects.all()  # Összes termékcsoport
+    price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
+
+    if request.method == 'POST':
+        product_action = request.POST.get('product_action')  # Product.id-vel jön vissza
+        product = Product.objects.get(pk=product_action)  # A kiválasztott termék
+        price_offer_item.product = product  # Árajánlat tételének termék beállítása
+        price_offer_item.price = product.price  # A termék alapértelmezett árának beállítása
+        price_offer_item.save()
+        return redirect('price_offer_update', price_offer_id=price_offer_id)
+    return render(request, 'price_offer_item_product.html', {'product_groups': product_group})

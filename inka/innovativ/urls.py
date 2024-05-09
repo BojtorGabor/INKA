@@ -23,6 +23,8 @@ urlpatterns = [
          name='product_group_update'),
 
     path('price_offer_update/<int:price_offer_id>/', views_crud.price_offer_update, name='price_offer_update'),
+    path('price_offer_item_product/<int:price_offer_id>/<int:price_offer_item_id>/', views_crud.price_offer_item_product,
+         name='price_offer_item_product'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),
