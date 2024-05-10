@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h3>{{ price_offer.customer }} - {{ price_offer.created_at | date:"Y.m.d" }} -
+			{{ price_offer.id }}. számú előzetes árajánlat</h3>
+    </div>
+    <br/>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-4 mb-3">
+                <div class="card">
+                    <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+                        <div class="row">
+                            <div class="text-center">
+                                Az árajánlat megjegyzése
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col">
+                                    {{ form.comment.label_tag }}
+                                    {{ form.comment }}
+                            </div>
+                        </div>
+                        <br/>
+                        <div>
+                            <button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+        </div>
+    </form>
+{% endblock %}>

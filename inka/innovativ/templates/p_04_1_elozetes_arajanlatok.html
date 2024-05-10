@@ -41,9 +41,16 @@
 									{{ price_offer.id }}
 								</div>
 								<div class="col-3">
-									<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
-									   class="btn btn-outline-primary btn-sm" target="_blank">
-										{{ price_offer.get_type_display }}</a>
+									{% if price_offer.type == '2:' %}
+										<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
+										   class="btn btn-outline-success btn-sm" target="_blank">
+											{{ price_offer.get_type_display }}</a>
+									{% else %}
+										<a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
+										   class="btn btn-outline-primary btn-sm" target="_blank">
+											{{ price_offer.get_type_display }}</a>
+									{% endif %}
+
 								</div>
 								<div class="col-6">
 									<div class="row">

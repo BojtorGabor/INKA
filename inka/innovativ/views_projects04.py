@@ -86,7 +86,7 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                               f'számú új árajánlathoz most még az eredeti pdf fájl tartalma tartozik! '
                                               f'Ne felejtsd el majd aktualizálni a tételek módosítása után!')
             elif action_name == 'update':
-                return redirect('price_offer_update', price_offer_id=price_offer_id)
+                return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
             elif action_name == 'delete':  # Árajánlat törlése
                 price_offer = PriceOffer.objects.get(pk=price_offer_id)
                 pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer.id}', f'{price_offer.file_path}')

@@ -2,7 +2,8 @@ from django.core.paginator import Paginator
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 
-from innovativ.form_crud import ProductForm, ProductGroupForm
+from innovativ.form_crud import (ProductForm, ProductGroupForm, PriceOfferItemAmountForm, PriceOfferItemPriceForm,
+                                 PriceOfferCommentForm)
 from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem
 
 
@@ -104,9 +105,10 @@ def product_group_update(request, product_group_id, action_name):
     return render(request, 'product_group_update.html', {'form': form, 'action': action_name})
 
 
-def price_offer_update(request, price_offer_id):
+def price_offer_update(request, price_offer_id, task_id):
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
-    price_offer_item = PriceOfferItem.objects.filter(price_offer=price_offer).order_by('product__name')
+    price_offer_item = (PriceOfferItem.objects.filter(price_offer=price_offer).
+                        order_by('product__group__group_name', 'product__name'))
     price_offer_sum_value = PriceOfferItem.objects.filter(price_offer=price_offer).aggregate(value__sum=Sum(
         F('amount') * F('price')))
 
@@ -125,21 +127,26 @@ def price_offer_update(request, price_offer_id):
 
             if item_action_name == 'product':  # Árajánlat tételének Termék kiválasztása
                 return redirect('price_offer_item_product', price_offer_id=price_offer_id,
-                                price_offer_item_id=price_offer_item_id)
+                                price_offer_item_id=price_offer_item_id, task_id=task_id)
             elif item_action_name == 'amount':
-                pass
+                return redirect('price_offer_item_amount', price_offer_id=price_offer_id,
+                                price_offer_item_id=price_offer_item_id, task_id=task_id)
             elif item_action_name == 'price':
-                pass
+                return redirect('price_offer_item_price', price_offer_id=price_offer_id,
+                                price_offer_item_id=price_offer_item_id, task_id=task_id)
             elif item_action_name == 'delete':
-                pass
+                delete_item = PriceOfferItem.objects.get(pk=price_offer_item_id)
+                delete_item.delete()
             elif item_action_name == 'new':  # Új árajánlat tételt vesz fel
                 PriceOfferItem.objects.create(price_offer=price_offer,)
             elif item_action_name == 'comment':
-                pass
+                return redirect('price_offer_comment', price_offer_id=price_offer_id, task_id=task_id)
             elif item_action_name == 'changemoney':
                 pass
             elif item_action_name == 'makepdf':
                 pass
+            elif item_action_name == 'back':
+                return redirect('p_04_1_elozetes_arajanlatok', task_id=task_id)
         return redirect(request.path)  # Frissül az oldal
     return render(request, 'price_offer_update.html',
                   {'price_offer': price_offer, 'price_offer_items': price_offer_item_page,
@@ -147,8 +154,8 @@ def price_offer_update(request, price_offer_id):
                    'page_list': price_offer_item_page, 'page_range': page_range,})
 
 
-def price_offer_item_product(request, price_offer_id, price_offer_item_id):
-    product_group = ProductGroup.objects.all()  # Összes termékcsoport
+def price_offer_item_product(request, price_offer_id, price_offer_item_id, task_id):
+    product_group = ProductGroup.objects.all(). order_by('group_name')  # Összes termékcsoport
     price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
 
     if request.method == 'POST':
@@ -157,5 +164,55 @@ def price_offer_item_product(request, price_offer_id, price_offer_item_id):
         price_offer_item.product = product  # Árajánlat tételének termék beállítása
         price_offer_item.price = product.price  # A termék alapértelmezett árának beállítása
         price_offer_item.save()
-        return redirect('price_offer_update', price_offer_id=price_offer_id)
-    return render(request, 'price_offer_item_product.html', {'product_groups': product_group})
+        return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    return render(request, 'price_offer_item_product.html',
+                  {'product_groups': product_group, 'price_offer_item': price_offer_item})
+
+
+def price_offer_item_amount(request, price_offer_id, price_offer_item_id, task_id):
+    price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
+
+    if request.method == 'POST':
+        form = PriceOfferItemAmountForm(request.POST)
+        if form.is_valid():
+            item_amount = form.cleaned_data['amount']
+            price_offer_item.amount = item_amount
+            price_offer_item.save()
+            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    else:
+        form = PriceOfferItemAmountForm(initial={'amount': price_offer_item.amount})
+
+    return render(request, 'price_offer_item_amount.html',
+                  {'price_offer_item': price_offer_item, 'form': form})
+
+
+def price_offer_item_price(request, price_offer_id, price_offer_item_id, task_id):
+    price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
+
+    if request.method == 'POST':
+        form = PriceOfferItemPriceForm(request.POST)
+        if form.is_valid():
+            item_price = form.cleaned_data['price']
+            price_offer_item.price = item_price
+            price_offer_item.save()
+            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    else:
+        form = PriceOfferItemPriceForm(initial={'price': price_offer_item.price})
+
+    return render(request, 'price_offer_item_price.html',
+                  {'price_offer_item': price_offer_item, 'form': form})
+
+
+def price_offer_comment(request, price_offer_id, task_id):
+    price_offer = PriceOffer.objects.get(pk= price_offer_id)  # A módosítandó árajánlat
+
+    if request.method == 'POST':
+        form = PriceOfferCommentForm(request.POST or None, instance=price_offer)
+        if form.is_valid():
+            form.save()
+            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    else:
+        form = PriceOfferCommentForm(instance=price_offer)
+
+    return render(request, 'price_offer_comment.html',
+                  {'price_offer': price_offer, 'form': form})
