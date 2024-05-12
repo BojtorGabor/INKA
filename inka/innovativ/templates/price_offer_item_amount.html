@@ -18,10 +18,14 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-4">
-                                    {{ form.amount.label_tag }}
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-4">
+                                    {{ form.amount.label_tag }} ({{ unit_choice }})
+                                </div>
+                                <div class="col">
                                     {{ form.amount }}
+                                </div>
                             </div>
                         </div>
                         <br/>

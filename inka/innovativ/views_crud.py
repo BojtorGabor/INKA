@@ -171,36 +171,36 @@ def price_offer_item_product(request, price_offer_id, price_offer_item_id, task_
 
 def price_offer_item_amount(request, price_offer_id, price_offer_item_id, task_id):
     price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
+    product = price_offer_item.product
+    unit_choice = product.get_unit_display()
 
     if request.method == 'POST':
-        form = PriceOfferItemAmountForm(request.POST)
+        form = PriceOfferItemAmountForm(request.POST or None, instance=price_offer_item)
         if form.is_valid():
-            item_amount = form.cleaned_data['amount']
-            price_offer_item.amount = item_amount
-            price_offer_item.save()
+            form.save()
             return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
     else:
-        form = PriceOfferItemAmountForm(initial={'amount': price_offer_item.amount})
+        form = PriceOfferItemAmountForm(instance=price_offer_item)
 
     return render(request, 'price_offer_item_amount.html',
-                  {'price_offer_item': price_offer_item, 'form': form})
+                  {'price_offer_item': price_offer_item, 'form': form, 'unit_choice': unit_choice})
 
 
 def price_offer_item_price(request, price_offer_id, price_offer_item_id, task_id):
     price_offer_item = PriceOfferItem.objects.get(pk= price_offer_item_id)  # A módosítandó árajánlat tétel
+    price_offer = PriceOffer.objects.get(pk=price_offer_id)
+    currency = price_offer.currency
 
     if request.method == 'POST':
-        form = PriceOfferItemPriceForm(request.POST)
+        form = PriceOfferItemPriceForm(request.POST or None, instance=price_offer_item)
         if form.is_valid():
-            item_price = form.cleaned_data['price']
-            price_offer_item.price = item_price
-            price_offer_item.save()
+            form.save()
             return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
     else:
-        form = PriceOfferItemPriceForm(initial={'price': price_offer_item.price})
+        form = PriceOfferItemPriceForm(instance=price_offer_item)
 
     return render(request, 'price_offer_item_price.html',
-                  {'price_offer_item': price_offer_item, 'form': form})
+                  {'price_offer_item': price_offer_item, 'form': form, 'currency': currency})
 
 
 def price_offer_comment(request, price_offer_id, task_id):

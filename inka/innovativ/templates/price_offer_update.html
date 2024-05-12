@@ -36,10 +36,10 @@
 						<div class="col-2">
 						</div>
 						<div class="col-1 text-end">
-							({{ price_offer.get_currency_display }})
+							({{ price_offer.currency }})
 						</div>
 						<div class="col-2 text-end">
-							({{ price_offer.get_currency_display }})
+							({{ price_offer.currency }})
 						</div>
 						<div class="col-2 text-end">
 							Tétel törlés
@@ -133,9 +133,22 @@
 								<button type="submit" name="item_action" value="comment_0"
 										class="btn btn-outline-primary btn-sm me-2">Árajánlat megjegyzés
 								</button>
-								<button type="submit" name="item_action" value="changemoney_0"
-										class="btn btn-outline-primary btn-sm me-2">Valuta váltás
-								</button>
+								{% if price_offer.currency == 'HUF' %}
+									<button type="submit" name="item_action" value="changemoneyHUF-EUR_0"
+											class="btn btn-outline-primary btn-sm me-2">Valuta váltás HUF->EUR
+									</button>
+									<button type="submit" name="item_action" value="changemoneyHUF-USD_0"
+											class="btn btn-outline-primary btn-sm me-2">Valuta váltás HUF->USD
+									</button>
+								{% elif price_offer.currency == 'EUR' %}
+									<button type="submit" name="item_action" value="changemoneyEUR-HUF_0"
+											class="btn btn-outline-primary btn-sm me-2">Valuta váltás EUR->HUF
+									</button>
+								{% elif price_offer.currency == 'USD' %}
+									<button type="submit" name="item_action" value="changemoneyUSD-HUF_0"
+											class="btn btn-outline-primary btn-sm me-2">Valuta váltás USD->HUF
+									</button>
+								{% endif %}
 								<a href="{{ MEDIA_URL }}{{ price_offer.customer.id }}/{{ price_offer.file_path }}"
 								   class="btn btn-outline-primary btn-sm me-2" target="_blank">
 									PDF file megtekintése</a>

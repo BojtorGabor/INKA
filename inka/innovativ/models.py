@@ -113,16 +113,10 @@ class PriceOffer(models.Model):
         ('5:', 'Elfogadott végleges árajánlat'),
     )
 
-    CURRENCY_CHOICE = (
-        ('HUF', 'Forint'),
-        ('EUR', 'Euro'),
-        ('USD', 'Dollár'),
-    )
-
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
     file_path = models.CharField(max_length=100, null=True)  # PDF Árajánlat fájl útvonala
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICE, default='HUF')  # Valuta
+    currency = models.CharField(max_length=3, default='HUF')  # Valuta
     comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja

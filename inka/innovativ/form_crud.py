@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, ProductGroup, PriceOffer
+from .models import Product, ProductGroup, PriceOffer, PriceOfferItem
 
 
 class ProductForm(forms.ModelForm):
@@ -30,18 +30,25 @@ class ProductGroupForm(forms.ModelForm):
         self.fields['group_name'].widget.attrs['class'] = 'form-control'
 
 
-class PriceOfferItemAmountForm(forms.Form):
-    amount = forms.DecimalField(max_digits=10, decimal_places=2, label='Mennyiség')
+class PriceOfferItemAmountForm(forms.ModelForm):
+    class Meta:
+        model = PriceOfferItem
+        fields = ['amount',]
+        labels = {'amount': 'Mennyiség'}
 
     def __init__(self, *args, **kwargs):
         super(PriceOfferItemAmountForm, self).__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['class'] = 'form-control'
 
 
-class PriceOfferItemPriceForm(forms.Form):
-    price = forms.DecimalField(max_digits=10, decimal_places=2, label='Egységár')
+class PriceOfferItemPriceForm(forms.ModelForm):
+    class Meta:
+        model = PriceOfferItem
+        fields = ['price']
+        labels = {'price': 'Egységár'}
 
     def __init__(self, *args, **kwargs):
+        currency = kwargs.pop('currency', None)
         super(PriceOfferItemPriceForm, self).__init__(*args, **kwargs)
         self.fields['price'].widget.attrs['class'] = 'form-control'
 
