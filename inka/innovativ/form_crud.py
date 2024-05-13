@@ -5,9 +5,9 @@ from .models import Product, ProductGroup, PriceOffer, PriceOfferItem
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['group', 'name', 'unit', 'price', 'comment']
+        fields = ['group', 'name', 'unit', 'price', 'comment', 'output_power']
         labels = {'group': 'Termék csoport név', 'name': 'Termék név', 'unit': 'Mértékegység',
-                  'price': 'Egységár', 'comment': 'Megjegyzés'}
+                  'price': 'Egységár', 'comment': 'Megjegyzés', 'output_power': 'Kimeneti teljesítmény (kW)'}
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -17,6 +17,7 @@ class ProductForm(forms.ModelForm):
         self.fields['price'].widget.attrs['class'] = 'form-control'
         self.fields['comment'].widget.attrs['class'] = 'form-control'
         self.fields['comment'].widget.attrs['rows'] = 3
+        self.fields['output_power'].widget.attrs['class'] = 'form-control'
 
 
 class ProductGroupForm(forms.ModelForm):
@@ -63,3 +64,16 @@ class PriceOfferCommentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PriceOfferCommentForm, self).__init__(*args, **kwargs)
         self.fields['comment'].widget.attrs['class'] = 'form-control'
+
+
+
+
+class PriceOfferChangeForm(forms.ModelForm):
+    class Meta:
+        model = PriceOffer
+        fields = ['change_rating',]
+        labels = {'change_rating': '1 valuta egység'}
+
+    def __init__(self, *args, **kwargs):
+        super(PriceOfferChangeForm, self).__init__(*args, **kwargs)
+        self.fields['change_rating'].widget.attrs['class'] = 'form-control'

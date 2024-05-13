@@ -50,6 +50,7 @@ class Customer(models.Model):
     address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
     surface = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
     installation_address = models.CharField(max_length=150, blank=True, default='')  # Telepítés címe
+    request = models.TextField(max_length=1000)  # Ügyfél kérése, igénye
 
     def __str__(self):
         return f"{self.surname} {self.name} (id: {self.id})"
@@ -117,6 +118,7 @@ class PriceOffer(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
     file_path = models.CharField(max_length=100, null=True)  # PDF Árajánlat fájl útvonala
     currency = models.CharField(max_length=3, default='HUF')  # Valuta
+    change_rating = models.DecimalField(max_digits=8, decimal_places=2, default=1)  # Ha nem HUF, akkor az átváltás HUF-ról arány
     comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
@@ -144,8 +146,9 @@ class Product(models.Model):
     group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True)  # Termék csoportja
     name = models.CharField(max_length=150)  # Termék neve
     unit = models.CharField(max_length=3, choices=UNIT_CHOICE, default='db')  # Mértékegysége
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Egységár forintban
+    price = models.DecimalField(max_digits=15, decimal_places=2)  # Egységár forintban
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
+    output_power = models.DecimalField(max_digits=12, decimal_places=3, default=0)  # Kimeneti teljesítmény kWattban
 
     def __str__(self):
         return self.name
@@ -156,7 +159,7 @@ class PriceOfferItem(models.Model):
     price_offer = models.ForeignKey(PriceOffer, on_delete=models.CASCADE)  # Árajánlat
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)  # Termék
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Mennyiség
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Egységár forintban
+    price = models.DecimalField(max_digits=15, decimal_places=2, default=0)  # Egységár forintban
 
     def __str__(self):
         return self.product.name if self.product else 'N/A'

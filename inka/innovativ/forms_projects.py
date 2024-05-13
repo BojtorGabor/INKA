@@ -40,9 +40,9 @@ class EmailTemplateForm(forms.ModelForm):
 class CustomerHandInputForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['surname', 'name', 'email','phone', 'address', 'surface',]
+        fields = ['surname', 'name', 'email','phone', 'address', 'surface']
         labels = {'surname': 'Vezetéknév', 'name': 'Keresztnév', 'email': 'Email', 'phone': 'Telefon',
-                  'address': 'Cím', 'surface': 'Felület',}
+                  'address': 'Cím', 'surface': 'Felület'}
 
     def __init__(self, *args, **kwargs):
         super(CustomerHandInputForm, self).__init__(*args, **kwargs)
@@ -65,9 +65,10 @@ class CustomerHandInputForm(forms.ModelForm):
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['surname', 'name', 'email','phone', 'address', 'surface', 'installation_address']
+        fields = ['surname', 'name', 'email','phone', 'address', 'surface', 'installation_address', 'request']
         labels = {'surname': 'Vezetéknév', 'name': 'Keresztnév', 'email': 'Email', 'phone': 'Telefon',
-                  'address': 'Cím', 'surface': 'Felület', 'installation_address': 'Telepítési cím'}
+                  'address': 'Cím', 'surface': 'Felület', 'installation_address': 'Telepítési cím',
+                  'request': 'Kérés, igény'}
 
     def __init__(self, *args, **kwargs):
         super(CustomerForm, self).__init__(*args, **kwargs)
@@ -78,6 +79,8 @@ class CustomerForm(forms.ModelForm):
         self.fields['address'].widget.attrs['class'] = 'form-control'
         self.fields['surface'].widget.attrs['class'] = 'form-control'
         self.fields['installation_address'].widget.attrs['class'] = 'form-control'
+        self.fields['request'].widget.attrs['class'] = 'form-control'
+        self.fields['request'].widget.attrs['rows'] = 3
 
 
 class Reason(forms.Form):

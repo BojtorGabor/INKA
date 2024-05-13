@@ -32,6 +32,8 @@ urlpatterns = [
          views_crud.price_offer_item_price, name='price_offer_item_price'),
     path('price_offer_comment/<int:price_offer_id>/<int:task_id>/',
          views_crud.price_offer_comment, name='price_offer_comment'),
+    path('price_offer_change_money/<int:price_offer_id>/<int:task_id>/<str:change>',
+         views_crud.price_offer_change_money, name='price_offer_change_money'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),
