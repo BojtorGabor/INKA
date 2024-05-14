@@ -165,7 +165,7 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                 messages.success(request, f'A {new_price_offer.created_at.date()} - {new_price_offer.id}. '
                                           f'számú új árajánlathoz most még üres pdf fájl tartozik!'
                                           ' Ne felejtsd el majd aktualizálni a tételek módosítása után!')
-                return redirect('price_offer_update', price_offer_id=new_price_offer.id)
+                return redirect('price_offer_update', price_offer_id=new_price_offer.id, task_id=task_id)
         return redirect(request.path)  # Frissül az oldal
     return render(request, 'p_04_1_elozetes_arajanlatok.html',
                   {'task': task, 'price_offers': price_offer_page,

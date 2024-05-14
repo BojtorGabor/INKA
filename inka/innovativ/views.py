@@ -122,7 +122,6 @@ def customers(request):
                     Q(address__icontains=searched) |
                     Q(installation_address__icontains=searched))
                                 .order_by('surname', 'name'))
-        # customer_set = Customer.objects.all().order_by('surname', 'name')
 
         p = Paginator(customer_set, 10)
         page = request.GET.get('page', 1)

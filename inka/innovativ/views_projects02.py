@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render, redirect
 from django.template import Template, Context
 from django.utils import timezone
 
@@ -204,3 +206,113 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
             form = Reason()
 
         return render(request, 'p_02_1_ugyfel_elerhetetlen.html', {'task': task, 'form': form})
+
+
+def p_02_2_uj_feladat(request):
+    if request.user.is_authenticated:
+        customer_set = ''
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            if action:
+                # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+                action_parts = action.split('_')
+                action_name = action_parts[0]
+                customer_id = action_parts[1]
+
+                if action_name == 'search':
+                    searched = request.POST['searched']
+                    customer_set = (Customer.objects.filter(
+                        Q(surname__icontains=searched) |
+                        Q(name__icontains=searched) |
+                        Q(email__icontains=searched) |
+                        Q(phone__icontains=searched) |
+                        Q(address__icontains=searched) |
+                        Q(installation_address__icontains=searched))
+                                    .order_by('surname', 'name'))
+                elif action_name == 'new':
+                    project = Project.objects.get(name='02.2. Újabb megkeresés')
+                    customer = Customer.objects.get(pk=customer_id)
+                    reason = request.POST['reason']
+                    Task.objects.create(type='2:',  # Feladat típus
+                                        type_color='2:',
+                                        project=project,  # következő projekt
+                                        customer=customer,  # ügyfél azonosító
+                                        comment=f'{customer} - ügyfelünk új feladatot kezdeményezett.\n{reason}',
+                                        created_user=request.user)
+                    messages.success(request, f'{customer} ügyfél részére új feladatot indítottál el.')
+                    return render(request, 'home.html', {})
+                else:
+                    customer_set = ''
+
+        p = Paginator(customer_set, 10)
+        page = request.GET.get('page', 1)
+        customer_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        return render(request, 'p_02_2_uj_feladat.html', {'customers': customer_page,
+                                              'page_list': customer_page, 'page_range': page_range})
+    else:
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
+
+
+def p_02_2_uj_megkereses_igenye(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    customer = Customer.objects.get(pk=task.customer.id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = Reason(request.POST)
+            if form.is_valid():
+                customer.request = form['reason'].value()
+                customer.save()
+                # bejegyzés a törlésről
+                project = task.project
+                # Task.objects.create(type='0:',  # Feladat típus
+                #                     type_color='0:',
+                #                     project=project,  # projekt
+                #                     customer=task.customer,  # ügyfél azonosító
+                #                     comment=f'{ task.customer } - ügyfelünk új feladat kérése törölve.'
+                #                             f'\n{form["reason"].value()}',
+                #                     created_user=request.user)
+                return render(request, 'home.html', {})
+        else:
+            form = Reason(initial={'reason': customer.request})
+
+        return render(request, 'p_02_2_uj_megkereses_igenye.html',
+                      {'task': task, 'form': form})
+
+
+def p_02_2_uj_megkereses_torlese(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = Reason(request.POST)
+            if form.is_valid():
+                task.type = '5:'
+                task.type_color = '5:'
+                task.completed_at = timezone.now().isoformat()
+                task.save()
+
+                # bejegyzés a törlésről
+                project = task.project
+                Task.objects.create(type='0:',  # Feladat típus
+                                    type_color='0:',
+                                    project=project,  # projekt
+                                    customer=task.customer,  # ügyfél azonosító
+                                    comment=f'{ task.customer } - ügyfelünk új feladat kérése törölve.'
+                                            f'\n{form["reason"].value()}',
+                                    created_user=request.user)
+                return render(request, 'home.html', {})
+        else:
+            form = Reason()
+
+        return render(request, 'p_02_2_uj_megkereses_torlese.html',
+                      {'task': task, 'form': form})

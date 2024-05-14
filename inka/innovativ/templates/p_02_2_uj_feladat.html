@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>Ügyfél kiválasztása az új feladat indításához</h3>
+	</div>
+	<br/>
+	<form method="POST">
+		{% csrf_token %}
+		<div class="row justify-content-center">
+			<div class="col-10">
+				<div class="row">
+					<div class="col-4">
+						<input class="form-control form-control-sm" type="text"
+							   placeholder="Ügyfél keresés (névben, címben, telefonszámban is)" name="searched">
+					</div>
+					<div class="col">
+						<button class="btn btn-outline-success btn-sm" name="action" value="search_0">Keresés</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br/>
+		<div class="row justify-content-center">
+			<div class="col-10">
+				<div class="card mb-3">
+					<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
+						<div class="row text-start">
+							<div class="col-2">
+								Név
+							</div>
+							<div class="col-2">
+								Email
+							</div>
+							<div class="col-2">
+								Telefon
+							</div>
+							<div class="col-4">
+								Cím
+							</div>
+						</div>
+					</div>
+
+					{% for customer in customers %}
+						<div class="card-body">
+							<div class="card-text">
+									<div class="row">
+										<div class="col-2">
+											<a href="{% url 'customer_history' customer.id %}"
+											   class="btn btn-outline-primary btn-sm">{{ customer }}</a>
+										</div>
+										<div class="col-2">
+											{{ customer.email }}
+										</div>
+										<div class="col-2">
+											{{ customer.phone }}
+										</div>
+										<div class="col-4">
+											{{ customer.address }}
+										</div>
+										<div class="col-2">
+										<button type="button" class="btn btn-outline-primary btn-sm"
+												data-bs-toggle="modal" data-bs-target="#Modal{{ customer.id }}">
+											Feladat indítása
+										</button>
+										<div class="modal fade" id="Modal{{ customer.id }}" tabindex="-1"
+											 aria-labelledby="ModalLabel{{ customer.id }}" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="ModalLabel{{ customer.id }}">
+															Indíthatom az új feladatot?</h1>
+														<button type="button" class="btn-close"
+																data-bs-dismiss="modal"	aria-label="Close">
+														</button>
+													</div>
+													<div class="modal-body">
+														{{ customer }} - új feladat:
+														<input class="form-control form-control-sm" type="text"
+															   name="reason">
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-outline-secondary btn-sm"
+																data-bs-dismiss="modal">Mégse
+														</button>
+														<button type="submit" class="btn btn-outline-danger btn-sm"
+														 name="action" value="new_{{ customer.id }}">Indítás
+														</button>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										</div>
+									</div>
+			<!--					<div class="card-footer text-body-secondary">-->
+			<!--						Lábléc-->
+			<!--					</div>-->
+							</div>
+						</div>
+					{% endfor %}
+					<br/>
+					{% include 'pager_bottom.html' %}
+				</div>
+				<br/>
+			</div>
+		</div>
+	</form>
+
+{% endblock %}

@@ -32,8 +32,10 @@ urlpatterns = [
          views_crud.price_offer_item_price, name='price_offer_item_price'),
     path('price_offer_comment/<int:price_offer_id>/<int:task_id>/',
          views_crud.price_offer_comment, name='price_offer_comment'),
-    path('price_offer_change_money/<int:price_offer_id>/<int:task_id>/<str:change>',
+    path('price_offer_change_money/<int:price_offer_id>/<int:task_id>/<str:change>/',
          views_crud.price_offer_change_money, name='price_offer_change_money'),
+    path('price_offer_makepdf/<int:price_offer_id>/<int:task_id>/',
+         views_crud.price_offer_makepdf, name='price_offer_makepdf'),
 
     path('p_02_1_telefonos_megkereses/<int:task_id>/', views_projects02.p_02_1_telefonos_megkereses,
          name='p_02_1_telefonos_megkereses'),
@@ -45,6 +47,11 @@ urlpatterns = [
          name='p_02_1_ugyfelnek_felmeres'),
     path('p_02_1_ugyfel_elerhetetlen/<int:task_id>/', views_projects02.p_02_1_ugyfel_elerhetetlen,
          name='p_02_1_ugyfel_elerhetetlen'),
+    path('p_02_2_uj_feladat/', views_projects02.p_02_2_uj_feladat, name='p_02_2_uj_feladat'),
+    path('p_02_2_uj_megkereses_igenye/<int:task_id>/', views_projects02.p_02_2_uj_megkereses_igenye,
+         name='p_02_2_uj_megkereses_igenye'),
+    path('p_02_2_uj_megkereses_torlese/<int:task_id>/', views_projects02.p_02_2_uj_megkereses_torlese,
+         name='p_02_2_uj_megkereses_torlese'),
 
     path('p_04_1_elozetes_arajanlatok/<int:task_id>/', views_projects04.p_04_1_elozetes_arajanlatok,
          name='p_04_1_elozetes_arajanlatok'),

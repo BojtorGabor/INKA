@@ -28,6 +28,27 @@
                             {% endfor %}
                         </ul>
                     </li>
+                    {% if position == '02. Ügyfél adatainak felelőse' %}
+<!--                    Lenyíló menü-->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Meglévő ügyfél új igénye
+                            </a>
+<!--                        Lenyíló menü tételei-->
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'p_02_2_uj_feladat' %}">
+                                    Új feladat indítása</a></li>
+<!--                                	<form class="d-flex" role="search" method="POST" action="{% url 'p_02_2_uj_feladat' %}">-->
+<!--                                        {% csrf_token %}-->
+<!--                                        <input class="form-control me-2" type="search"-->
+<!--                                               placeholder="Ügyfél keresés"-->
+<!--                                               name="searched" style="width: 300px;">-->
+<!--                                        <button class="btn btn-outline-success btn-sm" type="submit">Keresés</button>-->
+<!--                                    </form>-->
+                            </ul>
+                        </li>
+                    {% endif %}
                     {% if position == '04. Előzetes árajánlatok felelőse' or position == '06. Végleges árajánlatok felelőse' %}
 <!--                    Lenyíló menü-->
                         <li class="nav-item dropdown">
@@ -66,7 +87,7 @@
 <!--        Keresés-->
             <form class="d-flex" role="search" method="POST" action="{% url 'customers' %}">
                 {% csrf_token %}
-                <input class="form-control me-2" type="search"
+                <input class="form-control form-control-sm me-2" type="search"
                        placeholder="Ügyfél keresés (névben, címben, telefonszámban is)"
                        name="searched" style="width: 500px;">
                 <button class="btn btn-outline-success btn-sm" type="submit">Keresés</button>

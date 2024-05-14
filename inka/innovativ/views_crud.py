@@ -1,11 +1,17 @@
+import os
+
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate
+
+from inka import settings
 from innovativ.form_crud import (ProductForm, ProductGroupForm, PriceOfferItemAmountForm, PriceOfferItemPriceForm,
                                  PriceOfferCommentForm, PriceOfferChangeForm)
-from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem
+from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Task
 
 
 def product_crud(request):
@@ -159,7 +165,7 @@ def price_offer_update(request, price_offer_id, task_id):
                 return redirect('price_offer_change_money', price_offer_id=price_offer_id, task_id=task_id,
                                 change='USD-HUF')
             elif item_action_name == 'makepdf':
-                pass
+                return redirect('price_offer_makepdf', price_offer_id=price_offer_id, task_id=task_id)
             elif item_action_name == 'back':
                 return redirect('p_04_1_elozetes_arajanlatok', task_id=task_id)
         return redirect(request.path)  # Frissül az oldal
@@ -263,3 +269,15 @@ def price_offer_change_money(request, price_offer_id, task_id, change):
 
     return render(request, 'price_offer_change.html',
                   {'price_offer': price_offer, 'form': form, 'change': change})
+
+
+def price_offer_makepdf(request, price_offer_id, task_id):
+    price_offer = PriceOffer.objects.get(pk=price_offer_id)
+    task = Task.objects.get(pk=task_id)
+
+    pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer.id}',
+                                     f'{price_offer.file_path}')
+    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
+    elements = []
+
+    return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
