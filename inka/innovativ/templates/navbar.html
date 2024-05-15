@@ -38,14 +38,7 @@
 <!--                        Lenyíló menü tételei-->
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'p_02_2_uj_feladat' %}">
-                                    Új feladat indítása</a></li>
-<!--                                	<form class="d-flex" role="search" method="POST" action="{% url 'p_02_2_uj_feladat' %}">-->
-<!--                                        {% csrf_token %}-->
-<!--                                        <input class="form-control me-2" type="search"-->
-<!--                                               placeholder="Ügyfél keresés"-->
-<!--                                               name="searched" style="width: 300px;">-->
-<!--                                        <button class="btn btn-outline-success btn-sm" type="submit">Keresés</button>-->
-<!--                                    </form>-->
+                                    Új feladat (ügyfél projekt) indítása</a></li>
                             </ul>
                         </li>
                     {% endif %}
@@ -58,8 +51,10 @@
                             </a>
 <!--                        Lenyíló menü tételei-->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'product_crud' %}">Termékek</a></li>
-                                <li><a class="dropdown-item" href="{% url 'product_group_crud' %}">Termék csoportok</a></li>
+                                <li><a class="dropdown-item" href="#">Termékek</a></li>
+<!--                                <li><a class="dropdown-item" href="% url 'product_crud' %">Termékek</a></li>-->
+                                <li><a class="dropdown-item" href="#">Termék csoportok</a></li>
+<!--                                <li><a class="dropdown-item" href="% url 'product_group_crud' %">Termék csoportok</a></li>-->
                             </ul>
                         </li>
                     {% endif %}

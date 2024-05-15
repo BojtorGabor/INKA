@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -38,6 +38,7 @@ class EmailTemplateForm(forms.ModelForm):
 
 
 class CustomerHandInputForm(forms.ModelForm):
+
     class Meta:
         model = Customer
         fields = ['surname', 'name', 'email','phone', 'address', 'surface']
@@ -63,12 +64,22 @@ class CustomerHandInputForm(forms.ModelForm):
 
 
 class CustomerForm(forms.ModelForm):
+    installation_address = forms.CharField(max_length=150, required=True,
+                                           widget=forms.TextInput(attrs={'class': 'form-control'}))
+    request = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': 3, 'maxlength': 1000, 'class': 'form-control'}), max_length=1000, required=True)
+    target = forms.ModelChoiceField(queryset=Target.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="-- Válassz egy projektet --")
+    financing = forms.ModelChoiceField(queryset=Financing.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="-- Válassz egy finanszírozást --")
+
     class Meta:
         model = Customer
-        fields = ['surname', 'name', 'email','phone', 'address', 'surface', 'installation_address', 'request']
+        fields = ['surname', 'name', 'email','phone', 'address', 'surface']
         labels = {'surname': 'Vezetéknév', 'name': 'Keresztnév', 'email': 'Email', 'phone': 'Telefon',
-                  'address': 'Cím', 'surface': 'Felület', 'installation_address': 'Telepítési cím',
-                  'request': 'Kérés, igény'}
+                  'address': 'Cím', 'surface': 'Felület'}
 
     def __init__(self, *args, **kwargs):
         super(CustomerForm, self).__init__(*args, **kwargs)
@@ -78,6 +89,19 @@ class CustomerForm(forms.ModelForm):
         self.fields['phone'].widget.attrs['class'] = 'form-control'
         self.fields['address'].widget.attrs['class'] = 'form-control'
         self.fields['surface'].widget.attrs['class'] = 'form-control'
+
+
+class CustomerProjectForm(forms.ModelForm):
+    class Meta:
+        model = CustomerProject
+        fields = ['target', 'financing', 'installation_address', 'request']
+        labels = {'target': 'Ügyfél project', 'financing': 'Finanszírozás', 'installation_address': 'Telepítés címe',
+                  'request': 'Kérés, igény'}
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerProjectForm, self).__init__(*args, **kwargs)
+        self.fields['target'].widget.attrs['class'] = 'form-control'
+        self.fields['financing'].widget.attrs['class'] = 'form-control'
         self.fields['installation_address'].widget.attrs['class'] = 'form-control'
         self.fields['request'].widget.attrs['class'] = 'form-control'
         self.fields['request'].widget.attrs['rows'] = 3

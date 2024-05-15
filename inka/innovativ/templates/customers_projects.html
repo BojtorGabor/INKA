@@ -6,42 +6,54 @@
 	</div>
 	<br/>
     <div class="row justify-content-center">
-		<div class="col-sm-8">
+		<div class="col-10">
 			<div class="card mb-3">
 				<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row text-start">
 						<div class="col-2">
 							Név
 						</div>
-						<div class="col-3">
-							Email
+						<div class="col-1">
+							Ügyfél projekt
 						</div>
 						<div class="col-2">
+							Email
+						</div>
+						<div class="col-1">
 							Telefon
 						</div>
-						<div class="col-5">
+						<div class="col-3">
 							Cím
+						</div>
+						<div class="col-3">
+							Telepítés címe
 						</div>
 					</div>
 				</div>
 
-				{% for customer in customers %}
+				{% for customer_project in customers_projects %}
 					<div class="card-body">
 						<div class="card-text">
 							<div>
 								<div class="row">
 									<div class="col-2">
-										<a href="{% url 'customer_history' customer.id %}"
-										   class="btn btn-outline-primary btn-sm">{{ customer }}</a>
+										<a href="{% url 'customer_history' customer_project.id %}"
+										   class="btn btn-outline-primary btn-sm">{{ customer_project.customer }}</a>
 									</div>
-									<div class="col-3">
-										{{ customer.email }}
+									<div class="col-1">
+										{{ customer_project }}
 									</div>
 									<div class="col-2">
-										{{ customer.phone }}
+										{{ customer_project.customer.email }}
 									</div>
-									<div class="col-5">
-										{{ customer.address }}
+									<div class="col-1">
+										{{ customer_project.customer.phone }}
+									</div>
+									<div class="col-3">
+										{{ customer_project.customer.address }}
+									</div>
+									<div class="col-3">
+										{{ customer_project.installation_address }}
 									</div>
 								</div>
 							</div>

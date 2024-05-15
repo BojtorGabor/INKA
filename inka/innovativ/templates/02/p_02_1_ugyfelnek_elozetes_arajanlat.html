@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer }} átadása - Előzetes árajánlat projektnek</h3>
+        <h3>{{ task.customer_project.customer }} átadása - Előzetes árajánlat projektnek</h3>
 	</div>
 	<br/>
 
@@ -39,7 +39,7 @@
 													aria-label="Close"></button>
 										</div>
 										<div class="modal-body">
-											{{ task.customer }} - Az ügyfél előzetes árajánlatot kér
+											{{ task.customer_project.customer }} - Az ügyfél előzetes árajánlatot kér
 										</div>
 										<div class="modal-footer">
 											<button type="button" class="btn btn-outline-secondary btn-sm"

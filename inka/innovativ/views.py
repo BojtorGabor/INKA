@@ -8,7 +8,7 @@ from . import views_projects as app_views
 
 from .context_processors import menu_context
 
-from .models import Project, Task, Job, Customer
+from .models import Project, Task, Job, Customer, CustomerProject
 
 
 def home(request):
@@ -25,8 +25,6 @@ def view_names(request, view_name, task_id):
     if not is_assigned:
         messages.success(request, 'Ehhez a munkakörhöz nincs jogosultságod. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})
-
-    # view_name = project.view_name  # A rekordban a meghívandó view neve
 
     if hasattr(app_views, view_name):  # Ha van ilyen view a views_projects.py file-ban
         desired_view = getattr(app_views, view_name)  # Átalakítás, hogy hívható legyen
@@ -104,7 +102,7 @@ def tasks(request, filter, view_name):
         return redirect('login')
 
 
-# keresés eredménye a Customer tábla szűrésével
+# keresés eredménye a CustomerProject és Customer tábla szűrésével
 def customers(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -114,22 +112,28 @@ def customers(request):
                 messages.success(request, 'Üres a Keresés mező.')
                 return render(request, 'home.html', {})
             else:
-                customer_set = (Customer.objects.filter(
-                    Q(surname__icontains=searched) |
-                    Q(name__icontains=searched) |
-                    Q(email__icontains=searched) |
-                    Q(phone__icontains=searched) |
-                    Q(address__icontains=searched) |
-                    Q(installation_address__icontains=searched))
-                                .order_by('surname', 'name'))
+                words = searched.split()  # Felbontjuk a keresési szavakat
+                q_objects = Q()  # Üres Q objektum létrehozása
 
-        p = Paginator(customer_set, 10)
+                # Minden szóra létrehozunk egy Q objektumot, és azokat az | operátorral összekapcsoljuk
+                for word in words:
+                    q_objects |= Q(customer__surname__icontains=word)
+                    q_objects |= Q(customer__name__icontains=word)
+                    q_objects |= Q(customer__email__icontains=word)
+                    q_objects |= Q(customer__phone__icontains=word)
+                    q_objects |= Q(customer__address__icontains=word)
+                    q_objects |= Q(installation_address__icontains=word)
+
+                customer_project_set = (CustomerProject.objects.filter(q_objects)
+                                        .distinct().order_by('customer__surname', 'customer__name'))
+
+        p = Paginator(customer_project_set, 10)
         page = request.GET.get('page', 1)
-        customer_page = p.get_page(page)
+        customer_project_page = p.get_page(page)
         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-        return render(request, 'customers.html', {'customers': customer_page,
-                                              'page_list': customer_page, 'page_range': page_range,
+        return render(request, 'customers_projects.html', {'customers_projects': customer_project_page,
+                                              'page_list': customer_project_page, 'page_range': page_range,
                                               'searched': searched})
     else:
         messages.success(request, 'Nincs jogosultságod.')
@@ -137,11 +141,12 @@ def customers(request):
 
 
 # Customer történet
-def customer_history(request, customer_id):
+def customer_history(request, customer_project_id):
     if request.user.is_authenticated:
-        tasks_set = Task.objects.filter(customer=customer_id).order_by('-created_at')
+        tasks_set = Task.objects.filter(customer_project=customer_project_id).order_by('-created_at')
 
-        customer = Customer.objects.get(pk=customer_id)
+        customer_project = CustomerProject.objects.get(pk=customer_project_id)
+        customer = customer_project.customer
 
         type_choices = Task.TYPE_CHOICES
         type_color = Task.COLOR_CHOICES
@@ -158,49 +163,3 @@ def customer_history(request, customer_id):
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')
-
-
-# def projects(request):
-#     # Projektekhez tartozó feladatok kigyűjtése
-#     task_set = Task.objects.filter(project__in=menu_context(request)['position_projects'])
-#
-#     projects_tasks = defaultdict(list)  # üres szótár
-#
-#     # Csoportosítjuk a feladatokat a projektek szerint
-#     for task in task_set:
-#         projects_tasks[task.project.name].append(task)  # Projektekhez tartozó feladatok csoportosítva
-#
-#     projects_tasks = dict(projects_tasks)  # átalakítás szótárra
-#
-#     projects_tasks_list = [(project, tasks) for project, tasks in projects_tasks.items()]
-#
-#     p = Paginator(projects_tasks_list, 2)
-#     page = request.GET.get('page', 1)
-#     projects_tasks_page = p.get_page(page)
-#     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-#
-#     return render(request, 'projects_tasks.html', {'projects_tasks': projects_tasks_page,
-#                                              'page_list': projects_tasks_page, 'page_range': page_range})
-
-
-'''A tasks egy listája a Task model objektumoknak, amelyeket korábban kigyűjtöttél az adott felhasználóhoz 
-    tartozó projektek alapján. A cél az, hogy ezeket a feladatokat csoportosítsuk a projektek szerint.
-    
-    A projects_tasks egy defaultdict, ami azt jelenti, hogy alapértelmezett értéket rendel hozzá minden kulcshoz, 
-    ha a kulcs még nem létezik. Ebben az esetben a list típust használjuk alapértelmezett értékként, ami egy üres 
-    lista.
-    
-    A for task in tasks: ciklus minden task objektumon végigmegy a tasks listában. A task.project.name azt 
-    jelenti, hogy a task objektumhoz tartozó projekt nevét kérjük le.
-    
-    A task.project a Task model egy olyan mezője, amely egy ForeignKey a Project modelre. A .name pedig a projekt
-    modell name mezőjére hivatkozik.
-    
-    Az append(task) hozzáfűzi a task objektumot a projects_tasks dictionaryben a megfelelő kulcshoz.
-    A kulcs a projekt neve, amelyhez a feladat tartozik. Tehát minden egyes feladatot hozzáadjuk a megfelelő projekt
-    nevével indexelt listához a project_tasks dictionary-ben.
-    
-    Így tehát a ciklus végrehajtásának eredményeképpen a projects_tasks dictionaryben minden kulcshoz tartozik egy lista,
-    amely tartalmazza az adott projekthez rendelt feladatokat. Ez a módszer csoportosítja a feladatokat a projektek
-    szerint a dictionaryben.'''
-

@@ -10,19 +10,19 @@
     <div class="card-body">
         <div class="card-text mx-2">
             <div class="row">
-                Név: {{ task.customer }}
+                Név: {{ task.customer_project.customer }}
             </div>
             <div class="row">
-                Email: {{ task.customer.email }}
+                Email: {{ task.customer_project.customer.email }}
             </div>
             <div class="row">
-                Telefon: {{ task.customer.phone }}
+                Telefon: {{ task.customer_project.customer.phone }}
             </div>
             <div class="row">
-                Cím: {{ task.customer.address }}
+                Cím: {{ task.customer_project.customer.address }}
             </div>
             <div class="row">
-                Felület: {{ task.customer.surface }}
+                Felület: {{ task.customer_project.customer.surface }}
             </div>
         </div>
     </div>

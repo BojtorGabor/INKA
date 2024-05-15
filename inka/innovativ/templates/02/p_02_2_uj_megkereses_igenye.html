@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer }} - új kérés, igény megadása</h3>
+        <h3>{{ task.customer_project.customer }} - új kérés, igény megadása</h3>
 	</div>
 	<br/>
 
@@ -20,11 +20,24 @@
 						</div>
 					</div>
 				</div>
-				<div class="card-body">
-					<div class="row mb-2">
+				<div class="card-body mx-2">
+					<div class="row">
 						<form method="POST">
 							{% csrf_token %}
-							{{ form }}
+							<div class="row mb-3">
+								Telepítés címe: {{ form.installation_address }}
+							</div>
+							<div class="row mb-3">
+								Kérés, igény: {{ form.request }}
+							</div>
+							<div class="row mb-3">
+								<div class="col-6">
+									Ügyfél project: {{ form.target }}
+								</div>
+								<div class="col-6">
+									Finanszírozás: {{ form.financing }}
+								</div>
+							</div>
 							<br/>
 							<button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
 						</form>

@@ -8,7 +8,7 @@
 	<form method="POST">
 		{% csrf_token %}
 		<div class="row justify-content-center">
-			<div class="col-10">
+			<div class="col-12">
 				<div class="row">
 					<div class="col-4">
 						<input class="form-control form-control-sm" type="text"
@@ -22,80 +22,91 @@
 		</div>
 		<br/>
 		<div class="row justify-content-center">
-			<div class="col-10">
+			<div class="col-12">
 				<div class="card mb-3">
 					<div class="card-header badge bg-body-secondary text-wrap text-secondary p-3">
 						<div class="row text-start">
 							<div class="col-2">
 								Név
 							</div>
+							<div class="col-1">
+								Ügyfél projekt
+							</div>
 							<div class="col-2">
 								Email
 							</div>
-							<div class="col-2">
+							<div class="col-1">
 								Telefon
 							</div>
-							<div class="col-4">
+							<div class="col-2">
 								Cím
+							</div>
+							<div class="col-4">
+								Telepítés címe
 							</div>
 						</div>
 					</div>
 
-					{% for customer in customers %}
+					{% for customer_project in customers_projects %}
 						<div class="card-body">
 							<div class="card-text">
-									<div class="row">
-										<div class="col-2">
-											<a href="{% url 'customer_history' customer.id %}"
-											   class="btn btn-outline-primary btn-sm">{{ customer }}</a>
-										</div>
-										<div class="col-2">
-											{{ customer.email }}
-										</div>
-										<div class="col-2">
-											{{ customer.phone }}
-										</div>
-										<div class="col-4">
-											{{ customer.address }}
-										</div>
-										<div class="col-2">
+								<div class="row">
+									<div class="col-2">
+										<a href="{% url 'customer_history' customer_project.id %}"
+										   class="btn btn-outline-primary btn-sm">{{ customer_project.customer }}</a>
+									</div>
+									<div class="col-1">
+										{{ customer_project }}
+									</div>
+									<div class="col-2">
+										{{ customer_project.customer.email }}
+									</div>
+									<div class="col-1">
+										{{ customer_project.customer.phone }}
+									</div>
+									<div class="col-2">
+										{{ customer_project.customer.address }}
+									</div>
+									<div class="col-3">
+										{{ customer_project.installation_address }}
+									</div>
+									<div class="col-1">
 										<button type="button" class="btn btn-outline-primary btn-sm"
-												data-bs-toggle="modal" data-bs-target="#Modal{{ customer.id }}">
+												data-bs-toggle="modal" data-bs-target="#Modal{{ customer_project.id }}">
 											Feladat indítása
 										</button>
-										<div class="modal fade" id="Modal{{ customer.id }}" tabindex="-1"
-											 aria-labelledby="ModalLabel{{ customer.id }}" aria-hidden="true">
+										<div class="modal fade" id="Modal{{ customer_project.id }}" tabindex="-1"
+											 aria-labelledby="ModalLabel{{ customer_project.id }}" aria-hidden="true">
 											<div class="modal-dialog modal-dialog-centered">
 												<div class="modal-content">
 													<div class="modal-header">
-														<h1 class="modal-title fs-5" id="ModalLabel{{ customer.id }}">
+														<h1 class="modal-title fs-5" id="ModalLabel{{ customer_project.id }}">
 															Indíthatom az új feladatot?</h1>
 														<button type="button" class="btn-close"
 																data-bs-dismiss="modal"	aria-label="Close">
 														</button>
 													</div>
 													<div class="modal-body">
-														{{ customer }} - új feladat:
+														{{ customer_project.customer }} - új feladat:
 														<input class="form-control form-control-sm" type="text"
-															   name="reason">
+															   name="reason{{ customer_project.id }}">
 													</div>
 													<div class="modal-footer">
 														<button type="button" class="btn btn-outline-secondary btn-sm"
 																data-bs-dismiss="modal">Mégse
 														</button>
 														<button type="submit" class="btn btn-outline-danger btn-sm"
-														 name="action" value="new_{{ customer.id }}">Indítás
+														 name="action" value="new_{{ customer_project.id }}">Indítás
 														</button>
 													</div>
 												</div>
 											</div>
 										</div>
-
-										</div>
 									</div>
-			<!--					<div class="card-footer text-body-secondary">-->
-			<!--						Lábléc-->
-			<!--					</div>-->
+								</div>
+		<!--					<div class="card-footer text-body-secondary">-->
+		<!--						Lábléc-->
+		<!--					</div>-->
 							</div>
 						</div>
 					{% endfor %}

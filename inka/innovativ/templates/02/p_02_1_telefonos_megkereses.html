@@ -2,13 +2,13 @@
 
 {% block content %}
 	<div class="text-center">
-		<h3>{{ task.customer }} - Telefonos megkeresés</h3>
+		<h3>{{ task.customer_project.customer }} - Telefonos megkeresés</h3>
 	</div>
 	<br/>
 
     <div class="row">
 		<div class="col-2 mb-3">
-			{% include 'p_02_1_ugyfel_altal_megadott_adatok.html' %}
+			{% include '02/p_02_1_ugyfel_altal_megadott_adatok.html' %}
 		</div>
 
 		<div class="col-6 mb-3">
@@ -30,7 +30,7 @@
 										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
 												data-bs-target="#flush-collapse_customer" aria-expanded="false"
 												aria-controls="flush-collapse_customer">
-											{{ task.customer }}
+											{{ task.customer_project.customer }}
 										</button>
 									</h2>
 									<div id="flush-collapse_customer" class="accordion-collapse collapse"
@@ -52,7 +52,12 @@
 													Telefon: {{ form.phone }}
 												</div>
 											</div>
-
+											<div class="row mb-3">
+												Cím: {{ form.address }}
+											</div>
+											<div class="row mb-3">
+												Felület: {{ form.surface }}
+											</div>
 										</div>
 									</div>
 								</div>
@@ -68,31 +73,18 @@
 										 data-bs-parent="#accordionFlushExample">
 										<div class="accordion-body">
 											<div class="row mb-3">
-												Kérés, igény: {{ form.request }}
-											</div>
-
-										</div>
-									</div>
-								</div>
-								<div class="accordion-item">
-									<h2 class="accordion-header">
-										<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-												data-bs-target="#flush-collapse_address" aria-expanded="false"
-												aria-controls="flush-collapse_address">
-											Ingatlan
-										</button>
-									</h2>
-									<div id="flush-collapse_address" class="accordion-collapse collapse"
-										 data-bs-parent="#accordionFlushExample">
-										<div class="accordion-body">
-											<div class="row mb-3">
-												Cím: {{ form.address }}
-											</div>
-											<div class="row mb-3">
 												Telepítés címe: {{ form.installation_address }}
 											</div>
 											<div class="row mb-3">
-												Felület: {{ form.surface }}
+												Kérés, igény: {{ form.request }}
+											</div>
+											<div class="row mb-3">
+												<div class="col-6">
+													Ügyfél project: {{ form.target }}
+												</div>
+												<div class="col-6">
+													Finanszírozás: {{ form.financing }}
+												</div>
 											</div>
 										</div>
 									</div>

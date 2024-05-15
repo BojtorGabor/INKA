@@ -41,7 +41,23 @@ class PositionProject(models.Model):
         return str(self.project)
 
 
-# Ügyfelek törzsadata
+# Ügyfél projektjének célja
+class Target(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+# Ügyfél projektjének finanszírozása
+class Financing(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+# Ügyfél egyedi adatai
 class Customer(models.Model):
     surname = models.CharField(max_length=100, default='')  # Ügyfél által megadott vezetékneve
     name = models.CharField(max_length=100, default='')  # Ügyfél által megadott keresztneve
@@ -49,14 +65,24 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, default='')  # Ügyfél által megadott telefonszáma
     address = models.CharField(max_length=150, default='')  # Ügyfél által megadott cím
     surface = models.CharField(max_length=50, default='')  # Ügyfél által magadott tetőzet
-    installation_address = models.CharField(max_length=150, blank=True, default='')  # Telepítés címe
-    request = models.TextField(max_length=1000)  # Ügyfél kérése, igénye
 
     def __str__(self):
         return f"{self.surname} {self.name} (id: {self.id})"
 
 
-# Feledatok
+# Ügyfél feladatszál adatai
+class CustomerProject(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél
+    target = models.ForeignKey(Target, on_delete=models.SET_NULL, null=True, default=None)  # Projet célja
+    financing = models.ForeignKey(Financing, on_delete=models.SET_NULL, null=True, default=None)  # Finanszírozás
+    installation_address = models.CharField(max_length=150, default='')  # Telepítés címe
+    request = models.TextField(max_length=1000)  # Ügyfél kérése, igénye
+
+    def __str__(self):
+        return f"{self.target} (id: {self.id})"
+
+
+# Feladatok
 class Task(models.Model):
     TYPE_CHOICES = (
         ('0:', 'Esemény'),
@@ -78,14 +104,14 @@ class Task(models.Model):
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
     type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
+    customer_project = models.ForeignKey(CustomerProject, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél projekt hozzárendelése
     comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja
 
     def __str__(self):
-        return str(self.comment)
+        return f"{self.project} {self.customer_project} (id: {self.id})"
 
     @property
     def days_passed(self):  # számított mező: új és folyamatban feladatoknál mióta várakozik
@@ -115,7 +141,7 @@ class PriceOffer(models.Model):
     )
 
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
+    customer_project = models.ForeignKey(CustomerProject, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél hozzárendelése
     file_path = models.CharField(max_length=100, null=True)  # PDF Árajánlat fájl útvonala
     currency = models.CharField(max_length=3, default='HUF')  # Valuta
     change_rating = models.DecimalField(max_digits=8, decimal_places=2, default=1)  # Ha nem HUF, akkor az átváltás HUF-ról arány
@@ -124,7 +150,7 @@ class PriceOffer(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
     def __str__(self):
-        return str(self.file_path)
+        return f"{self.customer_project} {self.file_path} (id: {self.id})"
 
 
 #  Termék csoportok

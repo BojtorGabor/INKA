@@ -30,13 +30,13 @@ def login_user(request):
                             messages.success(request, 'Sikeres bejelentkezés.')
                         else:
                             messages.success(request, 'Ehhez a felhasználó névhez még nem tartozik munkakör. '
-                                                      'Kérj az adminisztrátortól, e nélkül nem tudsz belépni')
+                                                      'Kérj az adminisztrátortól, e nélkül nem tudsz belépni.')
                         return redirect('home')
                     else:
                         messages.error(request, 'Érvénytelen Belépési token!')
                 else:
                     messages.success(request, 'Ehhez a felhasználó névhez még nem kértél QR kódot'
-                                              ' az adminisztrátortól. E nélkül nem tudsz belépni')
+                                              ' az adminisztrátortól. E nélkül nem tudsz belépni.')
             else:
                 messages.success(request, 'Hibás bejelentkezés. Próbáld újra')
         else:

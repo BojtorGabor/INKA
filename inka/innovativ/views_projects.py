@@ -9,15 +9,15 @@ from django.contrib import messages
 from django.utils import timezone
 
 from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
-from .models import Customer, Task, Project
+from .models import Customer, CustomerProject, Task, Project
 
 import random
 import string
 
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
-    task_comment = Task.objects.get(id=task_id)
-    if str(task_comment) != 'Állandó feladat: új ügyfelek import fájl bedolgozása.':
+    task = Task.objects.get(id=task_id)
+    if str(task.comment) != 'Állandó feladat: új ügyfelek import fájl bedolgozása.':
         messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
         messages.success(request, 'Az ügyfél adat import állandó feladat nem található a táblában '
                                   'vagy a szövege megváltozott.')
@@ -35,7 +35,7 @@ def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek impor
                 if p_01_1_ugyfel_adat_import_items(request, file_path, project):  # import fájl feldolgozás
                     return render(request, 'home.html', {})  # sikeres
                 else:
-                    render(request, 'p_01_1_ugyfel_adat_import.html',
+                    render(request, '01/p_01_1_ugyfel_adat_import.html',
                            {'project': project, 'form': form})  # sikertelen, adatszerkezet hiba?
         else:
             for field, errors in form.errors.items():
@@ -43,7 +43,7 @@ def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek impor
                     messages.error(request, f'Hiba a(z) {form.fields[field].label} mezőben: {error}')
     else:
         form = CSVFileSelectForm()
-    return render(request, 'p_01_1_ugyfel_adat_import.html', {'project': project, 'form': form})
+    return render(request, '01/p_01_1_ugyfel_adat_import.html', {'project': project, 'form': form})
 
 
 def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fájl ellenőrzés és adatbedolgozás
@@ -75,12 +75,13 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                                        email= email,
                                                        phone=phone,
                                                        address=address,
-                                                       surface=surface)  # ügyfél felvétele a customer táblába
+                                                       surface=surface)  # ügyfél felvétele a Customer táblába
+                new_customer_project = CustomerProject.objects.create(customer=new_customer)  # Ügyfél project felvétele
 
                 Task.objects.create(type='2:',  # Feladat típus
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
-                                    customer= new_customer,  # ügyfél azonosító
+                                    customer_project= new_customer_project,  # ügyfél projekt azonosító
                                     comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
                                     created_user=request.user)
         if existing_emails:  # volt ismétlődő email
@@ -107,8 +108,8 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
 
 
 def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfél kézi felvétele
-    task_comment = Task.objects.get(id=task_id)
-    if str(task_comment) != 'Állandó feladat: új ügyfél kézi felvétele.':
+    task = Task.objects.get(id=task_id)
+    if str(task.comment) != 'Állandó feladat: új ügyfél kézi felvétele.':
         messages.success(request, 'Belső hiba történt, jelezd az adminisztrátornak!')
         messages.success(request, 'Az ügyfél kézi felvétele állandó feladat nem található a táblában '
                                   'vagy a szövege megváltozott.')
@@ -117,6 +118,7 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
         form = CustomerHandInputForm(request.POST)
         if form.is_valid():
             new_customer = form.save()
+            new_customer_project = CustomerProject.objects.create(customer=new_customer)  # Ügyfél project felvétele
             next_project = Project.objects.filter(name__startswith='02.1.')  # feladat adás a következő projektnek
             Task.objects.create(type='4:',  # Sima esemény bejegyzés
                                 type_color='4:',
@@ -128,7 +130,7 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
             Task.objects.create(type='2:',  # Feladat típus
                                 type_color='2:',
                                 project=next_project[0],  # következő projekt
-                                customer= new_customer,  # ügyfél azonosító
+                                customer_project= new_customer_project,  # ügyfél azonosító
                                 comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
                                 created_user=request.user)
             messages.success(request, 'Sikeres új ügyfél felvétel.')
@@ -139,8 +141,8 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
                     messages.error(request, f'Hiba a(z) {form.fields[field].label} mezőben: {error}')
     else:
         form = CustomerHandInputForm()
-    return render(request, 'p_01_1_ugyfel_adat_kezi_felvetele.html', {'project': project,
-                                                                      'form': form})
+    return render(request, '01/p_01_1_ugyfel_adat_kezi_felvetele.html',
+                  {'project': project,'form': form})
 
 
 def p_02_1_elso_megkereses(request, project, task_id):
@@ -150,8 +152,8 @@ def p_02_1_elso_megkereses(request, project, task_id):
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
-        customer = task.customer
-        tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
+        customer_project = task.customer_project
+        tasks_set = Task.objects.filter(customer_project=customer_project).order_by('-created_at')
 
         type_choices = Task.TYPE_CHOICES
         type_color = Task.COLOR_CHOICES
@@ -161,7 +163,7 @@ def p_02_1_elso_megkereses(request, project, task_id):
         tasks_page = p.get_page(page)
         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-        return render(request, 'p_02_1_elso_megkereses.html',
+        return render(request, '02/p_02_1_elso_megkereses.html',
                       {'project': project, 'task': task, 'tasks': tasks_page,
                        'page_list': tasks_page, 'page_range': page_range,
                        'type_choices': type_choices, 'type_color': type_color,})
@@ -174,8 +176,8 @@ def p_02_2_ujabb_megkereses(request, project, task_id):
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
-        customer = task.customer
-        tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
+        customer_project = task.customer_project
+        tasks_set = Task.objects.filter(customer_project=customer_project).order_by('-created_at')
 
         type_choices = Task.TYPE_CHOICES
         type_color = Task.COLOR_CHOICES
@@ -185,61 +187,61 @@ def p_02_2_ujabb_megkereses(request, project, task_id):
         tasks_page = p.get_page(page)
         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
-        return render(request, 'p_02_2_ujabb_megkereses.html',
+        return render(request, '02/p_02_2_ujabb_megkereses.html',
                       {'project': project, 'task': task, 'tasks': tasks_page,
                        'page_list': tasks_page, 'page_range': page_range,
                        'type_choices': type_choices, 'type_color': type_color,})
-
-
-def p_04_1_elozetes_arajanlat_adas(request, project, task_id):
-    task = Task.objects.get(pk=task_id)
-    if task.completed_at:
-        messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
-        return render(request, 'home.html', {})
-    else:
-        customer = task.customer
-        tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
-
-        type_choices = Task.TYPE_CHOICES
-        type_color = Task.COLOR_CHOICES
-
-        p = Paginator(tasks_set, 10)
-        page = request.GET.get('page', 1)
-        tasks_page = p.get_page(page)
-        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-
-        return render(request, 'p_04_1_elozetes_arajanlat_adas.html',
-                      {'project': project, 'task': task, 'tasks': tasks_page,
-                       'page_list': tasks_page, 'page_range': page_range,
-                       'type_choices': type_choices, 'type_color': type_color,})
-
-
-def p_05_1_felmeres(request, project, task_id):
-    task = Task.objects.get(pk=task_id)
-    if task.completed_at:
-        messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
-        return render(request, 'home.html', {})
-    else:
-        customer = task.customer
-        tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
-
-        type_choices = Task.TYPE_CHOICES
-        type_color = Task.COLOR_CHOICES
-
-        p = Paginator(tasks_set, 10)
-        page = request.GET.get('page', 1)
-        tasks_page = p.get_page(page)
-        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-
-        return render(request, 'p_05_1_felmeres.html',
-                      {'project': project, 'task': task, 'tasks': tasks_page,
-                       'page_list': tasks_page, 'page_range': page_range,
-                       'type_choices': type_choices, 'type_color': type_color, })
-
-
-def generate_random_string():
-    characters = string.ascii_letters + string.digits
-    random_string = ''.join(random.choice(characters) for _ in range(20))
-    return random_string
+#
+#
+# def p_04_1_elozetes_arajanlat_adas(request, project, task_id):
+#     task = Task.objects.get(pk=task_id)
+#     if task.completed_at:
+#         messages.success(request, f'Ez a projekt már elkészült '
+#                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+#         return render(request, 'home.html', {})
+#     else:
+#         customer = task.customer
+#         tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
+#
+#         type_choices = Task.TYPE_CHOICES
+#         type_color = Task.COLOR_CHOICES
+#
+#         p = Paginator(tasks_set, 10)
+#         page = request.GET.get('page', 1)
+#         tasks_page = p.get_page(page)
+#         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+#
+#         return render(request, 'p_04_1_elozetes_arajanlat_adas.html',
+#                       {'project': project, 'task': task, 'tasks': tasks_page,
+#                        'page_list': tasks_page, 'page_range': page_range,
+#                        'type_choices': type_choices, 'type_color': type_color,})
+#
+#
+# def p_05_1_felmeres(request, project, task_id):
+#     task = Task.objects.get(pk=task_id)
+#     if task.completed_at:
+#         messages.success(request, f'Ez a projekt már elkészült '
+#                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+#         return render(request, 'home.html', {})
+#     else:
+#         customer = task.customer
+#         tasks_set = Task.objects.filter(customer=customer).order_by('-created_at')
+#
+#         type_choices = Task.TYPE_CHOICES
+#         type_color = Task.COLOR_CHOICES
+#
+#         p = Paginator(tasks_set, 10)
+#         page = request.GET.get('page', 1)
+#         tasks_page = p.get_page(page)
+#         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+#
+#         return render(request, 'p_05_1_felmeres.html',
+#                       {'project': project, 'task': task, 'tasks': tasks_page,
+#                        'page_list': tasks_page, 'page_range': page_range,
+#                        'type_choices': type_choices, 'type_color': type_color, })
+#
+#
+# def generate_random_string():
+#     characters = string.ascii_letters + string.digits
+#     random_string = ''.join(random.choice(characters) for _ in range(20))
+#     return random_string
