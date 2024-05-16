@@ -30,6 +30,9 @@
 									<div class="col-1 text-center">
 										{{ task.project }}
 									</div>
+									<div class="col-1">
+										{{ task.customer_project }}
+									</div>
 									{% if task.type == '0:' %}
 										<div class="col-8 {{ type_color.0.1 }}" style="text-align: justify">
 									{% elif task.type == '1:' %}
@@ -47,9 +50,6 @@
 									{% endif %}
 										{{ task.comment|linebreaksbr }}
 										</div>
-									<div class="col-1">
-										{{ task.customer_project }}
-									</div>
 									<div class="col-1">
 										{{ task.customer_project.financing }}
 									</div>

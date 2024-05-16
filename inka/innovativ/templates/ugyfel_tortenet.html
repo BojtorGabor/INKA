@@ -18,6 +18,9 @@
                         <div class="col-1 text-center">
                             {{ t.project }}
                         </div>
+                        <div class="col-1">
+                            {{ t.customer_project }}
+                        </div>
                         {% if t.type == '0:' %}
                             <div class="col-8 {{ type_color.0.1 }}" style="text-align: justify">
                         {% elif t.type == '1:' %}
@@ -35,9 +38,6 @@
                         {% endif %}
                             {{ t.comment|linebreaksbr }}
                             </div>
-                        <div class="col-1">
-                            {{ t.customer_project }}
-                        </div>
                         <div class="col-1">
                             {{ t.customer_project.financing }}
                         </div>

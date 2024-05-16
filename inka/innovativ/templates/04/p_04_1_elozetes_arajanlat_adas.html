@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer }} - {{ project }}</h3>
+        <h3>{{ task.customer_project.customer }} - {{ project }}</h3>
 	</div>
 	<br/>
 
@@ -20,33 +20,27 @@
 				<div class="card-body text-center">
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#"
-							   class="btn btn-outline-info btn-sm">1. feladat</a>
-						</div>
-					</div>
-					<div class="row mb-3">
-						<div class="col">
-							<a href="#"
-							   class="btn btn-outline-info btn-sm">2. feladat</a>
+							<a href="{% url 'p_04_1_elozetes_arajanlatok' task.id %}"
+							   class="btn btn-outline-info btn-sm">Előzetes árajánlatok kezelése</a>
 						</div>
 					</div>
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
 							<a href="#"
-							   class="btn btn-outline-info btn-sm">3. feladat</a>
+							   class="btn btn-outline-info btn-sm">Ügyfél átadása - 05. Felmérések felelősének</a>
 						</div>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">4. feladat</a>
+							<a href="#" class="btn btn-outline-info btn-sm">Még valami feladat</a>
 						</div>
 					</div>
 					<hr>
 					<div class="row mb">
 						<div class="col">
-							<a href="{% url 'p_04_1_ugyfel_visszaadása_02_nek' task.id %}"
-							   class="btn btn-outline-info btn-sm">Ügyfél visszaadása az 02. Ügyfél adatainak felelőséhez</a>
+							<a href="{% url 'p_04_1_ugyfel_visszaadasa_02_nek' task.id %}"
+							   class="btn btn-outline-info btn-sm">Ügyfél visszaadása - 02. Ügyfél adatainak felelőséhez</a>
 						</div>
 					</div>
 				</div>

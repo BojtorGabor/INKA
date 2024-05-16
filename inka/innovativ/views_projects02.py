@@ -340,7 +340,7 @@ def p_02_2_uj_megkereses_torlese(request, task_id):
                                     comment=f'{task.customer_project.customer} - ügyfelünk új megkeresés kérése törölve.'
                                             f'\n{form["reason"].value()}',
                                     created_user=request.user)
-                messages.success(request, f'{task.customer_project.customer} Ügyfél egkeresés kérése törölve.')
+                messages.success(request, f'{task.customer_project.customer} Ügyfél megkeresés kérése törölve.')
                 return render(request, 'home.html', {})
         else:
             form = Reason()

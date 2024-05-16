@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer }} - Az ügyfél visszaadása 02. Ügyfél adatainak felelőséhez</h3>
+        <h3>{{ task.customer_project.customer }} - Az ügyfél visszaadása 02. Ügyfél adatainak felelőséhez</h3>
 	</div>
 	<br/>
 
@@ -39,10 +39,11 @@
 													aria-label="Close"></button>
 										</div>
 										<div class="modal-body">
-											{{ task.customer }} - A felmérés nem végezhető el.
+											{{ task.customer_project.customer }} - A felmérés nem végezhető el.
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Mégse</button>
+											<button type="button" class="btn btn-outline-secondary btn-sm"
+													data-bs-dismiss="modal">Mégse</button>
 											<button type="submit" class="btn btn-outline-danger btn-sm">Visszaadás</button>
 										</div>
 									</div>

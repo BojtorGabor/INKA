@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="text-center">
-        <h3>{{ price_offer.customer }} - {{ price_offer.created_at | date:"Y.m.d" }} -
+        <h3>{{ price_offer.customer_project.customer }} - {{ price_offer.created_at | date:"Y.m.d" }} -
 			{{ price_offer.id }}. számú előzetes árajánlat</h3>
     </div>
     <br/>
@@ -22,7 +22,7 @@
                         <div class="col-9">
                             <div class="row">
                                 <div class="col-4">
-                                    {{ form.change_rating.label_tag }}
+                                    1 {{ foreign_currency }}
                                 </div>
                                 <div class="col-4">
                                     {{ form.change_rating }}
