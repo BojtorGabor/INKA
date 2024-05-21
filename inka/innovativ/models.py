@@ -119,16 +119,6 @@ class Task(models.Model):
         return str(difference.days) + ' napja vár'
 
 
-# Email sablonok
-class EmailTemplate(models.Model):
-    title = models.CharField(max_length=150)
-    subject = models.CharField(max_length=150, default='')
-    content = tinymce_models.HTMLField()
-
-    def __str__(self):
-        return self.title
-
-
 # Árajánlatok
 class PriceOffer(models.Model):
     TYPE_CHOICES = (
@@ -193,3 +183,22 @@ class PriceOfferItem(models.Model):
     @property
     def value(self):  # számított mező: összérték
         return self.amount * self.price
+
+
+# Email sablonok
+class EmailTemplate(models.Model):
+    title = models.CharField(max_length=150)
+    subject = models.CharField(max_length=150, default='')
+    content = tinymce_models.HTMLField()
+
+    def __str__(self):
+        return self.title
+
+
+# Email sablonok
+class PdfTemplate(models.Model):
+    title = models.CharField(max_length=150)
+    content = tinymce_models.HTMLField()
+
+    def __str__(self):
+        return self.title

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ customer_name }} - Make PDF</h3>
+	</div>
+	<br/>
+<div>
+    <p>Tisztelt <strong>{{customer_name}}</strong>!</p>
+    <p style="text-align: center;">Itt egy j&oacute; kis előzetes &aacute;raj&aacute;nlat</p>
+    <table class="table table-bordered" style="border-collapse: collapse; width: 100%;" border="1">
+        <colgroup><col style="width: 50%;"><col style="width: 50%;"></colgroup>
+        <tbody>
+            <tr>
+                <td>1. Itt egy j&oacute; kis előzetes &aacute;raj&aacute;nlat</td>
+                <td>2. Itt egy j&oacute; kis előzetes &aacute;raj&aacute;nlat</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>3. Itt egy j&oacute; kis előzetes &aacute;raj&aacute;nlat</td>
+            </tr>
+        </tbody>
+    </table>
+    <p><span style="background-color: rgb(45, 194, 107); --darkreader-inline-bgcolor: #249b56; font-size: 18pt;"
+             data-darkreader-inline-bgcolor="">☎️ +36 1 1234 5678&nbsp;</span></p>
+    <p>&Uuml;dv&ouml;zlettel</p>
+</div>
+{% endblock %}>

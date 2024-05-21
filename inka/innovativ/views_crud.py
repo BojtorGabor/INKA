@@ -1,17 +1,23 @@
 import os
 
 from django.contrib import messages
+from django.contrib.staticfiles import finders
 from django.core.paginator import Paginator
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from django.http import HttpResponse
+from io import BytesIO
 
 from inka import settings
 from innovativ.form_crud import (ProductForm, ProductGroupForm, PriceOfferItemAmountForm, PriceOfferItemPriceForm,
                                  PriceOfferCommentForm, PriceOfferChangeForm)
-from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Task
+from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Task, PdfTemplate
 
 
 def product_crud(request):
@@ -280,12 +286,140 @@ def price_offer_change_money(request, price_offer_id, task_id, change):
 
 
 def price_offer_makepdf(request, price_offer_id, task_id):
-    price_offer = PriceOffer.objects.get(pk=price_offer_id)
     task = Task.objects.get(pk=task_id)
+    price_offer = PriceOffer.objects.get(pk=price_offer_id)
+    output_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                   f'{price_offer.file_path}')
 
-    pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer.id}',
-                                     f'{price_offer.file_path}')
-    doc = SimpleDocTemplate(pdf_path, pagesize=letter)
-    elements = []
+    response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename="generated_pdf.pdf"'  # A PDF-et letölthető fájlként nyitja meg
+    # response['Content-Disposition'] = 'inline; filename="generated_pdf.pdf"'  # Ez a beállítás megnyitja a PDF-et az aktuális fülön
 
-    return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4, bottomup=0)
+    width, height = A4
+
+    # Betűtípus regisztrálása
+    pdfmetrics.registerFont(TTFont('OpenSans-Regular', 'static/fonts/OpenSans-Regular.ttf'))
+    pdfmetrics.registerFont(TTFont('OpenSans-Bold', 'static/fonts/OpenSans-Bold.ttf'))
+
+    # Fejléc hozzáadása minden oldalra
+    def add_header_footer(can, page_numb):  # Fejléc generálás
+        can.saveState()
+        can.setFont("OpenSans-Bold", 30)
+        can.drawString(230, 90, 'Árajánlat')
+
+        can.rect(30, 30, 535, 780)  # külső keret
+
+        can.rect(30, 120, 535, 60)
+
+        can.setFont("OpenSans-Regular", 10)
+        can.drawString(40, 135, 'Kibocsátó:')
+        can.drawString(310, 135, 'Vevő:')
+
+        can.setFont("OpenSans-Bold", 10)
+        can.drawString(60, 146, 'Innovatív Napelem Kft.')
+        can.drawString(60, 158, '2400 Dunaújváros, Barátság út 5. fszt. 1.')
+        can.drawString(60, 170, 'Adószám: 26350350-2-07')
+        can.drawString(330, 150, f'{price_offer.customer_project.customer}')
+        can.drawString(330, 165, f'{price_offer.customer_project.customer.address}')
+
+        can.setFillColorRGB(0.8, 0.8, 0.8)
+        can.rect(30, 180, 535, 30, fill=1)  # 2. sor színezve
+        can.setFillColorRGB(0, 0, 0)
+
+        can.line(165, 180, 165, 210)  # 1. függőleges vonal
+        can.line(300, 120, 300, 210)  # 2. függőleges vonal
+        can.line(490, 180, 490, 210)  # 3. függőleges vonal
+
+        can.setFont("OpenSans-Regular", 10)
+        can.drawString(50, 200, f'Kiállítás: {price_offer.created_at.strftime('%Y-%m-%d')}')  # kiállítás dátume
+        can.drawString(190, 200, 'Érvényes 30 napig')  # érvényes
+        can.drawString(330, 200, f'Árajánlat száma: {price_offer.id}')  # árajánlat száma
+        can.drawString(510, 200, f'{page_numb}. oldal')  # oldalszámozás
+
+        can.setFont("OpenSans-Bold", 10)
+        can.drawString(40, 230, 'Megnevezés')
+        can.drawString(280, 230, 'Áfa')
+        can.drawString(310, 230, 'Nettó')
+        can.drawString(328, 245, 'ár')
+        can.drawString(350, 230, 'Menny.')
+        can.drawString(410, 230, 'Nettó')
+        can.drawString(412, 245, 'érték')
+        can.drawString(480, 230, 'Áfa')
+        can.drawString(455, 245, 'tartalom')
+        can.drawString(520, 230, 'Bruttó')
+        can.drawString(526, 245, 'érték')
+
+        can.line(30, 250, 565, 250)  # 1. vízszintes vonal
+        can.restoreState()
+
+    # Tételsorok hozzáadása
+    items = ['Tétel 1', 'Tétel 2', 'Tétel 3', 'Tétel 4', 'Tétel 5',
+             'Tétel 6', 'Tétel 7', 'Tétel 8', 'Tétel 9', 'Tétel 10', 'Tétel 11',
+             'Tétel 12', 'Tétel 13', 'Tétel 14', 'Tétel 15', 'Tétel 16',
+             'Tétel 17', 'Tétel 18', 'Tétel 19', 'Tétel 20', 'Hosszú ő és ű teszt: ő, ű']
+
+    y_position = 270  # Kezdeti pozíció a fejléc alatt
+    page_numb = 1
+    add_header_footer(pdf, page_numb)  # Fejléc az első oldalra
+    for item in items:
+        if y_position > height-200:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+            pdf.showPage()
+            page_numb += 1
+            add_header_footer(pdf, page_numb)
+            y_position = 270  # Új oldal kezdeti pozíciója
+
+
+        pdf.setFont("OpenSans-Regular", 12)
+        pdf.drawString(30, y_position, item)
+        y_position += 20  # Következő sor pozíciója
+
+    pdf.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+    return response
+    # return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+
+
+# def price_offer_makepdf(request, price_offer_id, task_id):  # PDF sablonba beírás próba
+#     task = Task.objects.get(pk=task_id)
+#     price_offer = PriceOffer.objects.get(pk=price_offer_id)
+#
+#     # Olvasd be a meglévő PDF fájlt
+#     template_pdf_path = os.path.join(settings.MEDIA_ROOT, '0', 'EmptyPriceOffer.pdf')
+#     template_pdf = PdfReader(template_pdf_path)
+#
+#     # Regisztráld a betűtípust
+#     pdfmetrics.registerFont(TTFont('DejaVu', os.path.join(settings.MEDIA_ROOT, '0', 'dejavu-sans.book.ttf')))
+#
+#     # Készíts egy új PDF fájlt a Reportlab segítségével, és adj hozzá adatokat
+#     packet = BytesIO()
+#     can = canvas.Canvas(packet, pagesize=A4, bottomup=0)
+#
+#     # Beállítjuk a betűtípust, amely támogatja a magyar ékezetes karaktereket
+#     can.setFont("DejaVu", 12)
+#     # can.drawString(100, 100, "aAáÁeEéÉiIíÍoOóÓöÖőŐuUúÚüÜűŰ.")
+#     can.save()
+#
+#     # Állítsd a buffer-t a kezdő pozícióra
+#     packet.seek(0)
+#     new_pdf = PdfReader(packet)
+#
+#     # Az első oldal hozzáadása a meglévő PDF-hez
+#     output = PdfWriter()
+#     for page_num in range(len(template_pdf.pages)):
+#         page = template_pdf.pages[page_num]
+#         # Új oldal hozzáadása az eredeti oldalakhoz
+#         if page_num == 0:
+#             page.merge_page(new_pdf.pages[0])
+#         output.add_page(page)
+#
+#     # Mentsd el az új PDF fájlt más néven
+#     output_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{price_offer.file_path}')
+#
+#     with open(output_pdf_path, "wb") as output_pdf:
+#         output.write(output_pdf)
+#
+#     return render(request, 'home.html', {})
