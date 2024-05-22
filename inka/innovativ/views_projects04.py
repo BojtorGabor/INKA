@@ -274,7 +274,7 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
         else:
             form = Reason()
 
-        return render(request, '04/p_04_1_ugyfel_visszaadása_02_nek.html', {'task': task, 'form': form})
+        return render(request, '04/p_04_1_ugyfel_visszaadasa_02_nek.html', {'task': task, 'form': form})
 
 def generate_random_string(length=20):  # véletlen sztring előállítása a pdf fájlnevekhez
     characters = string.ascii_letters + string.digits

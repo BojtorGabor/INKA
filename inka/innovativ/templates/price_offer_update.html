@@ -52,9 +52,15 @@
 						{% for price_offer_item in price_offer_items %}
 							<div class="row mb-2">
 								<div class="col-4">
-									<button type="submit" name="item_action" value="product_{{ price_offer_item.id }}"
-											class="btn btn-outline-primary btn-sm">{{ price_offer_item }}
-									</button>
+									{% if price_offer_item.product %}
+										<button type="submit" name="item_action" value="product_{{ price_offer_item.id }}"
+												class="btn btn-outline-primary btn-sm">{{ price_offer_item }}
+										</button>
+									{% else %}
+										<button type="submit" name="item_action" value="product_{{ price_offer_item.id }}"
+												class="btn btn-outline-danger btn-sm">{{ price_offer_item }}
+										</button>
+									{% endif %}
 								</div>
 								<div class="col-1 text-end">
 									<button type="submit" name="item_action" value="amount_{{ price_offer_item.id }}"

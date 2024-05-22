@@ -45,6 +45,7 @@ MIDDLEWARE = [
 
     ########################################### innovatív.hu
     # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    # A staikus fájlok összegyűjtéséhez: python manage.py collectstatic
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

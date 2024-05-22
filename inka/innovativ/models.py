@@ -162,7 +162,7 @@ class Product(models.Model):
     group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True)  # Termék csoportja
     name = models.CharField(max_length=150)  # Termék neve
     unit = models.CharField(max_length=3, choices=UNIT_CHOICE, default='db')  # Mértékegysége
-    price = models.DecimalField(max_digits=15, decimal_places=2)  # Egységár forintban
+    price = models.DecimalField(max_digits=15, decimal_places=2)  # Egységár
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
     output_power = models.DecimalField(max_digits=12, decimal_places=3, default=0)  # Kimeneti teljesítmény kWattban
 
@@ -174,8 +174,8 @@ class Product(models.Model):
 class PriceOfferItem(models.Model):
     price_offer = models.ForeignKey(PriceOffer, on_delete=models.CASCADE)  # Árajánlat
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)  # Termék
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Mennyiség
-    price = models.DecimalField(max_digits=15, decimal_places=2, default=0)  # Egységár forintban
+    amount = models.DecimalField(max_digits=10, decimal_places=0, default=0)  # Mennyiség
+    price = models.DecimalField(max_digits=15, decimal_places=2, default=0)  # Egységár
 
     def __str__(self):
         return self.product.name if self.product else 'N/A'
@@ -187,18 +187,17 @@ class PriceOfferItem(models.Model):
 
 # Email sablonok
 class EmailTemplate(models.Model):
-    title = models.CharField(max_length=150)
-    subject = models.CharField(max_length=150, default='')
-    content = tinymce_models.HTMLField()
+    title = models.CharField(max_length=150)  # Megnevezés
+    subject = models.CharField(max_length=150, default='')  # Email tárgya
+    content = tinymce_models.HTMLField()  # Email szövege
 
     def __str__(self):
         return self.title
 
 
-# Email sablonok
-class PdfTemplate(models.Model):
-    title = models.CharField(max_length=150)
-    content = tinymce_models.HTMLField()
+class StandardText(models.Model):
+    title = models.CharField(max_length=150)  # Megnevezés
+    content = models.TextField(max_length=1000, blank=True)  # Szöveg
 
     def __str__(self):
         return self.title

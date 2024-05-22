@@ -1,7 +1,6 @@
 import os
 
 from django.contrib import messages
-from django.contrib.staticfiles import finders
 from django.core.paginator import Paginator
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
@@ -9,15 +8,15 @@ from django.shortcuts import render, redirect
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
+from num2words import num2words
 from django.http import HttpResponse
 from io import BytesIO
 
 from inka import settings
 from innovativ.form_crud import (ProductForm, ProductGroupForm, PriceOfferItemAmountForm, PriceOfferItemPriceForm,
                                  PriceOfferCommentForm, PriceOfferChangeForm)
-from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Task, PdfTemplate
+from innovativ.models import Product, ProductGroup, PriceOffer, PriceOfferItem, Task, StandardText
 
 
 def product_crud(request):
@@ -288,6 +287,14 @@ def price_offer_change_money(request, price_offer_id, task_id, change):
 def price_offer_makepdf(request, price_offer_id, task_id):
     task = Task.objects.get(pk=task_id)
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
+    price_offer_items = (PriceOfferItem.objects.filter(price_offer=price_offer).
+                        order_by('product__group__group_name', 'product__name'))
+    currency = price_offer.currency
+    if currency == 'HUF':
+        tizedes = 0
+    else:
+        tizedes = 2
+    standard_text = StandardText.objects.get(title='Árajánlat alján szöveg')
     output_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
                                    f'{price_offer.file_path}')
 
@@ -296,7 +303,7 @@ def price_offer_makepdf(request, price_offer_id, task_id):
     # response['Content-Disposition'] = 'inline; filename="generated_pdf.pdf"'  # Ez a beállítás megnyitja a PDF-et az aktuális fülön
 
     buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4, bottomup=0)
+    pdf = canvas.Canvas(output_pdf_path, pagesize=A4, bottomup=0)
     width, height = A4
 
     # Betűtípus regisztrálása
@@ -333,54 +340,139 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         can.line(490, 180, 490, 210)  # 3. függőleges vonal
 
         can.setFont("OpenSans-Regular", 10)
-        can.drawString(50, 200, f'Kiállítás: {price_offer.created_at.strftime('%Y-%m-%d')}')  # kiállítás dátume
+        can.drawString(50, 200, f'Kiállítás: {price_offer.created_at.strftime("%Y-%m-%d")}')  # kiállítás dátume
         can.drawString(190, 200, 'Érvényes 30 napig')  # érvényes
-        can.drawString(330, 200, f'Árajánlat száma: {price_offer.id}')  # árajánlat száma
+        can.drawString(350, 200, f'Árajánlat száma: {price_offer.id}')  # árajánlat száma
         can.drawString(510, 200, f'{page_numb}. oldal')  # oldalszámozás
 
         can.setFont("OpenSans-Bold", 10)
         can.drawString(40, 230, 'Megnevezés')
-        can.drawString(280, 230, 'Áfa')
-        can.drawString(310, 230, 'Nettó')
-        can.drawString(328, 245, 'ár')
-        can.drawString(350, 230, 'Menny.')
-        can.drawString(410, 230, 'Nettó')
-        can.drawString(412, 245, 'érték')
-        can.drawString(480, 230, 'Áfa')
-        can.drawString(455, 245, 'tartalom')
-        can.drawString(520, 230, 'Bruttó')
-        can.drawString(526, 245, 'érték')
+        can.drawString(140, 230, 'Áfa')
+        can.drawRightString(230, 230, 'Nettó ár')
+        can.drawRightString(230, 245, '(' + f'{currency}' + ')')
+        can.drawRightString(290, 230, 'Menny.')
+        can.drawRightString(380, 230, 'Nettó érték')
+        can.drawRightString(380, 245, '(' + f'{currency}' + ')')
+        can.drawRightString(460, 230, 'Áfa tartalom')
+        can.drawRightString(460, 245, '(' + f'{currency}' + ')')
+        can.drawRightString(550, 230, 'Bruttó érték')
+        can.drawRightString(550, 245, '(' + f'{currency}' + ')')
 
         can.line(30, 250, 565, 250)  # 1. vízszintes vonal
         can.restoreState()
+        can.setFont("OpenSans-Regular", 10)
 
-    # Tételsorok hozzáadása
-    items = ['Tétel 1', 'Tétel 2', 'Tétel 3', 'Tétel 4', 'Tétel 5',
-             'Tétel 6', 'Tétel 7', 'Tétel 8', 'Tétel 9', 'Tétel 10', 'Tétel 11',
-             'Tétel 12', 'Tétel 13', 'Tétel 14', 'Tétel 15', 'Tétel 16',
-             'Tétel 17', 'Tétel 18', 'Tétel 19', 'Tétel 20', 'Hosszú ő és ű teszt: ő, ű']
-
-    y_position = 270  # Kezdeti pozíció a fejléc alatt
+    y_position = 265  # Kezdeti pozíció a fejléc alatt
     page_numb = 1
+    item_number = 1
+    sum_netto_ertek = 0
+    sum_afa_ertek = 0
+    sum_brutto_ertek = 0
+    pdf.setFont("OpenSans-Regular", 10)
     add_header_footer(pdf, page_numb)  # Fejléc az első oldalra
-    for item in items:
-        if y_position > height-200:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+    for price_offer_item in price_offer_items:
+        if y_position > height-370:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+            # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
             pdf.showPage()
             page_numb += 1
             add_header_footer(pdf, page_numb)
-            y_position = 270  # Új oldal kezdeti pozíciója
+            y_position = 265  # Új oldal kezdeti pozíciója
 
+        starting_y_position = y_position - 11
+        y_height = 30
+        if price_offer_item.product.comment:
+            y_height += 15
+        if item_number % 2 == 0:  # páros sor
+            pdf.setFillColorRGB(0.9, 0.9, 0.9)
+        else:
+            pdf.setFillColorRGB(0.8, 0.8, 0.8)
+        pdf.rect(31, starting_y_position, 533, y_height, fill=1, stroke=0)  #
+        pdf.setFillColorRGB(0, 0, 0)
 
-        pdf.setFont("OpenSans-Regular", 12)
-        pdf.drawString(30, y_position, item)
-        y_position += 20  # Következő sor pozíciója
+        pdf.drawString(40, y_position, str(price_offer_item))
+        y_position += 15  # Következő sor pozíciója
+        if price_offer_item.product.comment:
+            pdf.drawString(60, y_position, str(price_offer_item.product.comment))  # Termék megjegyzés
+            y_position += 15  # Következő sor pozíciója
 
+        pdf.drawString(140, y_position, '27%')  # Áfa
+
+        formatted_number = f'{price_offer_item.price:,.{tizedes}f}'.replace(",", " ")
+        pdf.drawRightString(230, y_position, formatted_number)  # Nettó ár
+
+        unit_display = price_offer_item.product.get_unit_display()  # Mértékegység
+        formatted_number = f'{price_offer_item.amount:,.0f}'.replace(",", " ") + ' ' + unit_display
+        pdf.drawRightString(290, y_position, formatted_number)  # Mennyiség
+
+        netto_ertek = price_offer_item.price * price_offer_item.amount
+        sum_netto_ertek += netto_ertek
+        formatted_number = f'{netto_ertek:,.{tizedes}f}'.replace(",", " ")
+        pdf.drawRightString(380, y_position, formatted_number)  # Nettó érték
+
+        afa_ertek = round(int(netto_ertek) * 0.27)
+        sum_afa_ertek += afa_ertek
+        formatted_number = f'{afa_ertek:,.{tizedes}f}'.replace(",", " ")
+        pdf.drawRightString(460, y_position, formatted_number)  # Áfa érték
+
+        brutto_ertek = netto_ertek + afa_ertek
+        sum_brutto_ertek += brutto_ertek
+        formatted_number = f'{brutto_ertek:,.{tizedes}f}'.replace(",", " ")
+        pdf.drawRightString(550, y_position, formatted_number)  # Bruttó érték
+
+        y_position += 15  # Következő sor pozíciója
+        item_number += 1
+
+    pdf.setFont("OpenSans-Bold", 10)
+
+    y_position += 15  # Következő sor pozíciója
+    pdf.drawRightString(450, y_position, 'Nettó összesen:')
+    formatted_number = f'{sum_netto_ertek:,.{tizedes}f}'.replace(",", " ") + ' ' + f'{currency}'
+    pdf.drawRightString(550, y_position, formatted_number)  # Nettó összérték
+
+    y_position += 15  # Következő sor pozíciója
+    pdf.drawRightString(450, y_position, 'Áfa tartalom összesen:')
+    formatted_number = f'{sum_afa_ertek:,.{tizedes}f}'.replace(",", " ") + ' ' + f'{currency}'
+    pdf.drawRightString(550, y_position, formatted_number)  # Áfa összérték
+
+    y_position += 15  # Következő sor pozíciója
+    pdf.drawRightString(450, y_position, 'Bruttó összesen:')
+    formatted_number = f'{sum_brutto_ertek:,.{tizedes}f}'.replace(",", " ") + ' ' + f'{currency}'
+    pdf.drawRightString(550, y_position, formatted_number)  # Bruttó összérték
+
+    pdf.setFont("OpenSans-Regular", 8)
+    y_position += 15  # Következő sor pozíciója
+    text_brutto_ertek = 'azaz ' + num2words(round(sum_brutto_ertek, tizedes), lang='hu') + ' ' + currency
+    pdf.drawRightString(550, y_position, text_brutto_ertek)  # Bruttó összérték szöveggel
+
+    pdf.setFont("OpenSans-Regular", 10)
+    y_position += 45  # Következő sor pozíciója
+    pdf.line(40, y_position, 240, y_position)
+    pdf.line(350, y_position, 550, y_position)
+
+    y_position += 15  # Következő sor pozíciója
+    pdf.drawString(120, y_position, 'Kibocsátó')
+    pdf.drawString(440, y_position, 'Vevő')
+
+    y_position += 15  # Következő sor pozíciója
+    text = pdf.beginText(40, y_position)
+    for line in standard_text.content.splitlines():
+        text.textLine(line)
+        y_position += 10  # Sorok közötti távolság
+    pdf.drawText(text)
+
+    pdf.showPage()
     pdf.save()
-    pdf = buffer.getvalue()
-    buffer.close()
-    response.write(pdf)
-    return response
-    # return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+
+    # Olvasd be a mentett PDF-et, hogy response-t küldhess
+    # with open(output_pdf_path, 'rb') as f:
+    #     pdf_content = f.read()
+    #
+    # response.write(pdf_content)
+    # return response
+
+    messages.success(request, f'Sikeres PDF aktualizálás.')
+
+    return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
 
 
 # def price_offer_makepdf(request, price_offer_id, task_id):  # PDF sablonba beírás próba
