@@ -11,9 +11,6 @@ from django.utils import timezone
 from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
 from .models import Customer, CustomerProject, Task, Project
 
-import random
-import string
-
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
     task = Task.objects.get(id=task_id)

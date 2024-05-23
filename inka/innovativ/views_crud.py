@@ -155,6 +155,10 @@ def price_offer_update(request, price_offer_id, task_id):
                 delete_item.delete()
             elif item_action_name == 'new':  # Új árajánlat tételt vesz fel
                 PriceOfferItem.objects.create(price_offer=price_offer, )
+                if price_offer.currency != 'HUF':
+                    messages.success(request, f'VIGYÁZAT! Az árajánlat {price_offer.currency} pénzegységű, '
+                                              f'de az új tétel kiinduló ára még HUF értékben fog megjelenni! '
+                                              f'Ne felejtsd el módosítani azt!')
             elif item_action_name == 'comment':
                 return redirect('price_offer_comment', price_offer_id=price_offer_id, task_id=task_id)
             elif item_action_name == 'changemoneyHUF-EUR':
@@ -371,7 +375,7 @@ def price_offer_makepdf(request, price_offer_id, task_id):
     pdf.setFont("OpenSans-Regular", 10)
     add_header_footer(pdf, page_numb)  # Fejléc az első oldalra
     for price_offer_item in price_offer_items:
-        if y_position > height-370:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+        if y_position > height-70:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
             # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
             pdf.showPage()
             page_numb += 1
@@ -380,47 +384,55 @@ def price_offer_makepdf(request, price_offer_id, task_id):
 
         starting_y_position = y_position - 11
         y_height = 30
-        if price_offer_item.product.comment:
-            y_height += 15
-        if item_number % 2 == 0:  # páros sor
-            pdf.setFillColorRGB(0.9, 0.9, 0.9)
-        else:
-            pdf.setFillColorRGB(0.8, 0.8, 0.8)
-        pdf.rect(31, starting_y_position, 533, y_height, fill=1, stroke=0)  #
-        pdf.setFillColorRGB(0, 0, 0)
+        if not price_offer_item.product == None:  # Ha nem N/A még a tétel
+            if price_offer_item.product.comment:
+                y_height += 15
+            if item_number % 2 == 0:  # páros sor
+                pdf.setFillColorRGB(0.9, 0.9, 0.9)
+            else:
+                pdf.setFillColorRGB(0.8, 0.8, 0.8)
+            pdf.rect(31, starting_y_position, 533, y_height, fill=1, stroke=0)  #
+            pdf.setFillColorRGB(0, 0, 0)
 
-        pdf.drawString(40, y_position, str(price_offer_item))
-        y_position += 15  # Következő sor pozíciója
-        if price_offer_item.product.comment:
-            pdf.drawString(60, y_position, str(price_offer_item.product.comment))  # Termék megjegyzés
+            pdf.drawString(40, y_position, str(price_offer_item))
             y_position += 15  # Következő sor pozíciója
+            if price_offer_item.product.comment:
+                pdf.drawString(60, y_position, str(price_offer_item.product.comment))  # Termék megjegyzés
+                y_position += 15  # Következő sor pozíciója
 
-        pdf.drawString(140, y_position, '27%')  # Áfa
+            pdf.drawString(140, y_position, '27%')  # Áfa
 
-        formatted_number = f'{price_offer_item.price:,.{tizedes}f}'.replace(",", " ")
-        pdf.drawRightString(230, y_position, formatted_number)  # Nettó ár
+            formatted_number = f'{price_offer_item.price:,.{tizedes}f}'.replace(",", " ")
+            pdf.drawRightString(230, y_position, formatted_number)  # Nettó ár
 
-        unit_display = price_offer_item.product.get_unit_display()  # Mértékegység
-        formatted_number = f'{price_offer_item.amount:,.0f}'.replace(",", " ") + ' ' + unit_display
-        pdf.drawRightString(290, y_position, formatted_number)  # Mennyiség
+            unit_display = price_offer_item.product.get_unit_display()  # Mértékegység
+            formatted_number = f'{price_offer_item.amount:,.0f}'.replace(",", " ") + ' ' + unit_display
+            pdf.drawRightString(290, y_position, formatted_number)  # Mennyiség
 
-        netto_ertek = price_offer_item.price * price_offer_item.amount
-        sum_netto_ertek += netto_ertek
-        formatted_number = f'{netto_ertek:,.{tizedes}f}'.replace(",", " ")
-        pdf.drawRightString(380, y_position, formatted_number)  # Nettó érték
+            netto_ertek = price_offer_item.price * price_offer_item.amount
+            sum_netto_ertek += netto_ertek
+            formatted_number = f'{netto_ertek:,.{tizedes}f}'.replace(",", " ")
+            pdf.drawRightString(380, y_position, formatted_number)  # Nettó érték
 
-        afa_ertek = round(int(netto_ertek) * 0.27)
-        sum_afa_ertek += afa_ertek
-        formatted_number = f'{afa_ertek:,.{tizedes}f}'.replace(",", " ")
-        pdf.drawRightString(460, y_position, formatted_number)  # Áfa érték
+            afa_ertek = round(int(netto_ertek) * 0.27)
+            sum_afa_ertek += afa_ertek
+            formatted_number = f'{afa_ertek:,.{tizedes}f}'.replace(",", " ")
+            pdf.drawRightString(460, y_position, formatted_number)  # Áfa érték
 
-        brutto_ertek = netto_ertek + afa_ertek
-        sum_brutto_ertek += brutto_ertek
-        formatted_number = f'{brutto_ertek:,.{tizedes}f}'.replace(",", " ")
-        pdf.drawRightString(550, y_position, formatted_number)  # Bruttó érték
+            brutto_ertek = netto_ertek + afa_ertek
+            sum_brutto_ertek += brutto_ertek
+            formatted_number = f'{brutto_ertek:,.{tizedes}f}'.replace(",", " ")
+            pdf.drawRightString(550, y_position, formatted_number)  # Bruttó érték
 
-        y_position += 15  # Következő sor pozíciója
-        item_number += 1
+            y_position += 15  # Következő sor pozíciója
+            item_number += 1
+
+    if y_position > height-105:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+        # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
+        pdf.showPage()
+        page_numb += 1
+        add_header_footer(pdf, page_numb)
+        y_position = 265  # Új oldal kezdeti pozíciója
 
     pdf.setFont("OpenSans-Bold", 10)
 
@@ -444,14 +456,30 @@ def price_offer_makepdf(request, price_offer_id, task_id):
     text_brutto_ertek = 'azaz ' + num2words(round(sum_brutto_ertek, tizedes), lang='hu') + ' ' + currency
     pdf.drawRightString(550, y_position, text_brutto_ertek)  # Bruttó összérték szöveggel
 
+    if y_position > height - 75:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+        # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
+        pdf.showPage()
+        page_numb += 1
+        add_header_footer(pdf, page_numb)
+        y_position = 265  # Új oldal kezdeti pozíciója
+
     pdf.setFont("OpenSans-Regular", 10)
-    y_position += 45  # Következő sor pozíciója
+    y_position += 60  # Következő sor pozíciója
     pdf.line(40, y_position, 240, y_position)
     pdf.line(350, y_position, 550, y_position)
 
     y_position += 15  # Következő sor pozíciója
     pdf.drawString(120, y_position, 'Kibocsátó')
     pdf.drawString(440, y_position, 'Vevő')
+    y_position += 15  # Következő sor pozíciója
+
+
+    if y_position > height - 220:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
+        # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
+        pdf.showPage()
+        page_numb += 1
+        add_header_footer(pdf, page_numb)
+        y_position = 265  # Új oldal kezdeti pozíciója
 
     y_position += 15  # Következő sor pozíciója
     text = pdf.beginText(40, y_position)

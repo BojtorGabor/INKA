@@ -7,7 +7,7 @@ from django.db import transaction
 from django.utils.html import escape
 
 from inka.settings import DEFAULT_FROM_EMAIL
-from innovativ.forms_projects import Reason, EmailTemplateForm
+from innovativ.forms_projects import ReasonForm, EmailTemplateForm
 from innovativ.models import Task, Project, PriceOffer, PriceOfferItem, EmailTemplate
 
 from inka import settings
@@ -253,7 +253,7 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '4:'
                 task.type_color = '4:'
@@ -272,7 +272,7 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '04/p_04_1_ugyfel_visszaadasa_02_nek.html', {'task': task, 'form': form})
 

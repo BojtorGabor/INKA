@@ -20,6 +20,8 @@
                         </a>
 <!--                    Lenyíló menü tételei-->
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'deadline_tasks' %}">Határidős projektek</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'tasks' 'all' 'all' %}">Összes projekt</a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% for position_project in position_projects %}

@@ -14,3 +14,19 @@ body {
     }
 }
 
+html {
+    font-size: 14px;
+
+    .btn {
+      font-size:14px
+    }
+
+    .dropdown-menu .dropdown-item {
+        font-size: 14px;
+    }
+
+    .page-link {
+        font-size: 14px !important;
+    }
+}
+

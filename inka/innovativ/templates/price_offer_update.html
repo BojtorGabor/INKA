@@ -63,9 +63,15 @@
 									{% endif %}
 								</div>
 								<div class="col-1 text-end">
+								{% if price_offer_item.amount <= 0 %}
+									<button type="submit" name="item_action" value="amount_{{ price_offer_item.id }}"
+											class="btn btn-outline-danger btn-sm">{{ price_offer_item.amount }}
+									</button>
+								{% else %}
 									<button type="submit" name="item_action" value="amount_{{ price_offer_item.id }}"
 											class="btn btn-outline-primary btn-sm">{{ price_offer_item.amount }}
 									</button>
+								{% endif %}
 								</div>
 								<div class="col-1 text-start">
 									{{ price_offer_item.product.get_unit_display }}

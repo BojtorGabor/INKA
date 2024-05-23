@@ -109,6 +109,7 @@ class Task(models.Model):
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja
+    deadline = models.DateField(null=True, blank=True)  # beállított határidő
 
     def __str__(self):
         return f"{self.project} {self.customer_project} (id: {self.id})"

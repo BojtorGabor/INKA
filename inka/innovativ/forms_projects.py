@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer, CustomerProject, Target, Financing
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -107,9 +107,24 @@ class CustomerProjectForm(forms.ModelForm):
         self.fields['request'].widget.attrs['rows'] = 3
 
 
-class Reason(forms.Form):
+class ReasonForm(forms.Form):
     reason = forms.CharField(label='Üzenet', max_length=1000, required=True, widget=forms.Textarea(attrs={'rows': 3}))
 
     def __init__(self, *args, **kwargs):
-        super(Reason, self).__init__(*args, **kwargs)
+        super(ReasonForm, self).__init__(*args, **kwargs)
         self.fields['reason'].widget.attrs['class'] = 'form-control'
+
+
+class DeadlineForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['deadline']
+        labels = {'deadline': 'Határidő'}
+        widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
+                                                       format='%Y-%m-%d')}
+
+    def __init__(self, *args, **kwargs):
+        super(DeadlineForm, self).__init__(*args, **kwargs)
+        self.fields['deadline'].widget.attrs['class'] = 'form-control'
+        if self.instance and self.instance.pk and self.instance.deadline:
+            self.fields['deadline'].initial = self.instance.deadline.strftime('%Y-%m-%d')

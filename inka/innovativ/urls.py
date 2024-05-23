@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('<str:view_name>/<int:task_id>', views.view_names, name='view_names'),
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),
+    path('deadline_tasks', views.deadline_tasks, name='deadline_tasks'),
 
     path('customers', views.customers, name='customers'),
     path('customer_history/<int:customer_project_id>/', views.customer_history, name='customer_history'),
@@ -44,6 +45,7 @@ urlpatterns = [
          name='p_02_1_telefonos_megkereses'),
     path('p_02_1_telefonszam_keres/<int:task_id>/', views_projects02.p_02_1_telefonszam_keres,
          name='p_02_1_telefonszam_keres'),
+    path('p_02_1_hatarido/<int:task_id>/', views_projects02.p_02_1_hatarido, name='p_02_1_hatarido'),
     path('p_02_1_ugyfelnek_elozetes_arajanlat/<int:task_id>/', views_projects02.p_02_1_ugyfelnek_elozetes_arajanlat,
          name='p_02_1_ugyfelnek_elozetes_arajanlat'),
     path('p_02_1_ugyfelnek_felmeres/<int:task_id>/', views_projects02.p_02_1_ugyfelnek_felmeres,

@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 
-from collections import defaultdict
 from . import views_projects as app_views
 
 from .context_processors import menu_context
@@ -97,6 +96,29 @@ def tasks(request, filter, view_name):
                                               'page_list': tasks_page, 'page_range': page_range,
                                               'type_choices': type_choices, 'type_color': type_color,
                                               'project_name': project_name, 'view_name': view_name})
+    else:
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
+
+
+# Feladatok listázása különféle szűrőkkel
+def deadline_tasks(request):
+    if request.user.is_authenticated:
+        tasks_set = (Task.objects.filter(project__in=menu_context(request)['position_projects'])
+                     .filter(deadline__isnull=False)
+                     .filter(Q(type='2:') | Q(type='3:'))
+                     .order_by('deadline'))
+        type_choices = Task.TYPE_CHOICES
+        type_color = Task.COLOR_CHOICES
+
+        p = Paginator(tasks_set, 10)
+        page = request.GET.get('page', 1)
+        tasks_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        return render(request, 'deadline_tasks.html', {'tasks': tasks_page,
+                                              'page_list': tasks_page, 'page_range': page_range,
+                                              'type_choices': type_choices, 'type_color': type_color})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

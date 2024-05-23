@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.template import Template, Context
 from django.utils import timezone
 
-from .forms_projects import EmailTemplateForm, CustomerForm, CustomerProjectForm, Reason
+from .forms_projects import EmailTemplateForm, CustomerForm, CustomerProjectForm, ReasonForm, DeadlineForm
 from .models import Task, EmailTemplate, Customer, CustomerProject, Project, Target, Financing
 from django.core.mail import send_mail
 
@@ -132,6 +132,25 @@ def p_02_1_telefonszam_keres(request, task_id):
         return render(request, '02/p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
 
 
+def p_02_1_hatarido(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = DeadlineForm(request.POST or None, instance=task)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Határidő módosítva.')
+                return render(request, 'home.html', {})
+        else:
+            form = DeadlineForm(instance=task)
+
+        return render(request, '02/p_02_1_hatarido.html', {'task': task, 'form': form})
+
+
 def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
@@ -140,7 +159,7 @@ def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '4:'
                 task.type_color = '4:'
@@ -159,7 +178,7 @@ def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '02/p_02_1_ugyfelnek_elozetes_arajanlat.html',
                       {'task': task, 'form': form})
@@ -173,7 +192,7 @@ def p_02_1_ugyfelnek_felmeres(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '4:'
                 task.type_color = '4:'
@@ -192,7 +211,7 @@ def p_02_1_ugyfelnek_felmeres(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '02/p_02_1_ugyfelnek_felmeres.html',
                       {'task': task, 'form': form})
@@ -206,7 +225,7 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '4:'
                 task.type_color = '4:'
@@ -225,7 +244,7 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '02/p_02_1_ugyfel_elerhetetlen.html', {'task': task, 'form': form})
 
@@ -324,7 +343,7 @@ def p_02_2_uj_megkereses_torlese(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '5:'
                 task.type_color = '5:'
@@ -343,7 +362,7 @@ def p_02_2_uj_megkereses_torlese(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} Ügyfél megkeresés kérése törölve.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '02/p_02_2_uj_megkereses_torlese.html',
                       {'task': task, 'form': form})

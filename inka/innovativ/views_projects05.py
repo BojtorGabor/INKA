@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.utils import timezone
 
-from innovativ.forms_projects import Reason
+from innovativ.forms_projects import ReasonForm
 from innovativ.models import Task, Project
 
 
@@ -14,7 +14,7 @@ def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            form = Reason(request.POST)
+            form = ReasonForm(request.POST)
             if form.is_valid():
                 task.type = '4:'
                 task.type_color = '4:'
@@ -33,6 +33,6 @@ def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
         else:
-            form = Reason()
+            form = ReasonForm()
 
         return render(request, '05/p_05_1_ugyfel_visszaadása_02_nek.html', {'task': task, 'form': form})

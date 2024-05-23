@@ -4,55 +4,67 @@
             <div class="col-1 text-center">
                 Összes projekt
             </div>
-            <div class="col-9 text-center">
+            <div class="col-1 text-start">
+                Feladat
+            </div>
+            <div class="col-7 text-center">
                 {{ task.customer_project.customer }} - ügyfél történet
+            </div>
+            <div class="col-1 text-start">
+                Finanszírozás
+            </div>
+            <div class="col-1 text-start">
+                Határidő
             </div>
         </div>
     </div>
 
-    {% for t in tasks %}
+    {% for task in tasks %}
         <div class="card-body">
             <div class="card-text">
                 <div>
                     <div class="row">
                         <div class="col-1 text-center">
-                            {{ t.project }}
+                            {{ task.project }}
                         </div>
                         <div class="col-1">
-                            {{ t.customer_project }}
+                            {{ task.customer_project }}
                         </div>
-                        {% if t.type == '0:' %}
-                            <div class="col-8 {{ type_color.0.1 }}" style="text-align: justify">
-                        {% elif t.type == '1:' %}
-                            <div class="col-8 {{ type_color.1.1 }}" style="text-align: justify">
-                        {% elif t.type == '2:' %}
-                            <div class="col-8 {{ type_color.2.1 }}" style="text-align: justify">
-                        {% elif t.type == '3:' %}
-                            <div class="col-8 {{ type_color.3.1 }}" style="text-align: justify">
-                        {% elif t.type == '4:' %}
-                            <div class="col-8 {{ type_color.4.1 }}" style="text-align: justify">
-                        {% elif t.type == '5:' %}
-                            <div class="col-8 {{ type_color.5.1 }}" style="text-align: justify">
+                        {% if task.type == '0:' %}
+                            <div class="col-7 {{ type_color.0.1 }}" style="text-align: justify">
+                        {% elif task.type == '1:' %}
+                            <div class="col-7 {{ type_color.1.1 }}" style="text-align: justify">
+                        {% elif task.type == '2:' %}
+                            <div class="col-7 {{ type_color.2.1 }}" style="text-align: justify">
+                        {% elif task.type == '3:' %}
+                            <div class="col-7 {{ type_color.3.1 }}" style="text-align: justify">
+                        {% elif task.type == '4:' %}
+                            <div class="col-7 {{ type_color.4.1 }}" style="text-align: justify">
+                        {% elif task.type == '5:' %}
+                            <div class="col-7 {{ type_color.5.1 }}" style="text-align: justify">
                         {% else %}
                             <div class="col-8" style="text-align: justify">
                         {% endif %}
-                            {{ t.comment|linebreaksbr }}
+                            {{ task.comment|linebreaksbr }}
                             </div>
                         <div class="col-1">
-                            {{ t.customer_project.financing }}
+                            {{ task.customer_project.financing }}
+                        </div>
+                        <div class="col-1">
+                            {{ task.deadline|date:"Y-m-d" }}
                         </div>
                         <div class="col-1" style="font-size: 10px;">
-                            {{ t.created_user }}
+                            {{ task.created_user }}
                             <div>
-                                {{ t.created_at|date:"Y-m-d" }}
+                                {{ task.created_at|date:"Y-m-d" }}
                             </div>
                             <div>
-                                {% if t.type == '2:' %}
-                                    {{ t.days_passed }}
-                                {% elif t.type == '3:' %}
-                                    {{ t.days_passed }}
+                                {% if task.type == '2:' %}
+                                    {{ task.days_passed }}
+                                {% elif task.type == '3:' %}
+                                    {{ task.days_passed }}
                                 {% else %}
-                                    {{ t.completed_at|date:"Y-m-d" }}
+                                    {{ task.completed_at|date:"Y-m-d" }}
                                 {% endif %}
                             </div>
                         </div>
