@@ -7,7 +7,7 @@ from . import views_projects as app_views
 
 from .context_processors import menu_context
 
-from .models import Project, Task, Job, Customer, CustomerProject
+from .models import Project, Task, Job, Customer, CustomerProject, LastPosition
 
 
 def home(request):
@@ -16,11 +16,11 @@ def home(request):
 
 # Projekt név átvétele az url-ből, majd a Project-ben az ahhoz tartozó view_name definíció hívása
 def view_names(request, view_name, task_id):
-    job = Job.objects.get(user=request.user)
+    job = LastPosition.objects.get(user=request.user)
     project = get_object_or_404(Project, view_name=view_name)  # Projekt rekord keresése a view név alapján
 
     # Van-e ilyen pozicíója a felhasználónak?
-    is_assigned = job.position.positionproject_set.filter(project=project).exists()
+    is_assigned = job.last_position.positionproject_set.filter(project=project).exists()
     if not is_assigned:
         messages.success(request, 'Ehhez a munkakörhöz nincs jogosultságod. Jelezd az adminisztrátornak!')
         return render(request, 'home.html', {})

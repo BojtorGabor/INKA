@@ -13,13 +13,22 @@ class Position(models.Model):
         return self.name
 
 
-# Felhasználók - Munkakörhöz rendelve (egy Felhasználóhoz csak egy Munkakör tartozhat!)
+# Felhasználók - Munkakörhöz rendelve (egy Felhasználóhoz több Munkakör is tartozhat!)
 class Job(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Felhasználó hozzárendelése
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Felhasználó hozzárendelése
     position = models.ForeignKey(Position, on_delete=models.CASCADE)  # Munkakör hozzárendelése
 
     def __str__(self):
-        return str(self.user)
+        return f"{self.user} - {self.position.name}"
+
+
+# A Felhasználó utoljára ebben a munkakörben dolgozott
+class LastPosition(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Felhasználó hozzárendelése
+    last_position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)  # Utolsó Position amiben dolgozott
+
+    def __str__(self):
+        return self.last_position.name
 
 
 # Projektek törzsadata (egy Projekthez több Munkakör is tartozhat!)

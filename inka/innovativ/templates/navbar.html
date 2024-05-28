@@ -68,6 +68,11 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Kijelentkezés</a></li>
                             <li><a class="dropdown-item" href="{% url 'update_password' %}">Jelszó módosítás</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% for possible_position in possible_positions %}
+                                <li><a class="dropdown-item" href="{% url 'change_position' possible_position.id %}">
+                                    Munkakör váltás: {{ possible_position.name }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                 {% else %}

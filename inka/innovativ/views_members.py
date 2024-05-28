@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # from .models import UserProfile
 from django_otp import verify_token, user_has_device
 from django_otp.plugins.otp_totp.models import TOTPDevice
-from .models import Job
+from .models import Job, LastPosition, Position
 from django.contrib.auth.signals import user_logged_in
 
 
@@ -61,6 +61,7 @@ def register_user(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
+            LastPosition.objects.create(user=user)  # Létrehozzuk az utolsó Position rekordját a usernek
             messages.success(request, f'Sikeres regisztráció. A {username} felhasználó névhez'
                                       f' tartozó QR kódot kérd az adminisztrátortól.')
             return redirect('home')
@@ -100,39 +101,13 @@ def update_password(request):
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')
-#
-#
-# def update_user(request):
-#     if request.user.is_authenticated:
-#         current_user = User.objects.get(id=request.user.id)
-#         form = UpdateUserForm(request.POST or None, instance=current_user)
-#         if form.is_valid():
-#             form.save()
-#             login(request, current_user)
-#             messages.success(request, 'Sikeres módosítás.')
-#             return redirect('home')
-#         else:
-#             return render(request, 'update_user.html', {'form': form})
-#     else:
-#         messages.success(request, 'Nincs jogosultságod.')
-#         return redirect('login')
 
-#
-#
-# def update_user_profile(request):
-#     if not request.user.is_authenticated:
-#         messages.success(request, 'Nincs jogosultságod.')
-#         return redirect('login')
-#
-#     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-#
-#     if request.method == 'POST':
-#         form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Sikeres módosítás.')
-#             return redirect('home')
-#     else:
-#         form = UserProfileForm(instance=user_profile)
-#
-#     return render(request, 'update_user_profile.html', {'form': form})
+
+def change_position(request, position_id):
+    current_last_position = LastPosition.objects.get(user=request.user)
+    new_position = Position.objects.get(id=position_id)
+
+    current_last_position.last_position = new_position
+    current_last_position.save()
+
+    return redirect('home')

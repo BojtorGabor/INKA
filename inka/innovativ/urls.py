@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout', views_members.logout_user, name='logout'),
     path('register', views_members.register_user, name='register'),
     path('update_password', views_members.update_password, name='update_password'),
+    path('change_position/<int:position_id>/', views_members.change_position, name='change_position'),
 
     path('<str:view_name>/<int:task_id>', views.view_names, name='view_names'),
     path('tasks/<str:filter>/<str:view_name>', views.tasks, name='tasks'),

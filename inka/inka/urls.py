@@ -7,7 +7,7 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 
-from innovativ.models import Position, Job, Project, PositionProject, Target, Financing, EmailTemplate, StandardText
+from innovativ.models import Position, Job, LastPosition, Project, PositionProject, Target, Financing, EmailTemplate, StandardText
 
 
 class OTPAdmin(OTPAdminSite):
@@ -22,6 +22,11 @@ class PositionAdmin(admin.ModelAdmin):
 class JobAdmin(admin.ModelAdmin):
     list_display = ('user', 'position', 'id')
     ordering = ['user', 'position']
+
+
+class LastPositionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'last_position', 'id')
+    ordering = ['user', 'last_position']
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -59,6 +64,7 @@ admin_site.register(User)
 admin_site.register(TOTPDevice, TOTPDeviceAdmin)
 admin_site.register(Position, PositionAdmin)
 admin_site.register(Job, JobAdmin)
+admin_site.register(LastPosition, LastPositionAdmin)
 admin_site.register(Project, ProjectAdmin)
 admin_site.register(PositionProject, PositionProjectAdmin)
 admin_site.register(Target, TargetAdmin)
