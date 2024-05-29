@@ -86,6 +86,8 @@ class CustomerProject(models.Model):
     financing = models.ForeignKey(Financing, on_delete=models.SET_NULL, null=True, default=None)  # Finanszírozás
     installation_address = models.CharField(max_length=150, default='')  # Telepítés címe
     request = models.TextField(max_length=1000)  # Ügyfél kérése, igénye
+    latitude = models.FloatField(null=True, blank=True)  # Telepítés koordinátái
+    longitude = models.FloatField(null=True, blank=True)  # Telepítés koordinátái
 
     def __str__(self):
         return f"{self.target} (id: {self.id})"

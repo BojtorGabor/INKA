@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer_project.customer }} - ügyfél térképre illesztése</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-3 mb-3">
+            1. Keresd meg minél <u>pontosabban</u> az ügyfél telepítésének helyét a térképen
+            <br/>
+            2. Kattins a megfelelő pontra
+            <br/><br/>
+			{% include 'ugyfel_adatlap.html' %}
+            <br/>
+		</div>
+		<div class="col-9 mb-3">
+            <div id="map" style="height: 800px; width: 100%;"></div>
+            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Inicializáljuk a térképet
+        var map = L.map('map').setView([47.2, 19.4], 8);
+
+        // Hozzáadjuk a térképi csempét
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Kattintási esemény kezelése
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // AJAX kérés küldése a koordinátákkal
+            $.ajax({
+                url: '{% url "p_05_1_process_coordinates" task.customer_project.id %}',
+                type: 'POST',
+                data: {
+                    'lat': lat,
+                    'lng': lng,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    alert("Koordináták felvéve: " + response.latitude + ", " + response.longitude);
+                    window.history.back();
+                },
+                error: function(xhr, status, error) {
+                    alert("Error sending coordinates: " + error);
+                }
+            });
+        });
+
+        // Visszalépés funkció
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+{% endblock extra_js %}

@@ -1,9 +1,55 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from innovativ.forms_projects import ReasonForm
-from innovativ.models import Task, Project
+from innovativ.models import Task, Project, CustomerProject
+
+import folium
+
+
+def p_05_1_ugyfel_terkepre(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    m = folium.Map(location=[47.2, 19.4], zoom_start=8)  # Alapértelmezett hely
+
+    if task.customer_project.latitude and task.customer_project.longitude:
+        # Marker hozzáadása a térképhez
+        folium.Marker(
+            location=[task.customer_project.latitude, task.customer_project.longitude],
+            popup=folium.Popup(f'{task.customer_project.customer}', max_width=200),
+            icon=folium.Icon(color='blue', icon='info-sign')
+        ).add_to(m)
+
+    # A térkép HTML generálása
+    map_html = m._repr_html_()
+    # map_html = m.get_root().render()
+
+    # Mentjük a térkép HTML-t egy fájlba
+    # map_path = 'terkep.html'
+    # m.save(map_path)
+    #
+    # # Beolvassuk a mentett HTML-t
+    # with open(map_path, 'r', encoding='utf-8') as f:
+    #     map_html = f.read()
+
+    return render(request, '05/p_05_1_ugyfel_terkepre.html', {'task': task, 'map_html': map_html})
+
+
+def p_05_1_process_coordinates(request, customer_project_id):
+    if request.method == 'POST':
+        customer_project = CustomerProject.objects.get(pk=customer_project_id)
+
+        lat = request.POST.get('lat')
+        lng = request.POST.get('lng')
+
+        #  Koordináták mentése
+        customer_project.latitude = lat
+        customer_project.longitude = lng
+        customer_project.save()
+
+        return JsonResponse({'status': 'success', 'latitude': lat, 'longitude': lng})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
 def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):
