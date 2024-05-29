@@ -245,6 +245,38 @@ def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
     return render(request, '04/p_04_1_elozetes_arajanlat_kuldes.html', {'task': task, 'form': form})
 
 
+def p_04_1_ugyfelnek_felmeres(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = ReasonForm(request.POST)
+            if form.is_valid():
+                task.type = '4:'
+                task.type_color = '4:'
+                task.completed_at = timezone.now().isoformat()
+                task.save()
+
+                # feladat adás az Felmérés projektnek
+                next_project = Project.objects.filter(name__startswith='05.1.')
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project[0],  # következő projekt
+                                    customer_project=task.customer_project,  # ügyfél projekt azonosító
+                                    comment=f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
+                                            f'\n{form["reason"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = ReasonForm()
+
+        return render(request, '04/p_04_1_ugyfelnek_felmeres.html',
+                      {'task': task, 'form': form})
+
 def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:

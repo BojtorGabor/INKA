@@ -6,6 +6,7 @@ from django.contrib import messages
 from . import views_projects as app_views
 
 from .context_processors import menu_context
+from .forms_projects import DeadlineForm
 
 from .models import Project, Task, Job, Customer, CustomerProject, LastPosition
 
@@ -99,6 +100,25 @@ def tasks(request, filter, view_name):
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')
+
+
+def hatarido(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = DeadlineForm(request.POST or None, instance=task)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Határidő módosítva.')
+                return render(request, 'home.html', {})
+        else:
+            form = DeadlineForm(instance=task)
+
+        return render(request, 'hatarido.html', {'task': task, 'form': form})
 
 
 # Feladatok listázása különféle szűrőkkel

@@ -24,10 +24,16 @@
 							   class="btn btn-outline-info btn-sm">Előzetes árajánlatok kezelése</a>
 						</div>
 					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'hatarido' task.id %}"
+							   class="btn btn-outline-info btn-sm">Határidő megadása erre a feladatra</a>
+						</div>
+					</div>
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#"
+							<a href="{% url 'p_04_1_ugyfelnek_felmeres' task.id %}"
 							   class="btn btn-outline-info btn-sm">Ügyfél átadása - 05. Felmérések felelősének</a>
 						</div>
 					</div>

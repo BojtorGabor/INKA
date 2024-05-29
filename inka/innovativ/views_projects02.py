@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.template import Template, Context
 from django.utils import timezone
 
-from .forms_projects import EmailTemplateForm, CustomerForm, CustomerProjectForm, ReasonForm, DeadlineForm
+from .forms_projects import EmailTemplateForm, CustomerForm, CustomerProjectForm, ReasonForm
 from .models import Task, EmailTemplate, Customer, CustomerProject, Project, Target, Financing
 from django.core.mail import send_mail
 
@@ -130,25 +130,6 @@ def p_02_1_telefonszam_keres(request, task_id):
         else:
             form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
         return render(request, '02/p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
-
-
-def p_02_1_hatarido(request, task_id):
-    task = Task.objects.get(pk=task_id)
-    if task.completed_at:
-        messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
-        return render(request, 'home.html', {})
-    else:
-        if request.method == 'POST':
-            form = DeadlineForm(request.POST or None, instance=task)
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Határidő módosítva.')
-                return render(request, 'home.html', {})
-        else:
-            form = DeadlineForm(instance=task)
-
-        return render(request, '02/p_02_1_hatarido.html', {'task': task, 'form': form})
 
 
 def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
