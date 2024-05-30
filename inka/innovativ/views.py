@@ -113,6 +113,10 @@ def hatarido(request, task_id):
             form = DeadlineForm(request.POST or None, instance=task)
             if form.is_valid():
                 form.save()
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
                 messages.success(request, 'Határidő módosítva.')
                 return render(request, 'home.html', {})
         else:

@@ -109,12 +109,52 @@
                             {{ price_offer.created_at | date:"Y.m.d" }}
                         </div>
                         <div class="col-2 text-end">
-                            {{ price_offer.id }}
+                            (id: {{ price_offer.id }})
                         </div>
                         <div class="col-8 text-end">
-                            <a href="{{ MEDIA_URL }}{{ task.customer.id }}/{{ price_offer.file_path }}"
-                               class="btn btn-outline-primary btn-sm" target="_blank">{{ price_offer.get_type_display }}</a>
+                            {% if price_offer.type == '2:' %}
+                                <a href="{{ MEDIA_URL }}{{ task.customer_project.id }}/{{ price_offer.file_path }}"
+                                   class="btn btn-outline-success btn-sm" target="_blank">
+                                    {{ price_offer.get_type_display }}</a>
+                            {% else %}
+                                <a href="{{ MEDIA_URL }}{{ task.customer_project.id }}/{{ price_offer.file_path }}"
+                                   class="btn btn-outline-primary btn-sm" target="_blank">
+                                    {{ price_offer.get_type_display }}</a>
+                            {% endif %}
                         </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapse_specify" aria-expanded="false"
+                    aria-controls="flush-collapse_specify">
+                Felmérések
+            </button>
+        </h2>
+        <div id="flush-collapse_specify" class="accordion-collapse collapse"
+             data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                {% for specify in task.customer_project.specify_set.all %}
+                    <div class="row mb-2">
+                        <div class="col-2">
+                            {{ specify.created_at | date:"Y.m.d" }}
+                        </div>
+                        <div class="col-2 text-end">
+                            (id: {{ specify.id }})
+                        </div>
+                        <div class="col-4 text-start">
+                            {{ specify.get_status_display }}
+                        </div>
+                        {% if specify.specify_date %}
+                            <div class="col-2 text-start">
+                                <a href="#" class="btn btn-outline-primary btn-sm">
+                                {{ specify.specify_date | date:"Y.m.d" }}</a>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

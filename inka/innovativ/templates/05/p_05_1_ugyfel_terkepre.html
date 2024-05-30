@@ -2,15 +2,15 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer_project.customer }} - ügyfél térképre illesztése</h3>
+        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} - térképre illesztése</h3>
 	</div>
 	<br/>
 
     <div class="row">
 		<div class="col-3 mb-3">
-            1. Keresd meg minél <u>pontosabban</u> az ügyfél telepítésének helyét a térképen
+            1. Keresd meg <u>minél pontosabban</u> az ügyfél telepítésének helyét a térképen. (Használd a zoom funciót.)
             <br/>
-            2. Kattins a megfelelő pontra
+            2. Kattins a megfelelő pontra.
             <br/><br/>
 			{% include 'ugyfel_adatlap.html' %}
             <br/>
@@ -23,43 +23,52 @@
 {% endblock content %}
 
 {% block extra_js %}
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // Inicializáljuk a térképet
-        var map = L.map('map').setView([47.2, 19.4], 8);
+<script>
+    // Inicializáljuk a térképet
+    var map = L.map('map').setView([47.2, 19.4], 8);
 
-        // Hozzáadjuk a térképi csempét
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
+    // Hozzáadjuk a térképi csempét
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
 
-        // Kattintási esemény kezelése
-        map.on('click', function(e) {
-            var lat = e.latlng.lat;
-            var lng = e.latlng.lng;
+    // Marker hozzáadása
+    var lat = "{{ task.customer_project.latitude | linebreaksbr }}".replace(",", ".");
+    var lng = "{{ task.customer_project.longitude | linebreaksbr }}".replace(",", ".");
+    var marker = L.marker([lat, lng])
+        .bindPopup("{{ task.customer_project.customer }} - {{ task.customer_project.target }}")
+        .bindTooltip("{{ task.customer_project.customer }} - {{ task.customer_project.target }}")
+        .addTo(map);
 
-            // AJAX kérés küldése a koordinátákkal
-            $.ajax({
-                url: '{% url "p_05_1_process_coordinates" task.customer_project.id %}',
-                type: 'POST',
-                data: {
-                    'lat': lat,
-                    'lng': lng,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function(response) {
-                    alert("Koordináták felvéve: " + response.latitude + ", " + response.longitude);
-                    window.history.back();
-                },
-                error: function(xhr, status, error) {
-                    alert("Error sending coordinates: " + error);
-                }
-            });
+    // Kattintási esemény kezelése
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        // AJAX kérés küldése a koordinátákkal
+        $.ajax({
+            url: '{% url "p_05_1_process_coordinates" task.customer_project.id %}',
+            type: 'POST',
+            data: {
+                'lat': lat,
+                'lng': lng,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert("Koordináták felvéve: " + response.latitude + ", " + response.longitude);
+            },
+            error: function(xhr, status, error) {
+                alert("Error sending coordinates: " + error);
+            }
         });
 
-        // Visszalépés funkció
-        function goBack() {
-            window.history.back();
-        }
-    </script>
-{% endblock extra_js %}
+        // Frissítjük a markert az új koordinátákra
+        marker.setLatLng(e.latlng);
+    });
+
+    // Visszalépés funkció
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock %}

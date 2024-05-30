@@ -86,8 +86,8 @@ class CustomerProject(models.Model):
     financing = models.ForeignKey(Financing, on_delete=models.SET_NULL, null=True, default=None)  # Finanszírozás
     installation_address = models.CharField(max_length=150, default='')  # Telepítés címe
     request = models.TextField(max_length=1000)  # Ügyfél kérése, igénye
-    latitude = models.FloatField(null=True, blank=True)  # Telepítés koordinátái
-    longitude = models.FloatField(null=True, blank=True)  # Telepítés koordinátái
+    latitude = models.FloatField(null=True, blank=True, default=0)  # Telepítés koordinátái
+    longitude = models.FloatField(null=True, blank=True, default=0)  # Telepítés koordinátái
 
     def __str__(self):
         return f"{self.target} (id: {self.id})"
@@ -120,7 +120,7 @@ class Task(models.Model):
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja
-    deadline = models.DateField(null=True, blank=True)  # beállított határidő
+    deadline = models.DateTimeField(null=True, blank=True)  # beállított határidő
 
     def __str__(self):
         return f"{self.project} {self.customer_project} (id: {self.id})"
@@ -195,6 +195,23 @@ class PriceOfferItem(models.Model):
     @property
     def value(self):  # számított mező: összérték
         return self.amount * self.price
+
+
+# Felmérés, pontosítás
+class Specify(models.Model):
+    STATUS_CHOICE = (
+        ('1:', 'várakozó (új)'),
+        ('2:', 'várakozó (pótlás)'),
+        ('3:', 'egyeztetve'),
+        ('4:', 'elmaradt'),
+        ('5:', 'megtörtént'),
+    )
+    customer_project = models.ForeignKey(CustomerProject, on_delete=models.CASCADE)  # Ügyfél projektje
+    specify_date = models.DateTimeField(null=True, blank=True)  # Felmérés időpontja
+    status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='1:')  # Felmérés állapota
+    comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
+    created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
+    created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
 
 # Email sablonok

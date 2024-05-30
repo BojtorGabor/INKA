@@ -318,7 +318,21 @@ def price_offer_makepdf(request, price_offer_id, task_id):
     def add_header_footer(can, page_numb):  # Fejléc generálás
         can.saveState()
         can.setFont("OpenSans-Bold", 30)
-        can.drawString(230, 90, 'Árajánlat')
+        can.drawString(320, 90, 'Árajánlat')
+
+        # Logo koordinátáinak megadása
+        x = 40
+        y = 42  # Az oldal bal felső sarkától lefelé számítva
+        image_width = 200
+        image_height = 70
+        logo_path = os.path.join(settings.MEDIA_ROOT, '0', f'innovativ_napelem_logo.jpg')
+
+        # Kép tükrözésének elkerülése
+        can.saveState()  # Mentse az aktuális állapotot
+        can.translate(x + image_width / 2, y + image_height / 2)  # Fordítsd el a koordináta-rendszert a kép közepére
+        can.scale(1, -1)  # Tükrözés elkerülése
+        can.drawImage(logo_path, -image_width / 2, -image_height / 2, width=image_width, height=image_height)  # A kép helyesen lesz elhelyezve
+        can.restoreState()  # Állítsa vissza az eredeti állapotot
 
         can.rect(30, 30, 535, 780)  # külső keret
 
@@ -366,6 +380,7 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         can.restoreState()
         can.setFont("OpenSans-Regular", 10)
 
+    # Árajánlat tételek
     y_position = 265  # Kezdeti pozíció a fejléc alatt
     page_numb = 1
     item_number = 1
@@ -385,11 +400,11 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         starting_y_position = y_position - 11
         y_height = 30
         if not price_offer_item.product == None:  # Ha nem N/A még a tétel
-            if price_offer_item.product.comment:
+            if price_offer_item.product.comment:  # Ha van termék megjegyzés
                 y_height += 15
-            if item_number % 2 == 0:  # páros sor
+            if item_number % 2 == 0:  # páros sor más háttérrel
                 pdf.setFillColorRGB(0.9, 0.9, 0.9)
-            else:
+            else:  # páratlan sor megint más háttérrel
                 pdf.setFillColorRGB(0.8, 0.8, 0.8)
             pdf.rect(31, starting_y_position, 533, y_height, fill=1, stroke=0)  #
             pdf.setFillColorRGB(0, 0, 0)
@@ -463,16 +478,30 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         add_header_footer(pdf, page_numb)
         y_position = 265  # Új oldal kezdeti pozíciója
 
+    # pecsét, aláírás koordinátáinak megadása
+    x = 100
+    y = y_position  # Az oldal bal felső sarkától lefelé számítva
+    image_width = 80
+    image_height = 60
+    logo_path = os.path.join(settings.MEDIA_ROOT, '0', f'pecset_alairas.jpg')
+
+    # Kép tükrözésének elkerülése
+    pdf.saveState()  # Mentse az aktuális állapotot
+    pdf.translate(x + image_width / 2, y + image_height / 2)  # Fordítsd el a koordináta-rendszert a kép közepére
+    pdf.scale(1, -1)  # Tükrözés elkerülése
+    pdf.drawImage(logo_path, -image_width / 2, -image_height / 2, width=image_width, height=image_height)  # A kép helyesen lesz elhelyezve
+    pdf.restoreState()  # Állítsa vissza az eredeti állapotot
+
     pdf.setFont("OpenSans-Regular", 10)
     y_position += 60  # Következő sor pozíciója
     pdf.line(40, y_position, 240, y_position)
     pdf.line(350, y_position, 550, y_position)
 
+    # Aláíráshoz vonalak
     y_position += 15  # Következő sor pozíciója
     pdf.drawString(120, y_position, 'Kibocsátó')
     pdf.drawString(440, y_position, 'Vevő')
     y_position += 15  # Következő sor pozíciója
-
 
     if y_position > height - 220:  # Ellenőrizzük, hogy van-e hely az aktuális oldalon
         # pdf.drawString(40, y_position, 'Folytatás a következő oldalon...')
@@ -481,6 +510,7 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         add_header_footer(pdf, page_numb)
         y_position = 265  # Új oldal kezdeti pozíciója
 
+    # Standard szöveg
     y_position += 15  # Következő sor pozíciója
     text = pdf.beginText(40, y_position)
     for line in standard_text.content.splitlines():
@@ -488,58 +518,10 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         y_position += 10  # Sorok közötti távolság
     pdf.drawText(text)
 
+    # PDF generálás
     pdf.showPage()
     pdf.save()
-
-    # Olvasd be a mentett PDF-et, hogy response-t küldhess
-    # with open(output_pdf_path, 'rb') as f:
-    #     pdf_content = f.read()
-    #
-    # response.write(pdf_content)
-    # return response
 
     messages.success(request, f'Sikeres PDF aktualizálás.')
 
     return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
-
-
-# def price_offer_makepdf(request, price_offer_id, task_id):  # PDF sablonba beírás próba
-#     task = Task.objects.get(pk=task_id)
-#     price_offer = PriceOffer.objects.get(pk=price_offer_id)
-#
-#     # Olvasd be a meglévő PDF fájlt
-#     template_pdf_path = os.path.join(settings.MEDIA_ROOT, '0', 'EmptyPriceOffer.pdf')
-#     template_pdf = PdfReader(template_pdf_path)
-#
-#     # Regisztráld a betűtípust
-#     pdfmetrics.registerFont(TTFont('DejaVu', os.path.join(settings.MEDIA_ROOT, '0', 'dejavu-sans.book.ttf')))
-#
-#     # Készíts egy új PDF fájlt a Reportlab segítségével, és adj hozzá adatokat
-#     packet = BytesIO()
-#     can = canvas.Canvas(packet, pagesize=A4, bottomup=0)
-#
-#     # Beállítjuk a betűtípust, amely támogatja a magyar ékezetes karaktereket
-#     can.setFont("DejaVu", 12)
-#     # can.drawString(100, 100, "aAáÁeEéÉiIíÍoOóÓöÖőŐuUúÚüÜűŰ.")
-#     can.save()
-#
-#     # Állítsd a buffer-t a kezdő pozícióra
-#     packet.seek(0)
-#     new_pdf = PdfReader(packet)
-#
-#     # Az első oldal hozzáadása a meglévő PDF-hez
-#     output = PdfWriter()
-#     for page_num in range(len(template_pdf.pages)):
-#         page = template_pdf.pages[page_num]
-#         # Új oldal hozzáadása az eredeti oldalakhoz
-#         if page_num == 0:
-#             page.merge_page(new_pdf.pages[0])
-#         output.add_page(page)
-#
-#     # Mentsd el az új PDF fájlt más néven
-#     output_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{price_offer.file_path}')
-#
-#     with open(output_pdf_path, "wb") as output_pdf:
-#         output.write(output_pdf)
-#
-#     return render(request, 'home.html', {})

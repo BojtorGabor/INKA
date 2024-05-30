@@ -142,6 +142,7 @@ def p_02_1_ugyfelnek_elozetes_arajanlat(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
+                # Eredeti task lezárása
                 task.type = '4:'
                 task.type_color = '4:'
                 task.completed_at = timezone.now().isoformat()
@@ -175,6 +176,7 @@ def p_02_1_ugyfelnek_felmeres(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
+                # Eredeti task lezárása
                 task.type = '4:'
                 task.type_color = '4:'
                 task.completed_at = timezone.now().isoformat()
@@ -208,6 +210,7 @@ def p_02_1_ugyfel_elerhetetlen(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
+                # Eredeti task lezárása
                 task.type = '4:'
                 task.type_color = '4:'
                 task.completed_at = timezone.now().isoformat()
@@ -326,6 +329,7 @@ def p_02_2_uj_megkereses_torlese(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
+                # Eredeti task lezárása
                 task.type = '5:'
                 task.type_color = '5:'
                 task.completed_at = timezone.now().isoformat()

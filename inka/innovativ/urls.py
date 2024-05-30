@@ -73,6 +73,8 @@ urlpatterns = [
          name='p_05_1_ugyfel_terkepre'),
     path('p_05_1_process_coordinates/<int:customer_project_id>/', views_projects05.p_05_1_process_coordinates,
          name='p_05_1_process_coordinates'),
+    path('p_05_1_ugyfel_felmeres_egyezetesre/<int:task_id>/', views_projects05.p_05_1_ugyfel_felmeres_egyezetesre,
+         name='p_05_1_ugyfel_felmeres_egyezetesre'),
     path('p_05_1_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_02_nek,
          name='p_05_1_ugyfel_visszaadasa_02_nek'),
     path('p_05_1_ugyfel_visszaadasa_04_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_04_nek,

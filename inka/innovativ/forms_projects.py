@@ -120,11 +120,13 @@ class DeadlineForm(forms.ModelForm):
         model = Task
         fields = ['deadline']
         labels = {'deadline': 'Határidő'}
-        widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
-                                                       format='%Y-%m-%d')}
+        # widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
+        #                                                format='%Y-%m-%d')}
+        widgets = {'deadline': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'},
+                format='%Y-%m-%dT%H:%M')}
 
     def __init__(self, *args, **kwargs):
         super(DeadlineForm, self).__init__(*args, **kwargs)
         self.fields['deadline'].widget.attrs['class'] = 'form-control'
         if self.instance and self.instance.pk and self.instance.deadline:
-            self.fields['deadline'].initial = self.instance.deadline.strftime('%Y-%m-%d')
+            self.fields['deadline'].initial = self.instance.deadline.strftime('%Y-%m-%dT%H:%M')
