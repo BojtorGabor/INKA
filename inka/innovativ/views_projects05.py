@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -88,6 +89,72 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
             form = ReasonForm()
 
         return render(request, '05/p_05_1_ugyfel_felmeres_egyezetesre.html', {'task': task, 'form': form})
+
+
+def p_05_1_idopont_kereses(request, task_id):
+    task = Task.objects.get(pk=task_id)
+
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        # Felmérésre várakozók kigyűjtése
+        # Lekérdezzük az összes Specify rekordot, amelyek status mezője '1:' vagy '2:' vagy '4:'
+        specify_records = Specify.objects.filter(Q(status='1:') | Q(status='2:') | Q(status='4:'))
+
+        # Lekérdezzük az összes CustomerProject rekordot, amelyek az előző Specify rekordok customer_project-jei közé esnek
+        customer_projects = CustomerProject.objects.filter(id__in=specify_records.values_list('customer_project', flat=True))
+
+        # Várakozók térképe
+        m1 = folium.Map(location=[47.2, 19.4], zoom_start=7)
+        for customer_project in customer_projects:
+            if task.customer_project.id == customer_project.id:
+                folium.Marker([customer_project.latitude, customer_project.longitude],
+                              popup=folium.Popup(f'{customer_project.customer} - {customer_project}',
+                                                 max_width=250),
+                              icon=folium.Icon(color='red', icon='info-sign')).add_to(m1)
+            else:
+                folium.Marker([customer_project.latitude, customer_project.longitude],
+                              popup=folium.Popup(f'{customer_project.customer} - {customer_project}',
+                                                 max_width=250),
+                              icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
+        m1 = m1._repr_html_()  # HTML-reprezentáció
+
+        # Egyeztetett felmérések kigyűjtése
+        # Lekérdezzük az összes Specify rekordot, amelyek status mezője '3:'
+        today = timezone.now().date()
+        specify_records = Specify.objects.filter(Q(status='3:') & Q(specify_date__gt=today))
+
+        # Lekérdezzük az összes CustomerProject rekordot, amelyek az előző Specify rekordok customer_project-jei közé esnek
+        customer_projects = CustomerProject.objects.filter(id__in=specify_records.values_list('customer_project', flat=True))
+
+        # Létrehozunk egy dictionary-t, amely a customer_project azonosítókat és specify_date értékeket párosítja
+        customer_project_dates = dict(specify_records.values_list('customer_project', 'specify_date'))
+
+        # Egyeztetett felmérések térképe
+        m2 = folium.Map(location=[47.2, 19.4], zoom_start=7)
+        for customer_project in customer_projects:
+            # Itt hozzárendeljük a megfelelő specify_date értéket a CustomerProject objektumhoz
+            specify_date = customer_project_dates.get(customer_project.id)
+            formatted_specify_date = specify_date.strftime("%Y-%m-%d %H:%M")  # A kívánt formátumban formázzuk az időt
+
+            # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
+            popup_content = f'{customer_project.customer} - {customer_project}<br>' \
+                            f'{formatted_specify_date}'  # Újsor karakterrel választjuk el az adatokat
+
+            folium.Marker([customer_project.latitude, customer_project.longitude],
+                          popup=folium.Popup(popup_content, max_width=250),
+                          icon=folium.Icon(color='blue', icon='info-sign')).add_to(m2)
+        # Plusz a mostani ügyfél pirossal
+        folium.Marker([task.customer_project.latitude, task.customer_project.longitude],
+                      popup=folium.Popup(f'{task.customer_project.customer} - {task.customer_project}',
+                                         max_width=250),
+                      icon=folium.Icon(color='red', icon='info-sign')).add_to(m2)
+        m2 = m2._repr_html_()  # HTML-reprezentáció
+
+        return render(request, '05/p_05_1_idopont_kereses.html', {'task': task,
+                                                                  'map1': m1, 'map2': m2})
 
 
 def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):

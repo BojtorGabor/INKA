@@ -20,8 +20,8 @@
 				<div class="card-body text-center">
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">
-								1. feladat</a>
+							<a href="{% url 'p_05_1_idopont_kereses' task.id %}" class="btn btn-outline-info btn-sm">
+								Időpont keresés</a>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -32,8 +32,8 @@
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'hatarido' task.id %}"
-							   class="btn btn-outline-info btn-sm">Határidő megadása erre a feladatra</a>
+							<a href="{% url 'hatarido' task.id %}" class="btn btn-outline-info btn-sm">
+								Határidő megadása erre a feladatra</a>
 						</div>
 					</div>
 					<hr>
@@ -60,7 +60,7 @@
 		</div>
 		<!--Ügyfél történet-->
 		<div class="col-sm-9">
-
+			{% include 'ugyfel_tortenet.html' %}
 		</div>
 	</div>
 {% endblock %}

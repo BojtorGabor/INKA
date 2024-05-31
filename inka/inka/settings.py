@@ -96,7 +96,7 @@ DATABASES = {
         ########################################### innovatív.hu
         # 'NAME': 'cdjyocle_inka',
         # 'USER': 'cdjyocle',
-        # 'PASSWORD': 'Rcb(oQ292LM)7b',
+        # 'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         'HOST': 'localhost',
         'PORT': 3306
     }

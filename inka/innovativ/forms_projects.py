@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -120,13 +120,27 @@ class DeadlineForm(forms.ModelForm):
         model = Task
         fields = ['deadline']
         labels = {'deadline': 'Határidő'}
-        # widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
-        #                                                format='%Y-%m-%d')}
-        widgets = {'deadline': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'},
-                format='%Y-%m-%dT%H:%M')}
+        widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
+                                                       format='%Y-%m-%d')}
+
 
     def __init__(self, *args, **kwargs):
         super(DeadlineForm, self).__init__(*args, **kwargs)
         self.fields['deadline'].widget.attrs['class'] = 'form-control'
         if self.instance and self.instance.pk and self.instance.deadline:
-            self.fields['deadline'].initial = self.instance.deadline.strftime('%Y-%m-%dT%H:%M')
+            self.fields['deadline'].initial = self.instance.deadline.strftime('%Y-%m-%d')
+
+
+class SpecifyDateTimeForm(forms.ModelForm):
+    class Meta:
+        model = Specify
+        fields = ['specify_date']
+        labels = {'specify_date': 'Időpont'}
+        widgets = {'specify_date': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'},
+                format='%Y-%m-%dT%H:%M')}
+
+    def __init__(self, *args, **kwargs):
+        super(SpecifyDateForm, self).__init__(*args, **kwargs)
+        self.fields['specify_date'].widget.attrs['class'] = 'form-control'
+        if self.instance and self.instance.pk and self.instance.specify_date:
+            self.fields['specify_date'].initial = self.instance.specify_date.strftime('%Y-%m-%dT%H:%M')

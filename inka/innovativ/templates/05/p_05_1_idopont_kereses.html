@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} - időpont keresés</h3>
+	</div>
+	<br/>
+
+    <div class="row">
+		<div class="col-3 mb-3">
+			{% include 'ugyfel_adatlap.html' %}
+            <br/>
+		</div>
+		<div class="col-4 mb-3">
+            <div class="text-center mb-3">Felmérésre várakozók</div>
+            <div id="map1" style="height: 400px; width: 100%;">{{ map1|safe }}</div>
+<!--            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>-->
+        </div>
+		<div class="col-4 mb-3">
+            <div class="text-center mb-3">Már egyeztetett felmérések</div>
+            <div id="map2" style="height: 400px; width: 100%;">{{ map2|safe }}</div>
+<!--            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>-->
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Az iframe magasságának beállítása
+            $('#map1 iframe').css('height', '400px');
+            $('#map2 iframe').css('height', '400px');
+        });
+    </script>
+{% endblock content %}

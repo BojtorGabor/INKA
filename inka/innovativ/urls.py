@@ -75,11 +75,12 @@ urlpatterns = [
          name='p_05_1_process_coordinates'),
     path('p_05_1_ugyfel_felmeres_egyezetesre/<int:task_id>/', views_projects05.p_05_1_ugyfel_felmeres_egyezetesre,
          name='p_05_1_ugyfel_felmeres_egyezetesre'),
+    path('p_05_1_idopont_kereses/<int:task_id>/', views_projects05.p_05_1_idopont_kereses,
+         name='p_05_1_idopont_kereses'),
     path('p_05_1_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_02_nek,
          name='p_05_1_ugyfel_visszaadasa_02_nek'),
     path('p_05_1_ugyfel_visszaadasa_04_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_04_nek,
          name='p_05_1_ugyfel_visszaadasa_04_nek'),
-
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
