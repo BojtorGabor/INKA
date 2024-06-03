@@ -197,6 +197,14 @@ class PriceOfferItem(models.Model):
         return self.amount * self.price
 
 
+# Felmérők
+class Specifyer(models.Model):
+    name = models.CharField(max_length=50)  # Felmérő neve
+
+    def __str__(self):
+        return self.name
+
+
 # Felmérés, pontosítás
 class Specify(models.Model):
     STATUS_CHOICE = (
@@ -207,11 +215,15 @@ class Specify(models.Model):
         ('5:', 'megtörtént'),
     )
     customer_project = models.ForeignKey(CustomerProject, on_delete=models.CASCADE)  # Ügyfél projektje
+    specifyer = models.ForeignKey(Specifyer, on_delete=models.SET_NULL, null=True)  # Felmérő
     specify_date = models.DateTimeField(null=True, blank=True)  # Felmérés időpontja
     status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='1:')  # Felmérés állapota
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
+
+    def __str__(self):
+        return f'{self.customer_project} + {self.specify_date}'
 
 
 # Email sablonok

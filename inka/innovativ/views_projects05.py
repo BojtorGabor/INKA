@@ -9,6 +9,8 @@ from innovativ.models import Task, Project, CustomerProject, Specify
 
 import folium
 
+from datetime import datetime, timedelta
+
 
 def p_05_1_ugyfel_terkepre(request, task_id):
     task = Task.objects.get(pk=task_id)
@@ -99,6 +101,12 @@ def p_05_1_idopont_kereses(request, task_id):
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
+        if request.method == 'POST':
+            filter_date = request.POST.get('filter_date')
+            print('POST', filter_date)
+        else:
+            filter_date = ''
+
         # Felmérésre várakozók kigyűjtése
         # Lekérdezzük az összes Specify rekordot, amelyek status mezője '1:' vagy '2:' vagy '4:'
         specify_records = Specify.objects.filter(Q(status='1:') | Q(status='2:') | Q(status='4:'))
@@ -122,9 +130,17 @@ def p_05_1_idopont_kereses(request, task_id):
         m1 = m1._repr_html_()  # HTML-reprezentáció
 
         # Egyeztetett felmérések kigyűjtése
-        # Lekérdezzük az összes Specify rekordot, amelyek status mezője '3:'
         today = timezone.now().date()
-        specify_records = Specify.objects.filter(Q(status='3:') & Q(specify_date__gt=today))
+        if not filter_date: # Lekérdezzük az összes Specify rekordot, amelyek status mezője '3:'
+            specify_records = Specify.objects.filter(status='3:', specify_date__gt=today)
+        else:  # Ha kértünk szűrési dátumot a térképre
+            search_date = datetime.strptime(filter_date, "%Y-%m-%d")
+            # Kezdő dátum és vég dátum meghatározása
+            start_date = timezone.make_aware(datetime.combine(search_date, datetime.min.time()))
+            end_date = timezone.make_aware(datetime.combine(search_date + timedelta(days=1), datetime.min.time()))
+
+            # Szűrés dátum intervallum alapján
+            specify_records = Specify.objects.filter(status='3:', specify_date__gte=start_date, specify_date__lt=end_date)
 
         # Lekérdezzük az összes CustomerProject rekordot, amelyek az előző Specify rekordok customer_project-jei közé esnek
         customer_projects = CustomerProject.objects.filter(id__in=specify_records.values_list('customer_project', flat=True))
@@ -143,6 +159,7 @@ def p_05_1_idopont_kereses(request, task_id):
             popup_content = f'{customer_project.customer} - {customer_project}<br>' \
                             f'{formatted_specify_date}'  # Újsor karakterrel választjuk el az adatokat
 
+
             folium.Marker([customer_project.latitude, customer_project.longitude],
                           popup=folium.Popup(popup_content, max_width=250),
                           icon=folium.Icon(color='blue', icon='info-sign')).add_to(m2)
@@ -153,8 +170,22 @@ def p_05_1_idopont_kereses(request, task_id):
                       icon=folium.Icon(color='red', icon='info-sign')).add_to(m2)
         m2 = m2._repr_html_()  # HTML-reprezentáció
 
-        return render(request, '05/p_05_1_idopont_kereses.html', {'task': task,
-                                                                  'map1': m1, 'map2': m2})
+        # Felmérések csoportosítása felmérési idő szerint
+        specifies = Specify.objects.exclude(specify_date__isnull=True).order_by('specify_date')
+
+        # Csoportosítjuk a Specify objektumokat specify_date napra csonkított értéke szerint
+        specify_by_date = {}
+        filter_dates = []
+        for specify in specifies:
+            date = specify.specify_date.date()  # Csak a dátum részt vesszük
+            if date not in specify_by_date:
+                filter_dates.append(date)
+                specify_by_date[date] = []
+            specify_by_date[date].append(specify)
+
+        return render(request, '05/p_05_1_idopont_kereses.html',
+                      {'task': task, 'map1': m1, 'map2': m2,
+                       'specify_by_date': specify_by_date, 'filter_dates': filter_dates})
 
 
 def p_05_1_ugyfel_visszaadasa_02_nek(request, task_id):

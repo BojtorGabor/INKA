@@ -8,16 +8,72 @@
 
     <div class="row">
 		<div class="col-3 mb-3">
-			{% include 'ugyfel_adatlap.html' %}
-            <br/>
+             <div class="row mb-3">
+                 <div class="col mb-3">
+                    {% include 'ugyfel_adatlap.html' %}
+                     <br/>
+                    <div class="accordion accordion-flush" id="accordionSpecify">
+                        {% for date, specifies in specify_by_date.items %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#flush-collapse_{{ forloop.counter }}" aria-expanded="false"
+                                            aria-controls="flush-collapse_{{ forloop.counter }}">
+                                        {{ date | date:'Y-m-d' }}
+                                    </button>
+                                </h2>
+                                <div id="flush-collapse_{{ forloop.counter }}"
+                                     class="accordion-collapse collapse" data-bs-parent="#accordionSpecify">
+                                    <div class="accordion-body">
+                                        {% for specify in specifies %}
+                                            <div class="row">
+                                                <div class="col">
+                                                    {{ specify.specify_date |date:'H:m' }}
+                                                </div>
+                                                <div class="col text-end">
+                                                    {{ specify.specifyer }}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    {{ specify.customer_project.customer }} -
+                                                    {{ specify.customer_project.target.name }}
+                                                </div>
+                                            </div>
+                                            <hr>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                 </div>
+		    </div>
 		</div>
 		<div class="col-4 mb-3">
             <div class="text-center mb-3">Felmérésre várakozók</div>
             <div id="map1" style="height: 400px; width: 100%;">{{ map1|safe }}</div>
-<!--            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>-->
+        </div>
+        <div class="col-1 text-center mb-3">
+            Egyeztett felmérések szűrése
+            <br>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for filter_date in filter_dates %}
+                        <div class="row mb-2">
+                            <div class="col">
+                                <button type="submit" class="btn btn-outline-info btn-sm"
+                                        name="filter_date" value="{{ filter_date | date:'Y-m-d' }}">
+                                    {{ filter_date | date:'Y-m-d' }}</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-outline-info btn-sm" name="filter_date" value="">
+                        Összes</button>
+                </form>
         </div>
 		<div class="col-4 mb-3">
-            <div class="text-center mb-3">Már egyeztetett felmérések</div>
+            <div class="text-center mb-3">Egyeztetett felmérések</div>
             <div id="map2" style="height: 400px; width: 100%;">{{ map2|safe }}</div>
 <!--            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>-->
         </div>
