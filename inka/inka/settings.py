@@ -126,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'hu-HU'
-# USE_L10N = True  # Engedélyezze a helyi formázást
+USE_L10N = True  # Engedélyezze a helyi formázást
 USE_THOUSAND_SEPARATOR = True  # Engedélyezze az ezres tagolást
 
 TIME_ZONE = 'Europe/Budapest'

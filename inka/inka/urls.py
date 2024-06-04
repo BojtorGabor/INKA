@@ -7,7 +7,8 @@ from django_otp.admin import OTPAdminSite
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 
-from innovativ.models import Position, Job, LastPosition, Project, PositionProject, Target, Financing, EmailTemplate, StandardText
+from innovativ.models import (Position, Job, LastPosition, Project, PositionProject, Target, Financing, EmailTemplate,
+                              StandardText, Specifyer)
 
 
 class OTPAdmin(OTPAdminSite):
@@ -59,6 +60,11 @@ class StandardTextAdmin(admin.ModelAdmin):
     ordering = ['title']
 
 
+class SpecifyerAdmin(admin.ModelAdmin):
+    list_display = ('name', 'id')
+    ordering = ['name']
+
+
 admin_site = OTPAdmin(name='OTPAdmin')
 admin_site.register(User)
 admin_site.register(TOTPDevice, TOTPDeviceAdmin)
@@ -71,6 +77,7 @@ admin_site.register(Target, TargetAdmin)
 admin_site.register(Financing, FinancingAdmin)
 admin_site.register(EmailTemplate, EmailTemplateAdmin)
 admin_site.register(StandardText, StandardTextAdmin)
+admin_site.register(Specifyer, SpecifyerAdmin)
 
 urlpatterns = [
     path('admin/', admin_site.urls),

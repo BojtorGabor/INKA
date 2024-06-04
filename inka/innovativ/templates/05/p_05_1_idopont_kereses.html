@@ -8,81 +8,126 @@
 
     <div class="row">
 		<div class="col-3 mb-3">
-             <div class="row mb-3">
-                 <div class="col mb-3">
+            <div class="row mb-3">
+                <div class="col mb-3">
                     {% include 'ugyfel_adatlap.html' %}
-                     <br/>
-                    <div class="accordion accordion-flush" id="accordionSpecify">
-                        {% for date, specifies in specify_by_date.items %}
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapse_{{ forloop.counter }}" aria-expanded="false"
-                                            aria-controls="flush-collapse_{{ forloop.counter }}">
-                                        {{ date | date:'Y-m-d' }}
-                                    </button>
-                                </h2>
-                                <div id="flush-collapse_{{ forloop.counter }}"
-                                     class="accordion-collapse collapse" data-bs-parent="#accordionSpecify">
-                                    <div class="accordion-body">
-                                        {% for specify in specifies %}
-                                            <div class="row">
-                                                <div class="col">
-                                                    {{ specify.specify_date |date:'H:m' }}
-                                                </div>
-                                                <div class="col text-end">
-                                                    {{ specify.specifyer }}
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
-                                                    {{ specify.customer_project.customer }} -
-                                                    {{ specify.customer_project.target.name }}
-                                                </div>
-                                            </div>
-                                            <hr>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                 </div>
+
+                </div>
 		    </div>
 		</div>
-		<div class="col-4 mb-3">
-            <div class="text-center mb-3">Felmérésre várakozók</div>
-            <div id="map1" style="height: 400px; width: 100%;">{{ map1|safe }}</div>
-        </div>
-        <div class="col-1 text-center mb-3">
-            Egyeztett felmérések szűrése
-            <br>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for filter_date in filter_dates %}
+        <div class="col-4 mb-3">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row mb-1 text-start">
+						<div class="col-4">
+							Időpont
+						</div>
+						<div class="col-5">
+							Felmérő
+						</div>
+						<div class="col-3">
+							Állapot
+						</div>
+					</div>
+					<div class="row text-start">
+						<div class="col-4">
+							Ügyfél
+						</div>
+						<div class="col-5">
+							Cím
+						</div>
+						<div class="col-3">
+							Feladat
+						</div>
+					</div>
+				</div>
+                <div class="card-body">
+                    {% for specify_record in specify_records %}
                         <div class="row mb-2">
-                            <div class="col">
-                                <button type="submit" class="btn btn-outline-info btn-sm"
-                                        name="filter_date" value="{{ filter_date | date:'Y-m-d' }}">
-                                    {{ filter_date | date:'Y-m-d' }}</button>
+                            <div class="col-4">
+                                {% if specify_record.specify_date %}
+                                    {{ specify_record.specify_date | date:"Y.m.d H:i" }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            </div>
+                            <div class="col-5">
+                                {% if specify_record.specifyer %}
+                                    {{ specify_record.specifyer }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            </div>
+                            <div class="col-3">
+                                {{ specify_record.get_status_display }}
                             </div>
                         </div>
+                        <div class="row mb-2">
+                            <div class="col-4">
+                                {{ specify_record.customer_project.customer }}
+                            </div>
+                            <div class="col-5">
+                                {{ specify_record.customer_project.installation_address }}
+                            </div>
+                            <div class="col-3">
+                                {{ specify_record.customer_project.target.name }}
+                            </div>
+                        </div>
+                        <hr>
                     {% endfor %}
-                    <button type="submit" class="btn btn-outline-info btn-sm" name="filter_date" value="">
-                        Összes</button>
-                </form>
+					{% include 'pager_bottom.html' %}
+                </div>
+            </div>
         </div>
-		<div class="col-4 mb-3">
-            <div class="text-center mb-3">Egyeztetett felmérések</div>
-            <div id="map2" style="height: 400px; width: 100%;">{{ map2|safe }}</div>
-<!--            <button onclick="goBack()" class="btn btn-primary mt-3">Vissza</button>-->
+        <div class="col-5 mb-3">
+            <div class="card">
+                <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+                    <div class="row">
+                        <div class="text-center">
+                            Időpont
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row mb-2">
+                            <div class="col-3">
+                                {{ form.dateinput }}
+                            </div>
+                            <div class="col-1 text-end">
+                                <button type="submit" name="action" value="map" class="btn btn-outline-info btn-sm">
+                                    Kiválaszt</button>
+                            </div>
+                            <div class="col-8 text-end">
+                                <button type="submit" name="action" value="ready" class="btn btn-outline-info btn-sm">
+                                    Vissza</button>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div id="map1" style="height: 500px; width: 100%;">{{ map1|safe }}</div>
+                        </div>
+                        <div class="row mb-2 text-center">
+                            <p>
+                                <span class="text-danger">aktuális ügyfél projekt</span> -
+                                <span class="text-success">várakozó felmérések</span> -
+                                <span class="text-primary">egyeztetett felmérések</span>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <script>
         $(document).ready(function() {
             // Az iframe magasságának beállítása
-            $('#map1 iframe').css('height', '400px');
-            $('#map2 iframe').css('height', '400px');
+            $('#map1 iframe').css('height', '500px');
         });
+
+        // Visszalépés funkció
+        function goBack() {
+            window.history.back();
+        }
     </script>
 {% endblock content %}
