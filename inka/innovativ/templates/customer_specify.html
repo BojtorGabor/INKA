@@ -2,19 +2,11 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} - időpont keresés</h3>
+        <h3>{{ current_date }} - Felmérések</h3>
 	</div>
 	<br/>
 
     <div class="row">
-		<div class="col-3 mb-3">
-            <div class="row mb-3">
-                <div class="col mb-3">
-                    {% include 'ugyfel_adatlap.html' %}
-
-                </div>
-		    </div>
-		</div>
         <div class="col-4 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
@@ -79,55 +71,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-5 mb-3">
-            <div class="card">
-                <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
-                    <div class="row">
-                        <div class="text-center">
-                            Időpont
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="row mb-2">
-                            <div class="col-3">
-                                {{ form.dateinput }}
-                            </div>
-                            <div class="col-1 text-end">
-                                <button type="submit" name="action" value="map" class="btn btn-outline-info btn-sm">
-                                    Kiválaszt</button>
-                            </div>
-                            <div class="col-8 text-end">
-                                <button type="submit" name="action" value="ready" class="btn btn-outline-info btn-sm">
-                                    Vissza</button>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div id="map1" style="height: 500px; width: 100%;">{{ map1|safe }}</div>
-                        </div>
-                        <div class="row mb-2 text-center">
-                            <p>
-                                <span class="text-danger">aktuális ügyfél projekt</span> -
-                                <span class="text-success">várakozó felmérések</span> -
-                                <span class="text-primary">egyeztetett felmérések</span>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="col-8 mb-3">
+			<div id="map" style="height: 600px; width: 100%;">{{ map|safe }}</div>
+		</div>
+	</div>
     <script>
         $(document).ready(function() {
             // Az iframe magasságának beállítása
-            $('#map1 iframe').css('height', '500px');
+            $('#map iframe').css('height', '600px');
         });
-
-        // Visszalépés funkció
-        function goBack() {
-            window.history.back();
-        }
     </script>
-{% endblock content %}
+{% endblock %}

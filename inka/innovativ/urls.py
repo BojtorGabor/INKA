@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('customers', views.customers, name='customers'),
     path('customer_history/<int:customer_project_id>/', views.customer_history, name='customer_history'),
+    path('customer_specify/<int:specify_id>/', views.customer_specify, name='customer_specify'),
 
     path('product_crud/', views_crud.product_crud, name='product_crud'),
     path('product_update/<int:product_id>/<str:action_name>/', views_crud.product_update,
@@ -75,12 +76,18 @@ urlpatterns = [
          name='p_05_1_process_coordinates'),
     path('p_05_1_ugyfel_felmeres_egyezetesre/<int:task_id>/', views_projects05.p_05_1_ugyfel_felmeres_egyezetesre,
          name='p_05_1_ugyfel_felmeres_egyezetesre'),
-    path('p_05_1_idopont_kereses/<int:task_id>/', views_projects05.p_05_1_idopont_kereses,
-         name='p_05_1_idopont_kereses'),
-    path('p_05_1_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_02_nek,
-         name='p_05_1_ugyfel_visszaadasa_02_nek'),
-    path('p_05_1_ugyfel_visszaadasa_04_nek/<int:task_id>/', views_projects05.p_05_1_ugyfel_visszaadasa_04_nek,
-         name='p_05_1_ugyfel_visszaadasa_04_nek'),
+
+    path('p_05_2_idopont_kereses/<int:task_id>/', views_projects05.p_05_2_idopont_kereses,
+         name='p_05_2_idopont_kereses'),
+    path('p_05_2_idopont_rogzites/<int:task_id>/', views_projects05.p_05_2_idopont_rogzites,
+         name='p_05_2_idopont_rogzites'),
+    path('p_05_2_ugyfel_visszaleptetese_05_1_nek/<int:task_id>/',
+         views_projects05.p_05_2_ugyfel_visszaleptetese_05_1_nek,
+         name='p_05_2_ugyfel_visszaleptetese_05_1_nek'),
+    path('p_05_x_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects05.p_05_x_ugyfel_visszaadasa_02_nek,
+         name='p_05_x_ugyfel_visszaadasa_02_nek'),
+    path('p_05_x_ugyfel_visszaadasa_04_nek/<int:task_id>/', views_projects05.p_05_x_ugyfel_visszaadasa_04_nek,
+         name='p_05_x_ugyfel_visszaadasa_04_nek'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

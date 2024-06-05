@@ -2,13 +2,18 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.utils import timezone
 
 from . import views_projects as app_views
 
 from .context_processors import menu_context
 from .forms_projects import DeadlineForm
 
-from .models import Project, Task, Job, Customer, CustomerProject, LastPosition
+from .models import Project, Task, Job, Customer, CustomerProject, LastPosition, Specify
+
+import folium
+
+from datetime import datetime, timedelta
 
 
 def home(request):
@@ -206,6 +211,44 @@ def customer_history(request, customer_project_id):
                                              'type_choices': type_choices, 'type_color': type_color,
                                              'page_list': tasks_page, 'page_range': page_range,
                                              'task': tasks_set[0], 'customer': customer,})
+    else:
+        messages.success(request, 'Nincs jogosultságod.')
+        return redirect('login')
+
+
+def customer_specify(request, specify_id):
+    if request.user.is_authenticated:
+        specify = Specify.objects.get(pk=specify_id)
+        current_date = specify.specify_date.date()
+
+        # Kezdő dátum és vég dátum meghatározása
+        start_date = timezone.make_aware(datetime.combine(current_date, datetime.min.time()))
+        end_date = timezone.make_aware(datetime.combine(current_date + timedelta(days=1), datetime.min.time()))
+
+        # Akiknek már van időpontjuk - térképre
+        specify_records = (Specify.objects.filter(status='3:', specify_date__gte=start_date, specify_date__lt=end_date))
+
+        p = Paginator(specify_records, 10)
+        page = request.GET.get('page', 1)
+        specify_records_page = p.get_page(page)
+        page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+        m1 = folium.Map(location=[47.2, 19.4], zoom_start=7)
+        for specify_record in specify_records:
+            # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
+            local_time = timezone.localtime(specify_record.specify_date)
+            formatted_specify_date = local_time.strftime("%Y-%m-%d %H:%M")
+            popup_content = (f'{specify_record.customer_project.customer} - {specify_record.customer_project}<br>'
+                             f'{formatted_specify_date}')  # Újsor karakterrel választjuk el az adatokat
+            folium.Marker([specify_record.customer_project.latitude,
+                           specify_record.customer_project.longitude],
+                          popup=folium.Popup(popup_content, max_width=250),
+                          icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
+        m1 = m1._repr_html_()  # HTML-reprezentáció
+
+        return render(request, 'customer_specify.html',
+                      {'current_date': current_date,'specify_records': specify_records_page, 'map': m1,
+                       'page_list': specify_records_page, 'page_range': page_range})
     else:
         messages.success(request, 'Nincs jogosultságod.')
         return redirect('login')

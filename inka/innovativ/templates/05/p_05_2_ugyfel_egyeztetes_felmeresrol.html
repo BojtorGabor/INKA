@@ -20,8 +20,14 @@
 				<div class="card-body text-center">
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_1_idopont_kereses' task.id %}" class="btn btn-outline-info btn-sm">
+							<a href="{% url 'p_05_2_idopont_kereses' task.id %}" class="btn btn-outline-info btn-sm">
 								Időpont keresés</a>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'p_05_2_idopont_rogzites' task.id %}" class="btn btn-outline-info btn-sm">
+								Időpont rögzítés</a>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -39,14 +45,22 @@
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_1_ugyfel_visszaadasa_02_nek' task.id %}"
+							<a href="{% url 'p_05_2_ugyfel_visszaleptetese_05_1_nek' task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Ügyfél visszaléptetése - 05.1. Felméréshez</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'p_05_x_ugyfel_visszaadasa_02_nek' task.id %}"
 							   class="btn btn-outline-info btn-sm">
 								Ügyfél visszaadása - 02. Ügyfél adatainak felelőséhez</a>
 						</div>
 					</div>
 					<div class="row mb">
 						<div class="col">
-							<a href="{% url 'p_05_1_ugyfel_visszaadasa_04_nek' task.id %}"
+							<a href="{% url 'p_05_x_ugyfel_visszaadasa_04_nek' task.id %}"
 							   class="btn btn-outline-info btn-sm">
 								Ügyfél visszaadása - 04. Előzetes árajánlatok felelőséhez</a>
 						</div>

@@ -26,13 +26,6 @@
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_1_ugyfel_felmeres_egyezetesre' task.id %}"
-							   class="btn btn-outline-info btn-sm">
-								Ügyfél átadása - 05.2. Ügyfél egyeztetés felmérésnek</a>
-						</div>
-					</div>
-					<div class="row mb-3">
-						<div class="col">
 							<a href="{% url 'hatarido' task.id %}"
 							   class="btn btn-outline-info btn-sm">Határidő megadása erre a feladatra</a>
 						</div>
@@ -40,14 +33,22 @@
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_1_ugyfel_visszaadasa_02_nek' task.id %}"
+							<a href="{% url 'p_05_1_ugyfel_felmeres_egyezetesre' task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Ügyfél átadása - 05.2. Ügyfél egyeztetés felmérésnek</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'p_05_x_ugyfel_visszaadasa_02_nek' task.id %}"
 							   class="btn btn-outline-info btn-sm">
 								Ügyfél visszaadása - 02. Ügyfél adatainak felelőséhez</a>
 						</div>
 					</div>
 					<div class="row mb">
 						<div class="col">
-							<a href="{% url 'p_05_1_ugyfel_visszaadasa_04_nek' task.id %}"
+							<a href="{% url 'p_05_x_ugyfel_visszaadasa_04_nek' task.id %}"
 							   class="btn btn-outline-info btn-sm">
 								Ügyfél visszaadása - 04. Előzetes árajánlatok felelőséhez</a>
 						</div>

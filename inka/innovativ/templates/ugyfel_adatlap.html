@@ -151,7 +151,7 @@
                         </div>
                         {% if specify.specify_date %}
                             <div class="col-4 text-start">
-                                <a href="#" class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'customer_specify' specify.id %}" class="btn btn-outline-primary btn-sm">
                                 {{ specify.specify_date | date:"Y.m.d H:i" }}</a>
                             </div>
                         {% endif %}
