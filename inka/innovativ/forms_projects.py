@@ -123,7 +123,6 @@ class DeadlineForm(forms.ModelForm):
         widgets = {'deadline': forms.widgets.DateInput(attrs={'type': 'date', 'class': 'form-control'},
                                                        format='%Y-%m-%d')}
 
-
     def __init__(self, *args, **kwargs):
         super(DeadlineForm, self).__init__(*args, **kwargs)
         self.fields['deadline'].widget.attrs['class'] = 'form-control'
@@ -136,14 +135,30 @@ class SpecifyDateTimeForm(forms.ModelForm):
         model = Specify
         fields = ['specify_date']
         labels = {'specify_date': 'Időpont'}
-        widgets = {'specify_date': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'},
-                format='%Y-%m-%dT%H:%M')}
+        widgets = {'specify_date':
+                       forms.widgets.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'},
+                                                   format='%Y-%m-%d %H:%M')}
 
     def __init__(self, *args, **kwargs):
         super(SpecifyDateTimeForm, self).__init__(*args, **kwargs)
         self.fields['specify_date'].widget.attrs['class'] = 'form-control'
         if self.instance and self.instance.pk and self.instance.specify_date:
-            self.fields['specify_date'].initial = self.instance.specify_date.strftime('%Y-%m-%dT%H:%M')
+            self.fields['specify_date'].initial = self.instance.specify_date.strftime('%Y-%m-%d %H:%M')
+
+
+class SpecifyerForm(forms.ModelForm):
+    class Meta:
+        model = Specify
+        fields = ['specifyer', 'comment']
+        labels = {'specifyer': 'Felmérő', 'comment': 'Megjegyzés'}
+        widgets = {'comment':
+                       forms.Textarea(attrs={'rows': 3, 'maxlength': 1000, 'class': 'form-control'})}
+
+    def __init__(self, *args, **kwargs):
+        super(SpecifyerForm, self).__init__(*args, **kwargs)
+        self.fields['specifyer'].widget.attrs['class'] = 'form-control'
+        self.fields['comment'].widget.attrs['class'] = 'form-control'
+
 
 
 class DateInputForm(forms.Form):
@@ -155,3 +170,14 @@ class DateInputForm(forms.Form):
         self.fields['dateinput'].widget.attrs['class'] = 'form-control'
         if 'initial' in kwargs and 'dateinput' in kwargs['initial']:
             self.fields['dateinput'].initial = kwargs['initial']['dateinput'].strftime('%Y-%m-%d')
+
+
+class DateTimeInputForm(forms.Form):
+    datetimeinput = forms.DateTimeField(label='Időpont', widget=forms.widgets.DateTimeInput(
+        attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d %H:%M'))
+
+    def __init__(self, *args, **kwargs):
+        super(DateTimeInputForm, self).__init__(*args, **kwargs)
+        self.fields['dateitimenput'].widget.attrs['class'] = 'form-control'
+        if 'initial' in kwargs and 'datetimeinput' in kwargs['initial']:
+            self.fields['datetimeinput'].initial = kwargs['initial']['datetimeinput'].strftime('%Y-%m-%d %H:%M')

@@ -148,12 +148,22 @@
                         </div>
                         <div class="col-4 text-start">
                             {{ specify.get_status_display }}
+                            {% if specify.repeating %}
+                                (ismételt)
+                            {% else %}
+                                (új)
+                            {% endif %}
                         </div>
                         {% if specify.specify_date %}
-                            <div class="col-4 text-start">
-                                <a href="{% url 'customer_specify' specify.id %}" class="btn btn-outline-primary btn-sm">
-                                {{ specify.specify_date | date:"Y.m.d H:i" }}</a>
-                            </div>
+                            {% if specify.status == '4:' %}
+                                <div class="col-4 text-start">
+                                    <a href="{% url 'customer_specify' specify.id %}"
+                                       class="btn btn-outline-primary btn-sm">
+                                    {{ specify.specify_date | date:"Y.m.d H:i" }}</a>
+                                </div>
+                            {% else %}
+                                {{ specify.specify_date | date:"Y.m.d H:i" }}
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% endfor %}

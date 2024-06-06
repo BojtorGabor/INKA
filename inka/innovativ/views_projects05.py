@@ -5,25 +5,19 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from innovativ.forms_projects import ReasonForm, DateInputForm
+from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifyerForm
 from innovativ.models import Task, Project, CustomerProject, Specify
 
 import folium
 
 from datetime import datetime, timedelta
 
+from . import views as app_views
+
 
 def p_05_1_ugyfel_terkepre(request, task_id):
     task = Task.objects.get(pk=task_id)
     m = folium.Map(location=[47.2, 19.4], zoom_start=8)  # Alapértelmezett hely
-
-    # if task.customer_project.latitude and task.customer_project.longitude:
-    #     # Marker hozzáadása a térképhez
-    #     folium.Marker(
-    #         location=[task.customer_project.latitude, task.customer_project.longitude],
-    #         popup=folium.Popup(f'{task.customer_project.customer}', max_width=200),
-    #         icon=folium.Icon(color='blue', icon='info-sign')
-    #     ).add_to(m)
 
     # A térkép HTML generálása
     map_html = m._repr_html_()
@@ -67,10 +61,11 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
-                # Felmérés rekord létrehozása
-                Specify.objects.create(customer_project=task.customer_project,
-                                       status='1:',  # ügyfél project azonosító
-                                       created_user=request.user)
+                # Felmérés rekord létrehozása ha még nem volt neki várakozó állapotú
+                if not Specify.objects.filter(customer_project=task.customer_project, status='1:'):
+                    Specify.objects.create(customer_project=task.customer_project,
+                                           status='1:',  # ügyfél project azonosító
+                                           created_user=request.user)
                 # Eredeti task lezárása
                 task.type = '4:'
                 task.type_color = '4:'
@@ -92,20 +87,55 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
             form = ReasonForm()
 
         return render(request, '05/p_05_1_ugyfel_felmeres_egyezetesre.html', {'task': task, 'form': form})
-
+#
+#
+# def p_05_2_ugyfel_felmeresei(request, task_id):
+#     task = Task.objects.get(pk=task_id)
+#
+#     specifys = (Specify.objects.filter(customer_project=task.customer_project).order_by('specify_date'))
+#
+#     p = Paginator(specifys, 10)
+#     page = request.GET.get('page', 1)
+#     specifys_page = p.get_page(page)
+#     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+#
+#     if task.completed_at:
+#         messages.success(request, f'Ez a projekt már elkészült '
+#                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+#         return render(request, 'home.html', {})
+#     else:
+#         if request.method == 'POST':
+#             action = request.POST.get('action')
+#             if action:
+#                 # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+#                 action_parts = action.split('_')
+#                 action_name = action_parts[0]
+#                 specify_id = action_parts[1]
+#                 print('AKCIÓ NÉV', action_name)
+#                 print('AKCIÓ ID', specify_id)
+#
+#                 if action_name == 'new' or action_name == 'update':
+#                     pass
+#                     # return redirect('product_update', product_id=product_id, action_name=action_name)
+#                 elif action_name == 'delete':
+#                     pass
+#
+#         return render(request, '05/p_05_2_ugyfel_felmeresei.html',
+#                       {'task': task, 'specifys': specifys_page,
+#                        'page_list': specifys_page, 'page_range': page_range, })
 
 
 def p_05_2_idopont_kereses(request, task_id):
     task = Task.objects.get(pk=task_id)
 
     today = timezone.now().date()
-    specify_records = (Specify.objects.filter(Q(status='1:') | Q(status='2:') | Q(status='3:') | Q(status='4:'),
-                                              Q(specify_date__isnull=True) | Q(specify_date__gte=today))
+    specifys = (Specify.objects.filter(Q(status='1:') |
+                                              Q(status='2:', specify_date__gte=today))
                        .order_by('specify_date'))
 
-    p = Paginator(specify_records, 10)
+    p = Paginator(specifys, 10)
     page = request.GET.get('page', 1)
-    specify_records_page = p.get_page(page)
+    specifys_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
     if task.completed_at:
@@ -125,22 +155,22 @@ def p_05_2_idopont_kereses(request, task_id):
                     end_date = timezone.make_aware(datetime.combine(input_date + timedelta(days=1), datetime.min.time()))
 
                     # Akiknek már van időpontjuk - térképre
-                    map_records = (Specify.objects.filter(Q(status='1:') | Q(status='2:') | Q(status='3:') | Q(status='4:'),
-                                               specify_date__gte=start_date, specify_date__lt=end_date))
+                    map_records = (Specify.objects.filter(status='2:',
+                                                          specify_date__gte=start_date,
+                                                          specify_date__lt=end_date))
                     for map_record in map_records:
                         # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
                         local_time = timezone.localtime(map_record.specify_date)
                         formatted_specify_date = local_time.strftime("%Y-%m-%d %H:%M")
                         popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
-                                         f'{formatted_specify_date}')  # Újsor karakterrel választjuk el az adatokat
+                                         f'{formatted_specify_date} - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
                         folium.Marker([map_record.customer_project.latitude,
                                        map_record.customer_project.longitude],
                                       popup=folium.Popup(popup_content, max_width=250),
                                       icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
 
                     # Akiknek még nincs időpontjuk - térképre
-                    map_records = Specify.objects.filter(Q(status='1:') | Q(status='2:') | Q(status='3:') | Q(status='4:'),
-                                               specify_date__isnull=True)
+                    map_records = Specify.objects.filter(status='1:', repeating=False)
                     for map_record in map_records:
                         # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
                         popup_content = f'{map_record.customer_project.customer} - {map_record.customer_project}'
@@ -148,6 +178,16 @@ def p_05_2_idopont_kereses(request, task_id):
                                        map_record.customer_project.longitude],
                                       popup=folium.Popup(popup_content, max_width=250),
                                       icon=folium.Icon(color='green', icon='info-sign')).add_to(m1)
+
+                    # Akiknek elmaradt az időpontjuk - térképre
+                    map_records = Specify.objects.filter(status='1:', repeating=True)
+                    for map_record in map_records:
+                        # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
+                        popup_content = f'{map_record.customer_project.customer} - {map_record.customer_project}'
+                        folium.Marker([map_record.customer_project.latitude,
+                                       map_record.customer_project.longitude],
+                                      popup=folium.Popup(popup_content, max_width=250),
+                                      icon=folium.Icon(color='orange', icon='info-sign')).add_to(m1)
 
                     # Az aktuális ügyfél project - térképre
                     folium.Marker([task.customer_project.latitude,
@@ -157,14 +197,16 @@ def p_05_2_idopont_kereses(request, task_id):
                                   icon=folium.Icon(color='red', icon='info-sign')).add_to(m1)
                     m1 = m1._repr_html_()  # HTML-reprezentáció
                 elif action == "ready":
-                    return render(request, 'home.html', {})
+                    # Visszalépés ide: p_05_2_ugyfel_egyeztetes_felmeresrol
+                    return_view = getattr(app_views, 'view_names')  # Átalakítás, hogy hívható legyen
+                    return return_view(request, view_name='p_05_2_ugyfel_egyeztetes_felmeresrol', task_id=task_id)
         else:
             initial_data = {'dateinput': datetime.now()}
             form = DateInputForm(initial=initial_data)
 
         return render(request, '05/p_05_2_idopont_kereses.html',
-                      {'task': task, 'form': form, 'specify_records': specify_records_page, 'map': m1,
-                       'page_list': specify_records_page, 'page_range': page_range, })
+                      {'task': task, 'form': form, 'specifys': specifys_page, 'map': m1,
+                       'page_list': specifys_page, 'page_range': page_range, })
 
 
 def p_05_2_idopont_rogzites(request, task_id):
@@ -174,22 +216,78 @@ def p_05_2_idopont_rogzites(request, task_id):
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
+        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+
+        if request.method == 'POST':
+            form = SpecifyDateTimeForm(request.POST or None, instance=specify)
+            if form.is_valid():
+                form.save()
+                print('IDŐPONT', specify.specify_date.strftime('%Y-%m-%d %H:%M'))
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+                messages.success(request, 'Felmérési időpont rögzítve.')
+                return render(request, 'home.html', {})
+        else:
+            form = SpecifyDateTimeForm(instance=specify)
+
+        return render(request, '05/p_05_2_idopont_rogzites.html', {'task': task, 'form': form})
+
+
+def p_05_2_felmero_rogzites(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+
+        if request.method == 'POST':
+            form = SpecifyerForm(request.POST or None, instance=specify)
+            if form.is_valid():
+                form.save()
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+                messages.success(request, 'Felmérő rögzítve.')
+                return render(request, 'home.html', {})
+        else:
+            form = SpecifyerForm(instance=specify)
+
+        return render(request, '05/p_05_2_felmero_rogzites.html', {'task': task, 'form': form})
+
+
+def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
+                specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+                specify.status = '2:'  # Egyeztetett felmérés lett
+                specify.save()
                 # Eredeti task lezárása
                 task.type = '4:'
                 task.type_color = '4:'
                 task.completed_at = timezone.now().isoformat()
                 task.save()
 
-                # feladat visszaadása 05.1. Felmérése felelőséhez
-                next_project = Project.objects.filter(name__startswith='05.1.')
+                # feladat átadása 05.3. Egyeztetett felméréseknek
+                next_project = Project.objects.filter(name__startswith='05.3.')
                 Task.objects.create(type='2:',  # Feladat típus
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} - Kérek egy új térképre illesztést.\n'
+                                    comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
+                                            f'Időpont: {specify.specify_date.strftime('%Y-%m-%d %H:%M')}\n'
+                                            f'Felmérő: {specify.specifyer}\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -197,7 +295,7 @@ def p_05_2_idopont_rogzites(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_2_idopont_rogzites.html',
+        return render(request, '05/p_05_2_ugyfel_atadasa_05_3_nak.html',
                       {'task': task, 'form': form})
 
 

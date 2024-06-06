@@ -208,16 +208,16 @@ class Specifyer(models.Model):
 # Felmérés, pontosítás
 class Specify(models.Model):
     STATUS_CHOICE = (
-        ('1:', 'várakozó (új)'),
-        ('2:', 'várakozó (pótlás)'),
-        ('3:', 'egyeztetve'),
-        ('4:', 'elmaradt'),
-        ('5:', 'megtörtént'),
+        ('1:', 'várakozó'),
+        ('2:', 'egyeztetve'),
+        ('3:', 'elmaradt'),
+        ('4:', 'megtörtént'),
     )
     customer_project = models.ForeignKey(CustomerProject, on_delete=models.CASCADE)  # Ügyfél projektje
     specifyer = models.ForeignKey(Specifyer, on_delete=models.SET_NULL, null=True)  # Felmérő
     specify_date = models.DateTimeField(null=True, blank=True)  # Felmérés időpontja
     status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='1:')  # Felmérés állapota
+    repeating = models.BooleanField(default=False)  # Ismételt-e az állapot
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja

@@ -2,7 +2,8 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} - időpont keresés</h3>
+        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} -
+            {{ task.customer_project.target.name }} - időpont keresés</h3>
 	</div>
 	<br/>
 
@@ -42,35 +43,40 @@
 					</div>
 				</div>
                 <div class="card-body">
-                    {% for specify_record in specify_records %}
+                    {% for specify in specifys %}
                         <div class="row mb-2">
                             <div class="col-4">
-                                {% if specify_record.specify_date %}
-                                    {{ specify_record.specify_date | date:"Y.m.d H:i" }}
+                                {% if specify.specify_date %}
+                                    {{ specify.specify_date | date:"Y.m.d H:i" }}
                                 {% else %}
                                     ?
                                 {% endif %}
                             </div>
                             <div class="col-5">
-                                {% if specify_record.specifyer %}
-                                    {{ specify_record.specifyer }}
+                                {% if specify.specifyer %}
+                                    {{ specify.specifyer }}
                                 {% else %}
                                     ?
                                 {% endif %}
                             </div>
                             <div class="col-3">
-                                {{ specify_record.get_status_display }}
+                                {{ specify.get_status_display }}
+                                {% if specify.repeating %}
+                                    (ismételt)
+                                {% else %}
+                                    (új)
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-4">
-                                {{ specify_record.customer_project.customer }}
+                                {{ specify.customer_project.customer }}
                             </div>
                             <div class="col-5">
-                                {{ specify_record.customer_project.installation_address }}
+                                {{ specify.customer_project.installation_address }}
                             </div>
                             <div class="col-3">
-                                {{ specify_record.customer_project.target.name }}
+                                {{ specify.customer_project.target.name }}
                             </div>
                         </div>
                         <hr>
@@ -112,6 +118,7 @@
                         <p>
                             <span class="text-danger">aktuális ügyfél projekt</span> -
                             <span class="text-success">várakozó felmérések</span> -
+                            <span class="text-warning">elmaradt felmérések</span> -
                             <span class="text-primary">egyeztetett felmérések</span>
                         </p>
                     </div>

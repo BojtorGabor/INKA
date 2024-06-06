@@ -3,13 +3,14 @@ import os
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from django.shortcuts import render
 from django.contrib import messages
 from django.utils import timezone
 
 from .forms_projects import CSVFileSelectForm, CustomerHandInputForm
-from .models import Customer, CustomerProject, Task, Project
+from .models import Customer, CustomerProject, Task, Project, Specify
 
 
 def p_01_1_ugyfel_adat_import(request, project, task_id):  # Új ügyfelek importálása
@@ -256,4 +257,6 @@ def p_05_2_ugyfel_egyeztetes_felmeresrol(request, project, task_id):
         return render(request, '05/p_05_2_ugyfel_egyeztetes_felmeresrol.html',
                       {'project': project, 'task': task, 'tasks': tasks_page,
                        'page_list': tasks_page, 'page_range': page_range,
-                       'type_choices': type_choices, 'type_color': type_color, })
+                       'type_choices': type_choices, 'type_color': type_color})
+
+

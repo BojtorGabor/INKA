@@ -32,8 +32,8 @@
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="#" class="btn btn-outline-info btn-sm">
-								2. feladat</a>
+							<a href="{% url 'p_05_2_felmero_rogzites' task.id %}" class="btn btn-outline-info btn-sm">
+								Felmérő rögzítés</a>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -43,6 +43,13 @@
 						</div>
 					</div>
 					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'p_05_2_ugyfel_atadasa_05_3_nak' task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Ügyfél átadása - 05.3. Egyeztetett felmérések</a>
+						</div>
+					</div>
 					<div class="row mb-3">
 						<div class="col">
 							<a href="{% url 'p_05_2_ugyfel_visszaleptetese_05_1_nek' task.id %}"

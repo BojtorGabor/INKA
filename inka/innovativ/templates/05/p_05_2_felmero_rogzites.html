@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="text-center">
         <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} -
-            {{ task.customer_project.target.name }} - Felmérési időpont rögzítése</h3>
+            {{ task.customer_project.target.name }} - Felmérő rögzítése</h3>
 	</div>
 	<br/>
 
@@ -12,12 +12,12 @@
 			{% include 'ugyfel_adatlap.html' %}
 		</div>
 
-		<div class="col-2 mb-3">
+		<div class="col-6 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row">
 						<div class="text-center">
-							Felmérés időpontja
+							Felmérő
 						</div>
 					</div>
 				</div>
@@ -25,11 +25,15 @@
 					<form method="POST">
 						{% csrf_token %}
 						<div class="row mb-2">
-							<div class="col-8 mb-3">
-								{{ form.specify_date.label_tag }}
-								{{ form.specify_date }}
+							<div class="col-3 mb-3">
+								{{ form.specifyer.label_tag }}
+								{{ form.specifyer }}
 							</div>
-							<div class="col-4">
+							<div class="col-8">
+								{{ form.comment.label_tag }}
+								{{ form.comment }}
+							</div>
+							<div class="col-1">
 								<br/>
 								<button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
 							</div>
