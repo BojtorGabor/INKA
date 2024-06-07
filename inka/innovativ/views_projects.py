@@ -254,9 +254,12 @@ def p_05_2_ugyfel_egyeztetes_felmeresrol(request, project, task_id):
         tasks_page = p.get_page(page)
         page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
+        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+
         return render(request, '05/p_05_2_ugyfel_egyeztetes_felmeresrol.html',
                       {'project': project, 'task': task, 'tasks': tasks_page,
                        'page_list': tasks_page, 'page_range': page_range,
-                       'type_choices': type_choices, 'type_color': type_color})
+                       'type_choices': type_choices, 'type_color': type_color,
+                       'specify': specify})
 
 

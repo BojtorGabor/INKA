@@ -150,7 +150,7 @@ class SpecifyerForm(forms.ModelForm):
     class Meta:
         model = Specify
         fields = ['specifyer', 'comment']
-        labels = {'specifyer': 'Felmérő', 'comment': 'Megjegyzés'}
+        labels = {'specifyer': 'Felmérő', 'comment': 'Üzenet a felmérőnek'}
         widgets = {'comment':
                        forms.Textarea(attrs={'rows': 3, 'maxlength': 1000, 'class': 'form-control'})}
 

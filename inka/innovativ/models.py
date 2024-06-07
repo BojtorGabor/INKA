@@ -219,6 +219,7 @@ class Specify(models.Model):
     status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='1:')  # Felmérés állapota
     repeating = models.BooleanField(default=False)  # Ismételt-e az állapot
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
+    email_sent_at = models.DateTimeField(null=True)  # Email kiküldésének ideje
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 

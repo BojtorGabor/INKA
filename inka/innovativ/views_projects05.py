@@ -1,18 +1,23 @@
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.template import Template, Context
 from django.utils import timezone
 
-from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifyerForm
-from innovativ.models import Task, Project, CustomerProject, Specify
+from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifyerForm, EmailTemplateForm
+from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate
+from inka.settings import DEFAULT_FROM_EMAIL
 
 import folium
 
 from datetime import datetime, timedelta
 
 from . import views as app_views
+
 
 
 def p_05_1_ugyfel_terkepre(request, task_id):
@@ -62,7 +67,10 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
             form = ReasonForm(request.POST)
             if form.is_valid():
                 # Felmérés rekord létrehozása ha még nem volt neki várakozó állapotú
-                if not Specify.objects.filter(customer_project=task.customer_project, status='1:'):
+                try:
+                    Specify.objects.get(customer_project=task.customer_project, status='1:')
+                except ObjectDoesNotExist:
+                # if not Specify.objects.filter(customer_project=task.customer_project, status='1:'):
                     Specify.objects.create(customer_project=task.customer_project,
                                            status='1:',  # ügyfél project azonosító
                                            created_user=request.user)
@@ -260,6 +268,65 @@ def p_05_2_felmero_rogzites(request, task_id):
         return render(request, '05/p_05_2_felmero_rogzites.html', {'task': task, 'form': form})
 
 
+def p_05_2_email_felmeresrol(request, task_id):
+    # az aktuális ügyfél
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        # a feladathoz tartozó email sablon
+        email_template_name = '05.2. Felmérési időpont küldése'
+        email_template = EmailTemplate.objects.get(title=email_template_name)
+
+        # szerkeszthető szöveg a sblon alapján
+        template = Template(email_template.content)
+
+        # az aktuális ügyfélnév, időpont és helyszín helyettesítése a sablon változója alapján
+        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+        context = Context({'customer_name': task.customer_project.customer,
+                           'specify_date': specify.specify_date,
+                           'installation_address': task.customer_project.installation_address})
+        rendered_content = template.render(context)
+
+        if request.method == 'POST':
+            form = EmailTemplateForm(request.POST, instance=email_template)
+            if form.is_valid():
+                subject = form['subject'].value()
+                message = form['content'].value()
+                to_email = [task.customer_project.customer.email]
+                sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
+                # Az Új feladat jelzőből Folyamatban jelző lesz
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+                if sent:
+                    specify.email_sent_at = timezone.now()  # Email kiküldésének időpontja
+                    specify.save()
+                    messages.success(request, 'E-mail sikeresen elküldve.')
+                    Task.objects.create(type='0:',  # Esemény bejegyzés
+                                        type_color='0:',
+                                        project=task.project,
+                                        customer_project=task.customer_project,
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                                f'nevű sablon email sikeresen kiküldve.',
+                                        created_user=request.user)
+                else:
+                    Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
+                                        type_color='1:',
+                                        project=task.project,
+                                        customer_project=task.customer_project,
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                            f'nevű sablon küldése nem sikerült.',
+                                        created_user=request.user)
+                    messages.success(request,'Hiba történt az e-mail küldése közben!')
+                return render(request, 'home.html', {})
+        else:
+            form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
+        return render(request, '02/p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
+
+
 def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
@@ -267,33 +334,67 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
+        # a feladathoz tartozó email sablon
+        email_template_name = '05.2. Felmérési időpont küldése'
+        email_template = EmailTemplate.objects.get(title=email_template_name)
+
+        # szerkeszthető szöveg a sblon alapján
+        template = Template(email_template.content)
+
+        # az aktuális ügyfélnév, időpont és helyszín helyettesítése a sablon változója alapján
+        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
+        context = Context({'customer_name': task.customer_project.customer,
+                           'specify_date': specify.specify_date,
+                           'installation_address': task.customer_project.installation_address})
+        rendered_content = template.render(context)
+
         if request.method == 'POST':
-            form = ReasonForm(request.POST)
+            form = EmailTemplateForm(request.POST, instance=email_template)
             if form.is_valid():
-                specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
-                specify.status = '2:'  # Egyeztetett felmérés lett
-                specify.save()
-                # Eredeti task lezárása
+                subject = form['subject'].value()
+                message = form['content'].value()
+                to_email = [task.customer_project.customer.email]
+                sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
+                # Az Új feladat jelzőből Elkészült jelző lesz
                 task.type = '4:'
                 task.type_color = '4:'
-                task.completed_at = timezone.now().isoformat()
                 task.save()
-
-                # feladat átadása 05.3. Egyeztetett felméréseknek
-                next_project = Project.objects.filter(name__startswith='05.3.')
-                Task.objects.create(type='2:',  # Feladat típus
-                                    type_color='2:',
-                                    project=next_project[0],  # következő projekt
-                                    customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
-                                            f'Időpont: {specify.specify_date.strftime('%Y-%m-%d %H:%M')}\n'
-                                            f'Felmérő: {specify.specifyer}\n'
-                                            f'{form["reason"].value()}',
-                                    created_user=request.user)
-                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                if sent:
+                    specify.status = '2:'  # Egyeztetett felmérés lett
+                    specify.email_sent_at = timezone.now()  # Email kiküldésének időpontja
+                    specify.save()
+                    messages.success(request, 'E-mail sikeresen elküldve.')
+                    Task.objects.create(type='0:',  # Esemény bejegyzés
+                                        type_color='0:',
+                                        project=task.project,
+                                        customer_project=task.customer_project,
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                                f'nevű sablon email sikeresen kiküldve.',
+                                        created_user=request.user)
+                    # feladat átadása 05.3. Egyeztetett felméréseknek
+                    next_project = Project.objects.filter(name__startswith='05.3.')
+                    Task.objects.create(type='2:',  # Feladat típus
+                                        type_color='2:',
+                                        project=next_project[0],  # következő projekt
+                                        customer_project=task.customer_project,  # ügyfél azonosító
+                                        comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
+                                                f'Időpont: {specify.specify_date.strftime('%Y-%m-%d %H:%M')}\n'
+                                                f'Felmérő: {specify.specifyer}',
+                                        created_user=request.user,
+                                        deadline=specify.specify_date)
+                    messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                else:
+                    Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
+                                        type_color='1:',
+                                        project=task.project,
+                                        customer_project=task.customer_project,
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                            f'nevű sablon küldése nem sikerült.',
+                                        created_user=request.user)
+                    messages.success(request,'Hiba történt az e-mail küldése közben!')
                 return render(request, 'home.html', {})
         else:
-            form = ReasonForm()
+            form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
 
         return render(request, '05/p_05_2_ugyfel_atadasa_05_3_nak.html',
                       {'task': task, 'form': form})

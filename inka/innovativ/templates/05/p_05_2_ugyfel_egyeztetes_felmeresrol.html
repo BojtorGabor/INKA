@@ -36,6 +36,12 @@
 								Felmérő rögzítés</a>
 						</div>
 					</div>
+<!--					<div class="row mb-3">-->
+<!--						<div class="col">-->
+<!--							<a href="% url 'p_05_2_email_felmeresrol' task.id %}" class="btn btn-outline-info btn-sm">-->
+<!--								Email küldése ügyfélnek a felmérés időpontjáról</a>-->
+<!--						</div>-->
+<!--					</div>-->
 					<div class="row mb-3">
 						<div class="col">
 							<a href="{% url 'hatarido' task.id %}" class="btn btn-outline-info btn-sm">
@@ -43,13 +49,15 @@
 						</div>
 					</div>
 					<hr>
-					<div class="row mb-3">
-						<div class="col">
-							<a href="{% url 'p_05_2_ugyfel_atadasa_05_3_nak' task.id %}"
-							   class="btn btn-outline-info btn-sm">
-								Ügyfél átadása - 05.3. Egyeztetett felmérések</a>
+					{% if specify.specify_date and specify.specifyer %}
+						<div class="row mb-3">
+							<div class="col">
+								<a href="{% url 'p_05_2_ugyfel_atadasa_05_3_nak' task.id %}"
+								   class="btn btn-outline-info btn-sm">
+									Email küldése és ügyfél átadása - 05.3. Egyeztetett felmérések</a>
+							</div>
 						</div>
-					</div>
+					{% endif %}
 					<div class="row mb-3">
 						<div class="col">
 							<a href="{% url 'p_05_2_ugyfel_visszaleptetese_05_1_nek' task.id %}"

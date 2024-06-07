@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer_project.customer }} - Ügyfél átadása - 05.3. Egyeztetett felmérések felelősének</h3>
+        <h3>{{ task.customer_project.customer }} - Email küldés és ügyfél átadása - 05.3. Egyeztetett felmérések felelősének</h3>
 	</div>
 	<br/>
 
@@ -10,13 +10,12 @@
 		<div class="col-3 mb-3">
 			{% include 'ugyfel_adatlap.html' %}
 		</div>
-
-		<div class="col-7 mb-3">
+		<div class="col-6 mb-3">
 			<div class="card">
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row">
 						<div class="text-center">
-							Átadás indoklása
+							A kimenő email
 						</div>
 					</div>
 				</div>
@@ -24,35 +23,13 @@
 					<div class="row mb-2">
 						<form method="POST">
 							{% csrf_token %}
-							{{ form }}
-							<br/>
-							<button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
-									data-bs-target="#exampleModal">Rögzítés</button>
-							<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-								 aria-hidden="true">
-								<div class="modal-dialog modal-dialog-centered">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="exampleModalLabel">
-												Mehet az ügyfél átadása - 05.3. Egyeztetett felmérések felelősének?</h1>
-											<button type="button" class="btn-close" data-bs-dismiss="modal"
-													aria-label="Close"></button>
-										</div>
-										<div class="modal-body">
-											{{ task.customer_project.customer }} - kapott felmérésre időpontot.
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-outline-secondary btn-sm"
-													data-bs-dismiss="modal">Mégse</button>
-											<button type="submit" class="btn btn-outline-danger btn-sm">Átadás</button>
-										</div>
-									</div>
-								</div>
-							</div>
+							{{ form.media }}
+							{{ form.as_p }}
+							<button type="submit" class="btn btn-outline-info btn-sm">Email küldése</button>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
     </div>
-{% endblock %}>
+{% endblock %}
