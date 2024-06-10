@@ -58,6 +58,22 @@
                             </ul>
                         </li>
                     {% endif %}
+                    {% if position == '05. Felmérések felelőse' %}
+<!--                    Lenyíló menü-->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Felmérések
+                            </a>
+<!--                        Lenyíló menü tételei-->
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'specifies' '1:' %}">Várakozó felmérések</a></li>
+                                <li><a class="dropdown-item" href="{% url 'specifies' '2:' %}">Egyeztetett felmérések</a></li>
+                                <li><a class="dropdown-item" href="{% url 'specifies' '3:' %}">Elmaradt felmérések</a></li>
+                                <li><a class="dropdown-item" href="{% url 'specifies' '4:' %}">Megtörtént felmérések</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
 <!--                Lenyíló menü-->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button"

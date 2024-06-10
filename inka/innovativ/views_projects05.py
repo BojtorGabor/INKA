@@ -9,7 +9,7 @@ from django.template import Template, Context
 from django.utils import timezone
 
 from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifyerForm, EmailTemplateForm
-from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate
+from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate, Customer
 from inka.settings import DEFAULT_FROM_EMAIL
 
 import folium
@@ -498,3 +498,72 @@ def p_05_x_ugyfel_visszaadasa_04_nek(request, task_id):
             form = ReasonForm()
 
         return render(request, '05/p_05_x_ugyfel_visszaadasa_04_nek.html', {'task': task, 'form': form})
+
+
+def specifies(request, status):
+    specifies = Specify.objects.filter(status=status).select_related(
+        'customer_project__customer',
+        'customer_project__target',
+        'customer_project__financing',
+        'specifyer'
+    ).order_by('specify_date')
+
+    p = Paginator(specifies, 10)
+    page = request.GET.get('page', 1)
+    specifies_page = p.get_page(page)
+    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+    if status == '1:':
+        fejlec = 'Várakozó'
+    elif status == '2:':
+        fejlec = 'Egyeztetett'
+    elif status == '3:':
+        fejlec = 'Elmaradt'
+    elif status == '4:':
+        fejlec = 'Megtörtént'
+
+    m1 = folium.Map(location=[47.2, 19.4], zoom_start=7)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action:
+            # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+            action_parts = action.split('_')
+            action_name = action_parts[0]
+            specify_day = action_parts[1]
+
+            # Kezdő dátum és vég dátum meghatározása
+            map_day = datetime.strptime(specify_day, '%Y-%m-%d').date()
+            start_date = timezone.make_aware(datetime.combine(map_day, datetime.min.time()))
+            end_date = timezone.make_aware(datetime.combine(map_day + timedelta(days=1), datetime.min.time()))
+
+            map_records = (Specify.objects.filter(status=status,
+                                                  specify_date__gte=start_date,
+                                                  specify_date__lt=end_date))
+            for map_record in map_records:
+                # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
+                local_time = timezone.localtime(map_record.specify_date)
+                formatted_specify_date = local_time.strftime("%Y-%m-%d %H:%M")
+                popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
+                                 f'{formatted_specify_date} - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
+                folium.Marker([map_record.customer_project.latitude,
+                               map_record.customer_project.longitude],
+                              popup=folium.Popup(popup_content, max_width=250),
+                              icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
+            m1 = m1._repr_html_()  # HTML-reprezentáció
+    else:
+        if status == '1:':
+            map_records = (Specify.objects.filter(status=status))
+            for map_record in map_records:
+                # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
+                popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
+                                 f' - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
+                folium.Marker([map_record.customer_project.latitude,
+                               map_record.customer_project.longitude],
+                              popup=folium.Popup(popup_content, max_width=250),
+                              icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
+        m1 = m1._repr_html_()  # HTML-reprezentáció
+
+    return render(request, 'specifies.html', {'specifies': specifies_page,
+                                              'page_list': specifies_page, 'page_range': page_range,
+                                              'fejlec': fejlec, 'map': m1,})

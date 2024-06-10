@@ -29,6 +29,8 @@ urlpatterns = [
     path('product_group_update/<int:product_group_id>/<str:action_name>/', views_crud.product_group_update,
          name='product_group_update'),
 
+    path('specifies/<str:status>/', views_projects05.specifies, name='specifies'),
+
     path('price_offer_update/<int:price_offer_id>/<int:task_id>/', views_crud.price_offer_update,
          name='price_offer_update'),
     path('price_offer_item_product/<int:price_offer_id>/<int:price_offer_item_id>/<int:task_id>/',

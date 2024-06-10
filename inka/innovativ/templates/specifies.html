@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ fejlec }} felmérések</h3>
+	</div>
+	<br/>
+    <div class="row">
+		<div class="col-8 mb-2">
+			<div class="card">
+				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+					<div class="row mb-2 text-start">
+						<div class="col-2">
+							Időpont
+						</div>
+						<div class="col-3">
+							Ügyfél
+						</div>
+						<div class="col-3">
+							Cím
+						</div>
+						<div class="col-2">
+							Feladat
+						</div>
+						<div class="col-2">
+							Felmérő
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<form method="POST">
+						{% csrf_token %}
+						{% for specify in specifies %}
+							<div class="row mb-3">
+								<div class="col-2">
+									{% if specify.specify_date %}
+										<button type="submit" name="action"
+												value="day_{{ specify.specify_date | date:'Y-m-d' }}"
+												class="btn btn-outline-primary btn-sm me-2">
+											{{ specify.specify_date | date:"Y.m.d H:i" }}
+										</button>
+									{% else %}
+										?
+									{% endif %}
+								</div>
+								<div class="col-3">
+									{{ specify.customer_project.customer }}
+								</div>
+								<div class="col-3">
+									{{ specify.customer_project.installation_address }}
+								</div>
+								<div class="col-2">
+									{{ specify.customer_project.target }}
+								</div>
+								<div class="col-2">
+									{{ specify.specifyer.name }}
+								</div>
+							</div>
+						{% endfor %}
+					</form>
+
+                    <br/>
+					{% include 'pager_bottom.html' %}
+                </div>
+            </div>
+        </div>
+		<div class="col-4 mb-2">
+			<div class="row mb-3">
+				<div id="map" style="height: 500px; width: 100%;">{{ map|safe }}</div>
+			</div>
+        </div>
+    </div>
+	<br/>
+    <script>
+        $(document).ready(function() {
+            // Az iframe magasságának beállítása
+            $('#map iframe').css('height', '500px');
+        });
+    </script>
+{% endblock %}>

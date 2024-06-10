@@ -20,20 +20,20 @@
 				<div class="card-body text-center">
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_2_idopont_kereses' task.id %}" class="btn btn-outline-info btn-sm">
-								Időpont keresés</a>
+							<a href="#" class="btn btn-outline-info btn-sm">
+								Feladat</a>
 						</div>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_2_idopont_rogzites' task.id %}" class="btn btn-outline-info btn-sm">
-								Időpont rögzítés</a>
+							<a href="#" class="btn btn-outline-info btn-sm">
+								Feladat</a>
 						</div>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_2_felmero_rogzites' task.id %}" class="btn btn-outline-info btn-sm">
-								Felmérő rögzítés</a>
+							<a href="#" class="btn btn-outline-info btn-sm">
+								Feladat</a>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -43,20 +43,11 @@
 						</div>
 					</div>
 					<hr>
-					{% if specify.specify_date and specify.specifyer %}
-						<div class="row mb-3">
-							<div class="col">
-								<a href="{% url 'p_05_2_ugyfel_atadasa_05_3_nak' task.id %}"
-								   class="btn btn-outline-info btn-sm">
-									Email küldése és ügyfél átadása - 05.3. Egyeztetett felmérések</a>
-							</div>
-						</div>
-					{% endif %}
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_2_ugyfel_visszaleptetese_05_1_nek' task.id %}"
+							<a href="#"
 							   class="btn btn-outline-info btn-sm">
-								Ügyfél visszaléptetése - 05.1. Felméréshez</a>
+								Ügyfél visszaléptetése - 05.2. Ügyfél egyeztetés felméréshez</a>
 						</div>
 					</div>
 					<hr>
