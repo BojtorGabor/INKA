@@ -39,8 +39,6 @@
 												class="btn btn-outline-primary btn-sm me-2">
 											{{ specify.specify_date | date:"Y.m.d H:i" }}
 										</button>
-									{% else %}
-										?
 									{% endif %}
 								</div>
 								<div class="col-3">
@@ -53,7 +51,7 @@
 									{{ specify.customer_project.target }}
 								</div>
 								<div class="col-2">
-									{{ specify.specifyer.name }}
+									{{ specify.specifier.name }}
 								</div>
 							</div>
 						{% endfor %}
@@ -66,11 +64,15 @@
         </div>
 		<div class="col-4 mb-2">
 			<div class="row mb-3">
+				{% if specify_day %}
+					<div class="text-center mb-2">
+						{{ specify_day }} felmérések
+					</div>
+				{% endif %}
 				<div id="map" style="height: 500px; width: 100%;">{{ map|safe }}</div>
 			</div>
         </div>
     </div>
-	<br/>
     <script>
         $(document).ready(function() {
             // Az iframe magasságának beállítása

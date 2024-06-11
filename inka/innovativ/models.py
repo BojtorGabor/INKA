@@ -198,8 +198,9 @@ class PriceOfferItem(models.Model):
 
 
 # Felmérők
-class Specifyer(models.Model):
+class Specifier(models.Model):
     name = models.CharField(max_length=50)  # Felmérő neve
+    email = models.EmailField(max_length=50, default='')  # Felmérő email címe
 
     def __str__(self):
         return self.name
@@ -214,10 +215,9 @@ class Specify(models.Model):
         ('4:', 'megtörtént'),
     )
     customer_project = models.ForeignKey(CustomerProject, on_delete=models.CASCADE)  # Ügyfél projektje
-    specifyer = models.ForeignKey(Specifyer, on_delete=models.SET_NULL, null=True)  # Felmérő
+    specifier = models.ForeignKey(Specifier, on_delete=models.SET_NULL, null=True)  # Felmérő
     specify_date = models.DateTimeField(null=True, blank=True)  # Felmérés időpontja
     status = models.CharField(max_length=2, choices=STATUS_CHOICE, default='1:')  # Felmérés állapota
-    repeating = models.BooleanField(default=False)  # Ismételt-e az állapot
     comment = models.TextField(max_length=1000, blank=True)  # Megjegyzés
     email_sent_at = models.DateTimeField(null=True)  # Email kiküldésének ideje
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
@@ -237,9 +237,18 @@ class EmailTemplate(models.Model):
         return self.title
 
 
+# Sima szöveges részletek
 class StandardText(models.Model):
     title = models.CharField(max_length=150)  # Megnevezés
     content = models.TextField(max_length=1000, blank=True)  # Szöveg
 
     def __str__(self):
         return self.title
+
+
+# Fénykép típus
+class PhotoType(models.Model):
+    type = models.CharField(max_length=50)  # Fénykép típus
+
+    def __str__(self):
+        return self.type

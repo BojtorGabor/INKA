@@ -146,17 +146,17 @@ class SpecifyDateTimeForm(forms.ModelForm):
             self.fields['specify_date'].initial = self.instance.specify_date.strftime('%Y-%m-%d %H:%M')
 
 
-class SpecifyerForm(forms.ModelForm):
+class SpecifierForm(forms.ModelForm):
     class Meta:
         model = Specify
-        fields = ['specifyer', 'comment']
-        labels = {'specifyer': 'Felmérő', 'comment': 'Üzenet a felmérőnek'}
+        fields = ['specifier', 'comment']
+        labels = {'specifier': 'Felmérő', 'comment': 'Üzenet a felmérőnek'}
         widgets = {'comment':
                        forms.Textarea(attrs={'rows': 3, 'maxlength': 1000, 'class': 'form-control'})}
 
     def __init__(self, *args, **kwargs):
-        super(SpecifyerForm, self).__init__(*args, **kwargs)
-        self.fields['specifyer'].widget.attrs['class'] = 'form-control'
+        super(SpecifierForm, self).__init__(*args, **kwargs)
+        self.fields['specifier'].widget.attrs['class'] = 'form-control'
         self.fields['comment'].widget.attrs['class'] = 'form-control'
 
 

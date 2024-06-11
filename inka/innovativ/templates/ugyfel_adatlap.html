@@ -148,11 +148,6 @@
                         </div>
                         <div class="col-4 text-start">
                             {{ specify.get_status_display }}
-                            {% if specify.repeating %}
-                                (ismételt)
-                            {% else %}
-                                (új)
-                            {% endif %}
                         </div>
                         {% if specify.specify_date %}
                             {% if specify.status == '4:' %}

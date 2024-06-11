@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.template import Template, Context
 from django.utils import timezone
 
-from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifyerForm, EmailTemplateForm
+from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifierForm, EmailTemplateForm
 from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate, Customer
 from inka.settings import DEFAULT_FROM_EMAIL
 
@@ -17,7 +17,6 @@ import folium
 from datetime import datetime, timedelta
 
 from . import views as app_views
-
 
 
 def p_05_1_ugyfel_terkepre(request, task_id):
@@ -95,42 +94,6 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
             form = ReasonForm()
 
         return render(request, '05/p_05_1_ugyfel_felmeres_egyezetesre.html', {'task': task, 'form': form})
-#
-#
-# def p_05_2_ugyfel_felmeresei(request, task_id):
-#     task = Task.objects.get(pk=task_id)
-#
-#     specifys = (Specify.objects.filter(customer_project=task.customer_project).order_by('specify_date'))
-#
-#     p = Paginator(specifys, 10)
-#     page = request.GET.get('page', 1)
-#     specifys_page = p.get_page(page)
-#     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
-#
-#     if task.completed_at:
-#         messages.success(request, f'Ez a projekt már elkészült '
-#                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
-#         return render(request, 'home.html', {})
-#     else:
-#         if request.method == 'POST':
-#             action = request.POST.get('action')
-#             if action:
-#                 # Szétválasztjuk az egyedi azonosítót és a művelet nevét
-#                 action_parts = action.split('_')
-#                 action_name = action_parts[0]
-#                 specify_id = action_parts[1]
-#                 print('AKCIÓ NÉV', action_name)
-#                 print('AKCIÓ ID', specify_id)
-#
-#                 if action_name == 'new' or action_name == 'update':
-#                     pass
-#                     # return redirect('product_update', product_id=product_id, action_name=action_name)
-#                 elif action_name == 'delete':
-#                     pass
-#
-#         return render(request, '05/p_05_2_ugyfel_felmeresei.html',
-#                       {'task': task, 'specifys': specifys_page,
-#                        'page_list': specifys_page, 'page_range': page_range, })
 
 
 def p_05_2_idopont_kereses(request, task_id):
@@ -171,7 +134,7 @@ def p_05_2_idopont_kereses(request, task_id):
                         local_time = timezone.localtime(map_record.specify_date)
                         formatted_specify_date = local_time.strftime("%Y-%m-%d %H:%M")
                         popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
-                                         f'{formatted_specify_date} - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
+                                         f'{formatted_specify_date} - {map_record.specifier}')  # Újsor karakterrel választjuk el az adatokat
                         folium.Marker([map_record.customer_project.latitude,
                                        map_record.customer_project.longitude],
                                       popup=folium.Popup(popup_content, max_width=250),
@@ -253,7 +216,7 @@ def p_05_2_felmero_rogzites(request, task_id):
         specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
 
         if request.method == 'POST':
-            form = SpecifyerForm(request.POST or None, instance=specify)
+            form = SpecifierForm(request.POST or None, instance=specify)
             if form.is_valid():
                 form.save()
                 # Feladat átállítva Folyamatban értékre
@@ -263,68 +226,9 @@ def p_05_2_felmero_rogzites(request, task_id):
                 messages.success(request, 'Felmérő rögzítve.')
                 return render(request, 'home.html', {})
         else:
-            form = SpecifyerForm(instance=specify)
+            form = SpecifierForm(instance=specify)
 
         return render(request, '05/p_05_2_felmero_rogzites.html', {'task': task, 'form': form})
-
-
-def p_05_2_email_felmeresrol(request, task_id):
-    # az aktuális ügyfél
-    task = Task.objects.get(pk=task_id)
-    if task.completed_at:
-        messages.success(request, f'Ez a projekt már elkészült '
-                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
-        return render(request, 'home.html', {})
-    else:
-        # a feladathoz tartozó email sablon
-        email_template_name = '05.2. Felmérési időpont küldése'
-        email_template = EmailTemplate.objects.get(title=email_template_name)
-
-        # szerkeszthető szöveg a sblon alapján
-        template = Template(email_template.content)
-
-        # az aktuális ügyfélnév, időpont és helyszín helyettesítése a sablon változója alapján
-        specify = Specify.objects.get(status='1:', customer_project=task.customer_project)
-        context = Context({'customer_name': task.customer_project.customer,
-                           'specify_date': specify.specify_date,
-                           'installation_address': task.customer_project.installation_address})
-        rendered_content = template.render(context)
-
-        if request.method == 'POST':
-            form = EmailTemplateForm(request.POST, instance=email_template)
-            if form.is_valid():
-                subject = form['subject'].value()
-                message = form['content'].value()
-                to_email = [task.customer_project.customer.email]
-                sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
-                # Az Új feladat jelzőből Folyamatban jelző lesz
-                task.type = '3:'
-                task.type_color = '3:'
-                task.save()
-                if sent:
-                    specify.email_sent_at = timezone.now()  # Email kiküldésének időpontja
-                    specify.save()
-                    messages.success(request, 'E-mail sikeresen elküldve.')
-                    Task.objects.create(type='0:',  # Esemény bejegyzés
-                                        type_color='0:',
-                                        project=task.project,
-                                        customer_project=task.customer_project,
-                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
-                                                f'nevű sablon email sikeresen kiküldve.',
-                                        created_user=request.user)
-                else:
-                    Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
-                                        type_color='1:',
-                                        project=task.project,
-                                        customer_project=task.customer_project,
-                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
-                                            f'nevű sablon küldése nem sikerült.',
-                                        created_user=request.user)
-                    messages.success(request,'Hiba történt az e-mail küldése közben!')
-                return render(request, 'home.html', {})
-        else:
-            form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
-        return render(request, '02/p_02_1_telefonszam_keres.html', {'task': task, 'form': form})
 
 
 def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
@@ -338,7 +242,7 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
         email_template_name = '05.2. Felmérési időpont küldése'
         email_template = EmailTemplate.objects.get(title=email_template_name)
 
-        # szerkeszthető szöveg a sblon alapján
+        # szerkeszthető szöveg a sablon alapján
         template = Template(email_template.content)
 
         # az aktuális ügyfélnév, időpont és helyszín helyettesítése a sablon változója alapján
@@ -355,11 +259,11 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                 message = form['content'].value()
                 to_email = [task.customer_project.customer.email]
                 sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
-                # Az Új feladat jelzőből Elkészült jelző lesz
-                task.type = '4:'
-                task.type_color = '4:'
-                task.save()
                 if sent:
+                    # Az Új feladat jelzőből Elkészült jelző lesz
+                    task.type = '4:'
+                    task.type_color = '4:'
+                    task.save()
                     specify.status = '2:'  # Egyeztetett felmérés lett
                     specify.email_sent_at = timezone.now()  # Email kiküldésének időpontja
                     specify.save()
@@ -378,11 +282,34 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                         project=next_project[0],  # következő projekt
                                         customer_project=task.customer_project,  # ügyfél azonosító
                                         comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
-                                                f'Időpont: {specify.specify_date.strftime('%Y-%m-%d %H:%M')}\n'
-                                                f'Felmérő: {specify.specifyer}',
+                                                f'Időpont: {specify.specify_date.strftime("%Y-%m-%d %H:%M")}\n'
+                                                f'Felmérő: {specify.specifier}',
                                         created_user=request.user,
                                         deadline=specify.specify_date)
-                    messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                    messages.success(request, f'{task.customer_project.customer} - továbbítva: '
+                                              f'{next_project[0]} felé.')
+
+                    # Email a felmérőnek is
+                    email_template_name = '05.2. Felmérési időpont küldése a felmérőnek'
+                    email_template = EmailTemplate.objects.get(title=email_template_name)
+
+                    # szerkeszthető szöveg a sblon alapján
+                    template = Template(email_template.content)
+
+                    # az aktuális ügyfélnév, időpont és helyszín helyettesítése a sablon változója alapján
+                    context = Context({'customer_name': task.customer_project.customer,
+                                       'specify_date': specify.specify_date,
+                                       'installation_address': task.customer_project.installation_address,
+                                       'specifier_name': specify.specifier})
+                    rendered_content = template.render(context)
+                    subject = email_template.subject
+                    message = rendered_content
+                    to_email = [specify.specifier.email]
+                    sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
+                    if sent:
+                        messages.success(request, f'{specify.specifier} felmérő is kapott email a felmérésről.')
+                    else:
+                        messages.success(request, 'Hiba történt a felmérő felé küldött e-mail küldése közben!')
                 else:
                     Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
                                         type_color='1:',
@@ -391,7 +318,7 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                         comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
                                         created_user=request.user)
-                    messages.success(request,'Hiba történt az e-mail küldése közben!')
+                    messages.success(request,'Hiba történt az ügyfél felé küldött e-mail küldése közben!')
                 return render(request, 'home.html', {})
         else:
             form = EmailTemplateForm(instance=email_template, initial={'content': rendered_content})
@@ -433,6 +360,46 @@ def p_05_2_ugyfel_visszaleptetese_05_1_nek(request, task_id):
         return render(request, '05/p_05_2_ugyfel_visszaleptetese_05_1_nek.html',
                       {'task': task, 'form': form})
 
+
+def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = ReasonForm(request.POST)
+            if form.is_valid():
+                specify = Specify.objects.get(status='2:', customer_project=task.customer_project)
+                specify.status = '3:'
+                specify.save()
+                Specify.objects.create(customer_project=task.customer_project,
+                                       status='1:',  # ügyfél project azonosító
+                                       repeating = True,  # Ismételt felmérés
+                                       created_user=request.user)
+                # Eredeti task lezárása
+                task.type = '4:'
+                task.type_color = '4:'
+                task.completed_at = timezone.now().isoformat()
+                task.save()
+
+                # feladat visszaadása 05.1. Felmérése felelőséhez
+                next_project = Project.objects.filter(name__startswith='05.2.')
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project[0],  # következő projekt
+                                    customer_project=task.customer_project,  # ügyfél azonosító
+                                    comment=f'{task.customer_project.customer} -  ügyfelünkkel egyeztess új felmérést.\n'
+                                            f'{form["reason"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = ReasonForm()
+
+        return render(request, '05/p_05_3_ugyfel_visszaleptetese_05_2_nek.html',
+                      {'task': task, 'form': form})
 
 def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
@@ -505,8 +472,8 @@ def specifies(request, status):
         'customer_project__customer',
         'customer_project__target',
         'customer_project__financing',
-        'specifyer'
-    ).order_by('specify_date')
+        'specifier'
+    ).order_by('-specify_date')
 
     p = Paginator(specifies, 10)
     page = request.GET.get('page', 1)
@@ -545,19 +512,20 @@ def specifies(request, status):
                 local_time = timezone.localtime(map_record.specify_date)
                 formatted_specify_date = local_time.strftime("%Y-%m-%d %H:%M")
                 popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
-                                 f'{formatted_specify_date} - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
+                                 f'{formatted_specify_date} - {map_record.specifier}')  # Újsor karakterrel választjuk el az adatokat
                 folium.Marker([map_record.customer_project.latitude,
                                map_record.customer_project.longitude],
                               popup=folium.Popup(popup_content, max_width=250),
                               icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
             m1 = m1._repr_html_()  # HTML-reprezentáció
     else:
+        specify_day = ''
         if status == '1:':
             map_records = (Specify.objects.filter(status=status))
             for map_record in map_records:
                 # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
                 popup_content = (f'{map_record.customer_project.customer} - {map_record.customer_project}<br>'
-                                 f' - {map_record.specifyer}')  # Újsor karakterrel választjuk el az adatokat
+                                 f' - {map_record.specifier}')  # Újsor karakterrel választjuk el az adatokat
                 folium.Marker([map_record.customer_project.latitude,
                                map_record.customer_project.longitude],
                               popup=folium.Popup(popup_content, max_width=250),
@@ -566,4 +534,4 @@ def specifies(request, status):
 
     return render(request, 'specifies.html', {'specifies': specifies_page,
                                               'page_list': specifies_page, 'page_range': page_range,
-                                              'fejlec': fejlec, 'map': m1,})
+                                              'fejlec': fejlec, 'map': m1, 'specify_day': specify_day})

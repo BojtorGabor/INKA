@@ -104,11 +104,11 @@ def p_02_1_telefonszam_keres(request, task_id):
                 message = form['content'].value()
                 to_email = [task.customer_project.customer.email]
                 sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
-                # Az Új feladat jelzőből Folyamatban jelző lesz
-                task.type = '3:'
-                task.type_color = '3:'
-                task.save()
                 if sent:
+                    # Az Új feladat jelzőből Folyamatban jelző lesz
+                    task.type = '3:'
+                    task.type_color = '3:'
+                    task.save()
                     messages.success(request, 'E-mail sikeresen elküldve.')
                     Task.objects.create(type='0:',  # Esemény bejegyzés
                                         type_color='0:',

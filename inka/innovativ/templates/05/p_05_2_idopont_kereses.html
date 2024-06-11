@@ -53,19 +53,14 @@
                                 {% endif %}
                             </div>
                             <div class="col-5">
-                                {% if specify.specifyer %}
-                                    {{ specify.specifyer }}
+                                {% if specify.specifier %}
+                                    {{ specify.specifier }}
                                 {% else %}
                                     ?
                                 {% endif %}
                             </div>
                             <div class="col-3">
                                 {{ specify.get_status_display }}
-                                {% if specify.repeating %}
-                                    (ismételt)
-                                {% else %}
-                                    (új)
-                                {% endif %}
                             </div>
                         </div>
                         <div class="row mb-2">

@@ -89,6 +89,8 @@ urlpatterns = [
          name='p_05_2_ugyfel_atadasa_05_3_nak'),
     path('p_05_2_ugyfel_visszaleptetese_05_1_nek/<int:task_id>/', views_projects05.p_05_2_ugyfel_visszaleptetese_05_1_nek,
          name='p_05_2_ugyfel_visszaleptetese_05_1_nek'),
+    path('p_05_3_ugyfel_visszaleptetese_05_2_nek/<int:task_id>/', views_projects05.p_05_3_ugyfel_visszaleptetese_05_2_nek,
+         name='p_05_3_ugyfel_visszaleptetese_05_2_nek'),
     path('p_05_x_ugyfel_visszaadasa_02_nek/<int:task_id>/', views_projects05.p_05_x_ugyfel_visszaadasa_02_nek,
          name='p_05_x_ugyfel_visszaadasa_02_nek'),
     path('p_05_x_ugyfel_visszaadasa_04_nek/<int:task_id>/', views_projects05.p_05_x_ugyfel_visszaadasa_04_nek,
