@@ -1,3 +1,6 @@
+import os
+from inka import settings
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -252,3 +255,20 @@ class PhotoType(models.Model):
 
     def __str__(self):
         return self.type
+
+
+# Ez a függvény a SpecifyPhoto feltöltésekor az adott ügyfél könyvtárában a felmeresek alkönyvtárában levő
+# felmérés id alkönyvtárában fogja tölteni a képeket.
+def get_upload_to(instance, filename):
+    path = os.path.join(settings.MEDIA_ROOT, f'{instance.specify.customer_project.customer.id}', 'felmeresek',
+                        f'{instance.specify.id}')
+    return os.path.join('uploads', path, filename)
+
+
+# Felmérések fotói
+class SpecifyPhoto(models.Model):
+    specify = models.ForeignKey(Specify, on_delete=models.CASCADE)  # Felmérés
+    photo = models.ImageField(null=True, blank=True, upload_to=get_upload_to)  # Fénykép. A feltöltés helyét lásd feljebb.
+
+    def __str__(self):
+        return self.specify

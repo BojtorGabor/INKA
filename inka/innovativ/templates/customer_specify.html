@@ -37,18 +37,10 @@
                     {% for specify_record in specify_records %}
                         <div class="row mb-2">
                             <div class="col-4">
-                                {% if specify_record.specify_date %}
-                                    {{ specify_record.specify_date | date:"Y.m.d H:i" }}
-                                {% else %}
-                                    ?
-                                {% endif %}
+                                {{ specify_record.specify_date | date:"Y.m.d H:i" }}
                             </div>
                             <div class="col-5">
-                                {% if specify_record.specifyer %}
-                                    {{ specify_record.specifyer }}
-                                {% else %}
-                                    ?
-                                {% endif %}
+                                {{ specify_record.specifyer }}
                             </div>
                             <div class="col-3">
                                 {{ specify_record.get_status_display }}

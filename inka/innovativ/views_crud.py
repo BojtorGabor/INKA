@@ -300,7 +300,7 @@ def price_offer_makepdf(request, price_offer_id, task_id):
         tizedes = 2
     standard_text = StandardText.objects.get(title='Árajánlat alján szöveg')
     output_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
-                                   f'{price_offer.file_path}')
+                                   'arajanlatok', f'{price_offer.file_path}')
 
     response = HttpResponse(content_type='application/pdf')
     # response['Content-Disposition'] = 'attachment; filename="generated_pdf.pdf"'  # A PDF-et letölthető fájlként nyitja meg

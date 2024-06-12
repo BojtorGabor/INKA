@@ -42,9 +42,10 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
 
                 # Új pdf fájl létrehozása az eredeti pdf fájlból
                 original_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
-                                                 f'{original_price_offer.file_path}')
+                                                 'arajanlatok', f'{original_price_offer.file_path}')
                 random_filename = generate_random_string() + '.pdf'
-                copy_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{random_filename}')
+                copy_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                             'arajanlatok', f'{random_filename}')
 
                 # Create a copy of the original PDF
                 with open(original_pdf_path, 'rb') as original_pdf:
@@ -89,7 +90,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                 return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
             elif action_name == 'delete':  # Árajánlat törlése
                 price_offer = PriceOffer.objects.get(pk=price_offer_id)
-                pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{price_offer.file_path}')
+                pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                        'arajanlatok', f'{price_offer.file_path}')
                 price_offer.delete()  # Árajánlat rekord és tételeinek törlése
                 if os.path.exists(pdf_path):
                     os.remove(pdf_path)  # pdf fájl törlése
@@ -143,15 +145,17 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                     created_user=request.user)
             elif action_name == 'new':  # Új árajánlat készítése
                 # Ha ez az ügyfél első árajánlata, akkor még nincs alkönyvtár a media alatt az ügyfél azonosítójával
-                new_directory_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}')
+                new_directory_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                                  'arajanlatok')
                 if not os.path.exists(new_directory_path):
                     # Ha nem létezik, hozzuk létre
                     os.makedirs(new_directory_path)
 
                 # Új üres pdf fájl létrehozása a media/0/EmptyPriceOffer.pdf fájlból
-                original_pdf_path = os.path.join(settings.MEDIA_ROOT, '0', 'EmptyPriceOffer.pdf')
+                original_pdf_path = os.path.join(settings.MEDIA_ROOT, '0', 'arajanlatok', 'EmptyPriceOffer.pdf')
                 random_filename = generate_random_string() + '.pdf'
-                copy_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{random_filename}')
+                copy_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                             'arajanlatok', f'{random_filename}')
 
                 # Create a copy of the original PDF
                 with open(original_pdf_path, 'rb') as original_pdf:
@@ -178,7 +182,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
 def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
     task = Task.objects.get(pk=task_id)
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
-    pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}', f'{price_offer.file_path}')
+    pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                            'arajanlatok', f'{price_offer.file_path}')
 
     # a feladathoz tartozó email sablon
     email_template_name = '04.1. Előzetes árajánlat küldése'
@@ -277,6 +282,7 @@ def p_04_1_ugyfelnek_felmeres(request, task_id):
 
         return render(request, '04/p_04_1_ugyfelnek_felmeres.html',
                       {'task': task, 'form': form})
+
 
 def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)

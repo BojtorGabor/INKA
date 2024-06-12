@@ -226,7 +226,8 @@ def customer_specify(request, specify_id):
         end_date = timezone.make_aware(datetime.combine(current_date + timedelta(days=1), datetime.min.time()))
 
         # Akiknek már van időpontjuk - térképre
-        specify_records = (Specify.objects.filter(status='2:', specify_date__gte=start_date, specify_date__lt=end_date)
+        specify_records = (Specify.objects.filter(Q(status='2:') | Q(status='3:') | Q(status='4:'),
+                                                  specify_date__gte=start_date, specify_date__lt=end_date)
                            .order_by('specify_date'))
 
         p = Paginator(specify_records, 10)

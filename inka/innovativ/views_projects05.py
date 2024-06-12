@@ -1,15 +1,19 @@
+import os
+from inka import settings
+
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import Template, Context
 from django.utils import timezone
 
-from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifierForm, EmailTemplateForm
-from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate, Customer
+from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifierForm, EmailTemplateForm, \
+    SpecifyPhotoForm
+from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate, Customer, SpecifyPhoto
 from inka.settings import DEFAULT_FROM_EMAIL
 
 import folium
@@ -19,6 +23,7 @@ from datetime import datetime, timedelta
 from . import views as app_views
 
 
+################################# 05.1. #################################
 def p_05_1_ugyfel_terkepre(request, task_id):
     task = Task.objects.get(pk=task_id)
     m = folium.Map(location=[47.2, 19.4], zoom_start=8)  # Alapértelmezett hely
@@ -96,12 +101,12 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
         return render(request, '05/p_05_1_ugyfel_felmeres_egyezetesre.html', {'task': task, 'form': form})
 
 
+################################# 05.2. #################################
 def p_05_2_idopont_kereses(request, task_id):
     task = Task.objects.get(pk=task_id)
 
     today = timezone.now().date()
-    specifys = (Specify.objects.filter(Q(status='1:') |
-                                              Q(status='2:', specify_date__gte=today))
+    specifys = (Specify.objects.filter(Q(status='1:') | Q(status='2:', specify_date__gte=today))
                        .order_by('specify_date'))
 
     p = Paginator(specifys, 10)
@@ -141,7 +146,7 @@ def p_05_2_idopont_kereses(request, task_id):
                                       icon=folium.Icon(color='blue', icon='info-sign')).add_to(m1)
 
                     # Akiknek még nincs időpontjuk - térképre
-                    map_records = Specify.objects.filter(status='1:', repeating=False)
+                    map_records = Specify.objects.filter(status='1:')
                     for map_record in map_records:
                         # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
                         popup_content = f'{map_record.customer_project.customer} - {map_record.customer_project}'
@@ -149,16 +154,6 @@ def p_05_2_idopont_kereses(request, task_id):
                                        map_record.customer_project.longitude],
                                       popup=folium.Popup(popup_content, max_width=250),
                                       icon=folium.Icon(color='green', icon='info-sign')).add_to(m1)
-
-                    # Akiknek elmaradt az időpontjuk - térképre
-                    map_records = Specify.objects.filter(status='1:', repeating=True)
-                    for map_record in map_records:
-                        # Készítünk egy Popup objektumot, amely tartalmazza a szükséges információkat
-                        popup_content = f'{map_record.customer_project.customer} - {map_record.customer_project}'
-                        folium.Marker([map_record.customer_project.latitude,
-                                       map_record.customer_project.longitude],
-                                      popup=folium.Popup(popup_content, max_width=250),
-                                      icon=folium.Icon(color='orange', icon='info-sign')).add_to(m1)
 
                     # Az aktuális ügyfél project - térképre
                     folium.Marker([task.customer_project.latitude,
@@ -300,14 +295,15 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                     context = Context({'customer_name': task.customer_project.customer,
                                        'specify_date': specify.specify_date,
                                        'installation_address': task.customer_project.installation_address,
-                                       'specifier_name': specify.specifier})
+                                       'specifier_name': specify.specifier,
+                                       'comment': specify.comment})
                     rendered_content = template.render(context)
                     subject = email_template.subject
                     message = rendered_content
                     to_email = [specify.specifier.email]
                     sent = send_mail(subject, message, DEFAULT_FROM_EMAIL, to_email, html_message=message)
                     if sent:
-                        messages.success(request, f'{specify.specifier} felmérő is kapott email a felmérésről.')
+                        messages.success(request, f'{specify.specifier} felmérő is kapott emailt a felmérésről.')
                     else:
                         messages.success(request, 'Hiba történt a felmérő felé küldött e-mail küldése közben!')
                 else:
@@ -361,6 +357,44 @@ def p_05_2_ugyfel_visszaleptetese_05_1_nek(request, task_id):
                       {'task': task, 'form': form})
 
 
+################################# 05.3. #################################
+def p_05_3_ugyfel_tovabbitasa_05_4_hez(request, task_id):
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = ReasonForm(request.POST)
+            if form.is_valid():
+                specify = Specify.objects.get(status='2:', customer_project=task.customer_project)
+                specify.status = '4:'
+                specify.save()
+
+                # Eredeti task lezárása
+                task.type = '4:'
+                task.type_color = '4:'
+                task.completed_at = timezone.now().isoformat()
+                task.save()
+
+                # feladat visszaadása 05.1. Felmérése felelőséhez
+                next_project = Project.objects.filter(name__startswith='05.4.')
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project[0],  # következő projekt
+                                    customer_project=task.customer_project,  # ügyfél azonosító
+                                    comment=f'{task.customer_project.customer} -  ügyfelünk felmérését feldolgozhatod.\n'
+                                            f'{form["reason"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = ReasonForm()
+
+        return render(request, '05/p_05_3_ugyfel_tovabbitasa_05_4_hez.html',
+                      {'task': task, 'form': form})
+
 def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
@@ -375,8 +409,7 @@ def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
                 specify.status = '3:'
                 specify.save()
                 Specify.objects.create(customer_project=task.customer_project,
-                                       status='1:',  # ügyfél project azonosító
-                                       repeating = True,  # Ismételt felmérés
+                                       status='1:',  # Várakozó felmérés
                                        created_user=request.user)
                 # Eredeti task lezárása
                 task.type = '4:'
@@ -401,6 +434,67 @@ def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
         return render(request, '05/p_05_3_ugyfel_visszaleptetese_05_2_nek.html',
                       {'task': task, 'form': form})
 
+
+################################# 05.4. #################################
+def p_05_4_felmeresi_kepek_kigyujtese(request, task_id):
+    task = Task.objects.get(pk=task_id)
+
+    specifys = (Specify.objects.filter(status='4:', customer_project=task.customer_project).order_by('specify_date'))
+
+    p = Paginator(specifys, 10)
+    page = request.GET.get('page', 1)
+    specifys_page = p.get_page(page)
+    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+    current_specify = ''
+
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            form = SpecifyPhotoForm(request.POST, request.FILES)
+            if action:
+                # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+                action_parts = action.split('_')
+                action_name = action_parts[0]
+                specify_id = action_parts[1]
+                current_specify = Specify.objects.get(pk=specify_id)
+
+                if action_name == 'date':
+                    new_directory_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                                      'felmeresek', str(specify_id))
+                    if not os.path.exists(new_directory_path):
+                        # Ha nem létezik, hozzuk létre
+                        os.makedirs(new_directory_path)
+                elif action_name == 'upload':
+                    files = request.FILES.getlist('photo')
+                    specify = Specify.objects.get(pk=specify_id)
+                    directory_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
+                                                      'felmeresek', str(specify.id))
+                    if files:
+                        for file in files:
+                            file_path = os.path.join(directory_path, file.name)
+                            if not os.path.exists(file_path):  # Check if the file already exists
+                                SpecifyPhoto.objects.create(specify=specify, photo=file)
+                            else:
+                                messages.success(request, f'Ez a kép ({file.name}) már fel volt töltve..')
+                        messages.success(request, 'Sikeresen feltöltődtek az új fényképek.')
+                        # Visszalépés ide: p_05_4_felmeresi_anyag_feldolgozasa
+                        return_view = getattr(app_views, 'view_names')  # Átalakítás, hogy hívható legyen
+                        return return_view(request, view_name='p_05_4_felmeresi_anyag_feldolgozasa', task_id=task_id)
+        else:
+            form = SpecifyPhotoForm()
+
+        return render(request, '05/p_05_4_felmeresi_kepek_kigyujtese.html',
+                      {'task': task, 'specifys': specifys_page,
+                       'page_list': specifys_page, 'page_range': page_range,
+                       'current_specify': current_specify, 'form': form})
+
+
+################################# 05.x. #################################
 def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:

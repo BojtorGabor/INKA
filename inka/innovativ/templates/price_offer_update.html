@@ -164,8 +164,7 @@
 											class="btn btn-outline-primary btn-sm me-2">Valuta váltás USD->HUF
 									</button>
 								{% endif %}
-								<a href="{{ MEDIA_URL }}{{ price_offer.customer_project.customer.id }}/
-								{{ price_offer.file_path }}"
+								<a href="{{ MEDIA_URL }}{{ price_offer.customer_project.customer.id }}/arajanlatok/{{ price_offer.file_path }}"
 								   class="btn btn-outline-primary btn-sm me-2" target="_blank">
 									PDF file megtekintése</a>
 								<button type="submit" name="item_action" value="makepdf_{{ price_offer.id }}"

@@ -1,7 +1,8 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import ClearableFileInput
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify, SpecifyPhoto
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -181,3 +182,15 @@ class DateTimeInputForm(forms.Form):
         self.fields['dateitimenput'].widget.attrs['class'] = 'form-control'
         if 'initial' in kwargs and 'datetimeinput' in kwargs['initial']:
             self.fields['datetimeinput'].initial = kwargs['initial']['datetimeinput'].strftime('%Y-%m-%d %H:%M')
+
+
+class MultipleFileInput(ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class SpecifyPhotoForm(forms.ModelForm):
+    class Meta:
+        model = SpecifyPhoto
+        fields = ['photo']
+        labels = {'photo': 'Új képek feltöltése'}
+        widgets = {'photo': MultipleFileInput()}

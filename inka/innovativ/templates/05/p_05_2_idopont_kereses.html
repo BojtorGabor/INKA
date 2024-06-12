@@ -46,18 +46,10 @@
                     {% for specify in specifys %}
                         <div class="row mb-2">
                             <div class="col-4">
-                                {% if specify.specify_date %}
-                                    {{ specify.specify_date | date:"Y.m.d H:i" }}
-                                {% else %}
-                                    ?
-                                {% endif %}
+                                {{ specify.specify_date | date:"Y.m.d H:i" }}
                             </div>
                             <div class="col-5">
-                                {% if specify.specifier %}
-                                    {{ specify.specifier }}
-                                {% else %}
-                                    ?
-                                {% endif %}
+                                {{ specify.specifier }}
                             </div>
                             <div class="col-3">
                                 {{ specify.get_status_display }}
@@ -113,7 +105,6 @@
                         <p>
                             <span class="text-danger">aktuális ügyfél projekt</span> -
                             <span class="text-success">várakozó felmérések</span> -
-                            <span class="text-warning">elmaradt felmérések</span> -
                             <span class="text-primary">egyeztetett felmérések</span>
                         </p>
                     </div>
