@@ -7,7 +7,7 @@ from django.utils import timezone
 from . import views_projects as app_views
 
 from .context_processors import menu_context
-from .forms_projects import DeadlineForm
+from .forms_projects import DeadlineForm, ReasonForm, NewTaskForm
 
 from .models import Project, Task, Job, Customer, CustomerProject, LastPosition, Specify
 
@@ -107,7 +107,7 @@ def tasks(request, filter, view_name):
         return redirect('login')
 
 
-def hatarido(request, task_id):
+def feladat_hatarido(request, task_id):
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -127,7 +127,79 @@ def hatarido(request, task_id):
         else:
             form = DeadlineForm(instance=task)
 
-        return render(request, 'hatarido.html', {'task': task, 'form': form})
+        return render(request, 'feladat_hatarido.html', {'task': task, 'form': form})
+
+
+def feladat_lezaras(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = ReasonForm(request.POST)
+            if form.is_valid():
+                # Eredeti task lezárása
+                task.type = '5:'
+                task.type_color = '5:'
+                task.comment = task.comment + (f'\n\nA feladatot lezárta {project} - {request.user}\n'
+                                               f'{form["reason"].value()}')
+                task.completed_at = timezone.now().isoformat()
+                task.save()
+
+                # feladat adás a Minőségbiztosításnak
+                next_project = Project.objects.filter(name__startswith='20.1.')
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project[0],  # következő projekt
+                                    customer_project=task.customer_project,  # ügyfél projekt azonosító
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - a feladat lezárva a következő ok miatt:\n'
+                                            f'{form["reason"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = ReasonForm()
+
+        return render(request, 'feladat_lezaras.html', {'task': task, 'form': form})
+
+
+def feladat_keszites(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = NewTaskForm(request.POST)
+            if form.is_valid():
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+
+                # Feladat adás a kiválasztott projektnek
+                next_project_id = form.cleaned_data['project']
+                next_project = Project.objects.get(pk=next_project_id)
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project,  # kiválasztott projekt
+                                    customer_project=task.customer_project,  # ügyfél projekt azonosító
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - új feladat:\n'
+                                            f'{form["comment"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = NewTaskForm()
+
+        return render(request, 'feladat_keszites.html', {'task': task, 'form': form})
 
 
 # Feladatok listázása különféle szűrőkkel

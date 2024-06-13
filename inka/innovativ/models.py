@@ -173,6 +173,7 @@ class Product(models.Model):
         ('m', 'méter'),
         ('cs', 'csomag'),
         ('pár', 'pár'),
+        ('óra', 'óra'),
     )
     group = models.ForeignKey(ProductGroup, on_delete=models.SET_NULL, null=True)  # Termék csoportja
     name = models.CharField(max_length=150)  # Termék neve

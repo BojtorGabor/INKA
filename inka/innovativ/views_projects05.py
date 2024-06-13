@@ -56,7 +56,8 @@ def p_05_1_process_coordinates(request, customer_project_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
-def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
+def p_05_1_ugyfel_atadasa_05_2_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -74,7 +75,6 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
                 try:
                     Specify.objects.get(customer_project=task.customer_project, status='1:')
                 except ObjectDoesNotExist:
-                # if not Specify.objects.filter(customer_project=task.customer_project, status='1:'):
                     Specify.objects.create(customer_project=task.customer_project,
                                            status='1:',  # ügyfél project azonosító
                                            created_user=request.user)
@@ -90,7 +90,8 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél project azonosító
-                                    comment=f'{ task.customer_project.customer } - ügyfelünkkel egyeztethetsz felmérést.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - ügyfelünkkel egyeztethetsz felmérést.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -98,7 +99,7 @@ def p_05_1_ugyfel_felmeres_egyezetesre(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_1_ugyfel_felmeres_egyezetesre.html', {'task': task, 'form': form})
+        return render(request, '05/p_05_1_ugyfel_atadasa_05_2_nek.html', {'task': task, 'form': form})
 
 
 ################################# 05.2. #################################
@@ -188,7 +189,6 @@ def p_05_2_idopont_rogzites(request, task_id):
             form = SpecifyDateTimeForm(request.POST or None, instance=specify)
             if form.is_valid():
                 form.save()
-                print('IDŐPONT', specify.specify_date.strftime('%Y-%m-%d %H:%M'))
                 # Feladat átállítva Folyamatban értékre
                 task.type = '3:'
                 task.type_color = '3:'
@@ -226,7 +226,8 @@ def p_05_2_felmero_rogzites(request, task_id):
         return render(request, '05/p_05_2_felmero_rogzites.html', {'task': task, 'form': form})
 
 
-def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
+def p_05_2_ugyfel_atadasa_05_3_nak(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -267,7 +268,8 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'Feladó: {project} - {request.user}\n\n'
+                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                                 f'nevű sablon email sikeresen kiküldve.',
                                         created_user=request.user)
                     # feladat átadása 05.3. Egyeztetett felméréseknek
@@ -276,7 +278,8 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                         type_color='2:',
                                         project=next_project[0],  # következő projekt
                                         customer_project=task.customer_project,  # ügyfél azonosító
-                                        comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
+                                        comment=f'Feladó: {project} - {request.user}\n\n'
+                                                f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
                                                 f'Időpont: {specify.specify_date.strftime("%Y-%m-%d %H:%M")}\n'
                                                 f'Felmérő: {specify.specifier}',
                                         created_user=request.user,
@@ -311,7 +314,8 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                                         type_color='1:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'Feladó: {project} - {request.user}\n\n'
+                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
                                         created_user=request.user)
                     messages.success(request,'Hiba történt az ügyfél felé küldött e-mail küldése közben!')
@@ -323,7 +327,8 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, task_id):
                       {'task': task, 'form': form})
 
 
-def p_05_2_ugyfel_visszaleptetese_05_1_nek(request, task_id):
+def p_05_2_ugyfel_atadasa_05_1_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -345,7 +350,8 @@ def p_05_2_ugyfel_visszaleptetese_05_1_nek(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} - Kérek egy új térképre illesztést.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - Kérek egy új térképre illesztést.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -353,12 +359,13 @@ def p_05_2_ugyfel_visszaleptetese_05_1_nek(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_2_ugyfel_visszaleptetese_05_1_nek.html',
+        return render(request, '05/p_05_2_ugyfel_atadasa_05_1_nek.html',
                       {'task': task, 'form': form})
 
 
 ################################# 05.3. #################################
-def p_05_3_ugyfel_tovabbitasa_05_4_hez(request, task_id):
+def p_05_3_ugyfel_atadasa_05_4_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -384,7 +391,8 @@ def p_05_3_ugyfel_tovabbitasa_05_4_hez(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} -  ügyfelünk felmérését feldolgozhatod.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} -  ügyfelünk felmérését feldolgozhatod.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -392,11 +400,12 @@ def p_05_3_ugyfel_tovabbitasa_05_4_hez(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_3_ugyfel_tovabbitasa_05_4_hez.html',
+        return render(request, '05/p_05_3_ugyfel_atadasa_05_4_nek.html',
                       {'task': task, 'form': form})
 
-def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
+def p_05_3_ugyfel_atadasa_05_2_nek(request, project_id, task_id):
     task = Task.objects.get(pk=task_id)
+    project = Project.objects.get(pk=project_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
@@ -423,7 +432,8 @@ def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} -  ügyfelünkkel egyeztess új felmérést.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} -  ügyfelünkkel egyeztess új felmérést.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -431,12 +441,12 @@ def p_05_3_ugyfel_visszaleptetese_05_2_nek(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_3_ugyfel_visszaleptetese_05_2_nek.html',
+        return render(request, '05/p_05_3_ugyfel_atadasa_05_2_nek.html',
                       {'task': task, 'form': form})
 
 
 ################################# 05.4. #################################
-def p_05_4_felmeresi_kepek_kigyujtese(request, task_id):
+def p_05_4_felmeresi_kepek_feltoltese(request, task_id):
     task = Task.objects.get(pk=task_id)
 
     specifys = (Specify.objects.filter(status='4:', customer_project=task.customer_project).order_by('specify_date'))
@@ -494,8 +504,46 @@ def p_05_4_felmeresi_kepek_kigyujtese(request, task_id):
                        'current_specify': current_specify, 'form': form})
 
 
+def p_05_4_uj_felmeres_feladat_05_2_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
+    task = Task.objects.get(pk=task_id)
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            form = ReasonForm(request.POST)
+            if form.is_valid():
+                Specify.objects.create(customer_project=task.customer_project,
+                                       status='1:',  # Várakozó felmérés
+                                       created_user=request.user)
+                # Eredeti task lezárása
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+
+                # új feladat 05.2. Ügyfél egyeztetés felmérésnek
+                next_project = Project.objects.filter(name__startswith='05.2.')
+                Task.objects.create(type='2:',  # Feladat típus
+                                    type_color='2:',
+                                    project=next_project[0],  # következő projekt
+                                    customer_project=task.customer_project,  # ügyfél azonosító
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - Új felmérés szükséges.\n'
+                                            f'{form["reason"].value()}',
+                                    created_user=request.user)
+                messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
+                return render(request, 'home.html', {})
+        else:
+            form = ReasonForm()
+
+        return render(request, '05/p_05_4_uj_felmeres_feladat_05_2_nek.html', {'task': task, 'form': form})
+
+
 ################################# 05.x. #################################
-def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
+def p_05_x_ugyfel_atadasa_02_1_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -506,8 +554,8 @@ def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
             form = ReasonForm(request.POST)
             if form.is_valid():
                 # Eredeti task lezárása
-                task.type = '4:'
-                task.type_color = '4:'
+                task.type = '5:'
+                task.type_color = '5:'
                 task.completed_at = timezone.now().isoformat()
                 task.save()
 
@@ -517,7 +565,8 @@ def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -525,10 +574,11 @@ def p_05_x_ugyfel_visszaadasa_02_nek(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_x_ugyfel_visszaadasa_02_nek.html', {'task': task, 'form': form})
+        return render(request, '05/p_05_x_ugyfel_atadasa_02_1_nek.html', {'task': task, 'form': form})
 
 
-def p_05_x_ugyfel_visszaadasa_04_nek(request, task_id):
+def p_05_x_ugyfel_atadasa_04_1_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -539,8 +589,8 @@ def p_05_x_ugyfel_visszaadasa_04_nek(request, task_id):
             form = ReasonForm(request.POST)
             if form.is_valid():
                 # Eredeti task lezárása
-                task.type = '4:'
-                task.type_color = '4:'
+                task.type = '5:'
+                task.type_color = '5:'
                 task.completed_at = timezone.now().isoformat()
                 task.save()
 
@@ -550,7 +600,8 @@ def p_05_x_ugyfel_visszaadasa_04_nek(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -558,7 +609,7 @@ def p_05_x_ugyfel_visszaadasa_04_nek(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '05/p_05_x_ugyfel_visszaadasa_04_nek.html', {'task': task, 'form': form})
+        return render(request, '05/p_05_x_ugyfel_atadasa_04_1_nek.html', {'task': task, 'form': form})
 
 
 def specifies(request, status):

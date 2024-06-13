@@ -2,7 +2,7 @@
 
 {% block content %}
 	<div class="text-center">
-        <h3>{{ task.customer_project.customer }} - Az ügyfél elérhetetlen - adatlap törlés kérelem</h3>
+        <h3>{{ task.customer_project.customer }} - Feladat lezárása</h3>
 	</div>
 	<br/>
 
@@ -16,7 +16,7 @@
 				<div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
 					<div class="row">
 						<div class="text-center">
-							Törlés indoklása
+							Lezárás indoklása
 						</div>
 					</div>
 				</div>
@@ -34,16 +34,17 @@
 									<div class="modal-content">
 										<div class="modal-header">
 											<h1 class="modal-title fs-5" id="exampleModalLabel">
-												Mehet a Minőségbiztosításnak a törlés kérelem?</h1>
+												Mehet a Minőségbiztosításnak a lezárásról az értesítés?</h1>
 											<button type="button" class="btn-close" data-bs-dismiss="modal"
 													aria-label="Close"></button>
 										</div>
 										<div class="modal-body">
-											{{ task.customer_project.customer }} - Az ügyfél elérhetetlen, kérem az adatlap törlését.
+											{{ task.customer_project.customer }} - Feladat lezárása.
 										</div>
 										<div class="modal-footer">
-											<button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Mégse</button>
-											<button type="submit" class="btn btn-outline-danger btn-sm">Törlés</button>
+											<button type="button" class="btn btn-outline-secondary btn-sm"
+													data-bs-dismiss="modal">Mégse</button>
+											<button type="submit" class="btn btn-outline-danger btn-sm">Lezárás</button>
 										</div>
 									</div>
 								</div>

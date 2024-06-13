@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ClearableFileInput
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify, SpecifyPhoto
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify, SpecifyPhoto, Project
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -114,6 +114,20 @@ class ReasonForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ReasonForm, self).__init__(*args, **kwargs)
         self.fields['reason'].widget.attrs['class'] = 'form-control'
+
+
+class NewTaskForm(forms.Form):
+    project = forms.ModelChoiceField(label='Projekt', queryset=Project.objects.all().order_by('name'))
+    comment = forms.CharField(label='Üzenet', max_length=1000, required=True, widget=forms.Textarea(attrs={'rows': 3}))
+
+    def clean_project(self):
+        project = self.cleaned_data.get('project')
+        return project.id
+
+    def __init__(self, *args, **kwargs):
+        super(NewTaskForm, self).__init__(*args, **kwargs)
+        self.fields['project'].widget.attrs['class'] = 'form-control'
+        self.fields['comment'].widget.attrs['class'] = 'form-control'
 
 
 class DeadlineForm(forms.ModelForm):

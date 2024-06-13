@@ -113,11 +113,11 @@
                         </div>
                         <div class="col-8 text-end">
                             {% if price_offer.type == '2:' %}
-                                <a href="{{ MEDIA_URL }}{{ task.customer_project.id }}/arajanlatok/{{ price_offer.file_path }}"
+                                <a href="{{ MEDIA_URL }}{{ task.customer_project.customer.id }}/arajanlatok/{{ price_offer.file_path }}"
                                    class="btn btn-outline-success btn-sm" target="_blank">
                                     {{ price_offer.get_type_display }}</a>
                             {% else %}
-                                <a href="{{ MEDIA_URL }}{{ task.customer_project.id }}/arajanlatok/{{ price_offer.file_path }}"
+                                <a href="{{ MEDIA_URL }}{{ task.customer_project.customer.id }}/arajanlatok/{{ price_offer.file_path }}"
                                    class="btn btn-outline-primary btn-sm" target="_blank">
                                     {{ price_offer.get_type_display }}</a>
                             {% endif %}

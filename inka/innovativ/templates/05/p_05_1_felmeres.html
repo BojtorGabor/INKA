@@ -27,7 +27,7 @@
 
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'hatarido' task.id %}"
+							<a href="{% url 'feladat_hatarido' task.id %}"
 							   class="btn btn-outline-info btn-sm">Határidő megadása erre a feladatra</a>
 						</div>
 					</div>
@@ -35,25 +35,40 @@
 					{% if task.customer_project.latitude != 0 and task.customer_project.longitude != 0 %}
 						<div class="row mb-3">
 							<div class="col">
-								<a href="{% url 'p_05_1_ugyfel_felmeres_egyezetesre' task.id %}"
+								<a href="{% url 'p_05_1_ugyfel_atadasa_05_2_nek' project.id task.id %}"
 								   class="btn btn-outline-info btn-sm">
-									Ügyfél átadása - 05.2. Ügyfél egyeztetés felmérésnek</a>
+									Ügyfél átadása - 05.2. Ügyfél egyeztetés felmérésről</a>
 							</div>
 						</div>
 						<hr>
 					{% endif %}
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_05_x_ugyfel_visszaadasa_02_nek' task.id %}"
+							<a href="{% url 'p_05_x_ugyfel_atadasa_02_1_nek' project.id task.id %}"
 							   class="btn btn-outline-info btn-sm">
-								Ügyfél visszaadása - 02. Ügyfél adatainak felelőséhez</a>
+								Ügyfél visszaadása - 02.1. Első megkeresésnek</a>
 						</div>
 					</div>
 					<div class="row mb">
 						<div class="col">
-							<a href="{% url 'p_05_x_ugyfel_visszaadasa_04_nek' task.id %}"
+							<a href="{% url 'p_05_x_ugyfel_atadasa_04_1_nek' project.id task.id %}"
 							   class="btn btn-outline-info btn-sm">
-								Ügyfél visszaadása - 04. Előzetes árajánlatok felelőséhez</a>
+								Ügyfél visszaadása - 04.1. Előzetes árajánlat adásnak</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'feladat_keszites' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Új feladat készítése</a>
+						</div>
+					</div>
+					<div class="row mb">
+						<div class="col">
+							<a href="{% url 'feladat_lezaras' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Feladat lezárása</a>
 						</div>
 					</div>
 				</div>

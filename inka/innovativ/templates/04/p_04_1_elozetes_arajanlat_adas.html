@@ -20,27 +20,51 @@
 				<div class="card-body text-center">
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_04_1_elozetes_arajanlatok' task.id %}"
-							   class="btn btn-outline-info btn-sm">Előzetes árajánlatok kezelése</a>
+							<a href="{% url 'p_04_1_elozetes_arajanlatok' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">Előzetes árajánlatok</a>
 						</div>
 					</div>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'hatarido' task.id %}"
+							<a href="{% url 'feladat_hatarido' task.id %}"
 							   class="btn btn-outline-info btn-sm">Határidő megadása erre a feladatra</a>
 						</div>
 					</div>
 					<hr>
 					<div class="row mb-3">
 						<div class="col">
-							<a href="{% url 'p_04_1_ugyfelnek_felmeres' task.id %}"
-							   class="btn btn-outline-info btn-sm">Ügyfél átadása - 05. Felmérések felelősének</a>
+							<a href="{% url 'p_04_1_ugyfel_atadasa_05_1_nek' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Ügyfél átadása - 05.1. Felmérésnek</a>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="#"
+							   class="btn btn-outline-info btn-sm">
+								!!!!!!!!!!<br>Ügyfél átadása - Szerződésnek</a>
 						</div>
 					</div>
 					<div class="row mb">
 						<div class="col">
-							<a href="{% url 'p_04_1_ugyfel_visszaadasa_02_nek' task.id %}"
-							   class="btn btn-outline-info btn-sm">Ügyfél visszaadása - 02. Ügyfél adatainak felelőséhez</a>
+							<a href="{% url 'p_04_1_ugyfel_atadasa_02_1_nek' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Ügyfél visszaadása - 02.1. Első megkeresésnek</a>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-3">
+						<div class="col">
+							<a href="{% url 'feladat_keszites' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Új feladat készítése</a>
+						</div>
+					</div>
+					<div class="row mb">
+						<div class="col">
+							<a href="{% url 'feladat_lezaras' project.id task.id %}"
+							   class="btn btn-outline-info btn-sm">
+								Feladat lezárása</a>
 						</div>
 					</div>
 				</div>

@@ -19,7 +19,8 @@ from django.core.mail import EmailMessage
 from django.template import Template, Context
 
 
-def p_04_1_elozetes_arajanlatok(request, task_id):
+def p_04_1_elozetes_arajanlatok(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
 
     price_offer = PriceOffer.objects.filter(customer_project=task.customer_project).order_by('created_at')
@@ -38,6 +39,11 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
             price_offer_id = action_parts[1]
 
             if action_name == 'makenew':  # Meglévő árajánlatból új előzetes árajánlat készítése
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+
                 original_price_offer = PriceOffer.objects.get(pk=price_offer_id)
 
                 # Új pdf fájl létrehozása az eredeti pdf fájlból
@@ -87,7 +93,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                               f'számú új árajánlathoz most még az eredeti pdf fájl tartalma tartozik! '
                                               f'Ne felejtsd el majd aktualizálni a tételek módosítása után!')
             elif action_name == 'update':
-                return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+                return redirect('price_offer_update', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id)
             elif action_name == 'delete':  # Árajánlat törlése
                 price_offer = PriceOffer.objects.get(pk=price_offer_id)
                 pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
@@ -99,7 +106,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                     messages.success(request, f'{price_offer.file_path} fájl törlés meghiusúlt, '
                                               f'mert nem található az ügyfél könyvtárában!')
             elif action_name == 'send':  # Árajánlat küldése az ügyfélek
-                return redirect('p_04_1_elozetes_arajanlat_kuldes', task_id=task.id, price_offer_id=price_offer_id)
+                return redirect('p_04_1_elozetes_arajanlat_kuldes', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id)
             elif action_name == 'accept':  # Elfogadott előzetes lesz az árajánlat
                 # Ha van régebbi Elfogadott árajánlat, azt visszaállítani Kiküldöttre
                 try:
@@ -111,7 +119,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'{task.customer_project.customer} ügyfél visszavonja a korábban elfogadott - '
+                                        comment=f'Feladó: {project} - {request.user}\n\n'
+                                                f'{task.customer_project.customer} ügyfél visszavonja a korábban elfogadott - '
                                                 f'{old_accepted_price_offer.created_at.date()} - '
                                                 f'{old_accepted_price_offer.id}. számú előzetes árajánlat elfogadását.',
                                         created_user=request.user)
@@ -126,7 +135,8 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'{task.customer_project.customer} ügyfél elfogadta - '
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} ügyfél elfogadta - '
                                             f'{accepted_price_offer.created_at.date()} - '
                                             f'{accepted_price_offer.id}. számú előzetes árajánlatot.',
                                     created_user=request.user)
@@ -139,11 +149,17 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'{task.customer_project.customer} ügyfél visszavonta - '
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} ügyfél visszavonta - '
                                             f'{accepted_price_offer.created_at.date()} - '
                                             f'{accepted_price_offer.id}. számú előzetes árajánlat elfogadását.',
                                     created_user=request.user)
             elif action_name == 'new':  # Új árajánlat készítése
+                # Feladat átállítva Folyamatban értékre
+                task.type = '3:'
+                task.type_color = '3:'
+                task.save()
+
                 # Ha ez az ügyfél első árajánlata, akkor még nincs alkönyvtár a media alatt az ügyfél azonosítójával
                 new_directory_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
                                                   'arajanlatok')
@@ -172,14 +188,16 @@ def p_04_1_elozetes_arajanlatok(request, task_id):
                 messages.success(request, f'A {new_price_offer.created_at.date()} - {new_price_offer.id}. '
                                           f'számú új árajánlathoz most még üres pdf fájl tartozik!'
                                           ' Ne felejtsd el majd aktualizálni a tételek módosítása után!')
-                return redirect('price_offer_update', price_offer_id=new_price_offer.id, task_id=task_id)
+                return redirect('price_offer_update', price_offer_id=new_price_offer.id,
+                                project_id=project_id, task_id=task_id)
         return redirect(request.path)  # Frissül az oldal
     return render(request, '04/p_04_1_elozetes_arajanlatok.html',
                   {'task': task, 'price_offers': price_offer_page,
                    'page_list': price_offer_page, 'page_range': page_range,})
 
 
-def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
+def p_04_1_elozetes_arajanlat_kuldes(request, price_offer_id, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
     pdf_path = os.path.join(settings.MEDIA_ROOT, f'{task.customer_project.customer.id}',
@@ -232,7 +250,8 @@ def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon email sikeresen kiküldve.',
                                     created_user=request.user)
             else:
@@ -240,7 +259,8 @@ def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
                                     type_color='1:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
                                     created_user=request.user)
                 messages.success(request, 'Hiba történt az e-mail küldése közben!')
@@ -250,7 +270,8 @@ def p_04_1_elozetes_arajanlat_kuldes(request, task_id, price_offer_id):
     return render(request, '04/p_04_1_elozetes_arajanlat_kuldes.html', {'task': task, 'form': form})
 
 
-def p_04_1_ugyfelnek_felmeres(request, task_id):
+def p_04_1_ugyfel_atadasa_05_1_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -260,7 +281,7 @@ def p_04_1_ugyfelnek_felmeres(request, task_id):
         if request.method == 'POST':
             form = ReasonForm(request.POST)
             if form.is_valid():
-                # Eredeti task lezárása
+                # Eredeti task elkészült
                 task.type = '4:'
                 task.type_color = '4:'
                 task.completed_at = timezone.now().isoformat()
@@ -272,7 +293,8 @@ def p_04_1_ugyfelnek_felmeres(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
                                             f'\n{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -280,11 +302,12 @@ def p_04_1_ugyfelnek_felmeres(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '04/p_04_1_ugyfelnek_felmeres.html',
+        return render(request, '04/p_04_1_ugyfel_atadasa_05_1_nek.html',
                       {'task': task, 'form': form})
 
 
-def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
+def p_04_1_ugyfel_atadasa_02_1_nek(request, project_id, task_id):
+    project = Project.objects.get(pk=project_id)
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -295,8 +318,8 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
             form = ReasonForm(request.POST)
             if form.is_valid():
                 # Eredeti task lezárása
-                task.type = '4:'
-                task.type_color = '4:'
+                task.type = '5:'
+                task.type_color = '5:'
                 task.completed_at = timezone.now().isoformat()
                 task.save()
 
@@ -306,7 +329,8 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél project azonosító
-                                    comment=f'{ task.customer_project.customer } - Az előzetes árajánlat nem készíthető el.\n'
+                                    comment=f'Feladó: {project} - {request.user}\n\n'
+                                            f'{task.customer_project.customer} - Az előzetes árajánlat előtt még egyeztess vele.\n'
                                             f'{form["reason"].value()}',
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
@@ -314,7 +338,7 @@ def p_04_1_ugyfel_visszaadasa_02_nek(request, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, '04/p_04_1_ugyfel_visszaadasa_02_nek.html', {'task': task, 'form': form})
+        return render(request, '04/p_04_1_ugyfel_atadasa_02_1_nek.html', {'task': task, 'form': form})
 
 def generate_random_string(length=20):  # véletlen sztring előállítása a pdf fájlnevekhez
     characters = string.ascii_letters + string.digits

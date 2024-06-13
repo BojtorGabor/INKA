@@ -117,7 +117,7 @@ def product_group_update(request, product_group_id, action_name):
     return render(request, 'product_group_update.html', {'form': form, 'action': action_name})
 
 
-def price_offer_update(request, price_offer_id, task_id):
+def price_offer_update(request, price_offer_id, project_id, task_id):
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
     price_offer_item = (PriceOfferItem.objects.filter(price_offer=price_offer).
                         order_by('product__group__group_name', 'product__name'))
@@ -143,13 +143,16 @@ def price_offer_update(request, price_offer_id, task_id):
 
             if item_action_name == 'product':  # Árajánlat tételének Termék kiválasztása
                 return redirect('price_offer_item_product', price_offer_id=price_offer_id,
-                                price_offer_item_id=price_offer_item_id, task_id=task_id)
+                                price_offer_item_id=price_offer_item_id,
+                                project_id=project_id, task_id=task_id)
             elif item_action_name == 'amount':
                 return redirect('price_offer_item_amount', price_offer_id=price_offer_id,
-                                price_offer_item_id=price_offer_item_id, task_id=task_id)
+                                price_offer_item_id=price_offer_item_id,
+                                project_id=project_id, task_id=task_id)
             elif item_action_name == 'price':
                 return redirect('price_offer_item_price', price_offer_id=price_offer_id,
-                                price_offer_item_id=price_offer_item_id, task_id=task_id)
+                                price_offer_item_id=price_offer_item_id,
+                                project_id=project_id, task_id=task_id)
             elif item_action_name == 'delete':
                 delete_item = PriceOfferItem.objects.get(pk=price_offer_item_id)
                 delete_item.delete()
@@ -160,23 +163,25 @@ def price_offer_update(request, price_offer_id, task_id):
                                               f'de az új tétel kiinduló ára még HUF értékben fog megjelenni! '
                                               f'Ne felejtsd el módosítani azt!')
             elif item_action_name == 'comment':
-                return redirect('price_offer_comment', price_offer_id=price_offer_id, task_id=task_id)
+                return redirect('price_offer_comment', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id)
             elif item_action_name == 'changemoneyHUF-EUR':
-                return redirect('price_offer_change_money', price_offer_id=price_offer_id, task_id=task_id,
-                                change='HUF-EUR')
+                return redirect('price_offer_change_money', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id, change='HUF-EUR')
             elif item_action_name == 'changemoneyHUF-USD':
-                return redirect('price_offer_change_money', price_offer_id=price_offer_id, task_id=task_id,
-                                change='HUF-USD')
+                return redirect('price_offer_change_money', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id, change='HUF-USD')
             elif item_action_name == 'changemoneyEUR-HUF':
-                return redirect('price_offer_change_money', price_offer_id=price_offer_id, task_id=task_id,
-                                change='EUR-HUF')
+                return redirect('price_offer_change_money', price_offer_id=price_offer_id,
+                                project_id=project_id,  task_id=task_id, change='EUR-HUF')
             elif item_action_name == 'changemoneyUSD-HUF':
-                return redirect('price_offer_change_money', price_offer_id=price_offer_id, task_id=task_id,
-                                change='USD-HUF')
+                return redirect('price_offer_change_money', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id, change='USD-HUF')
             elif item_action_name == 'makepdf':
-                return redirect('price_offer_makepdf', price_offer_id=price_offer_id, task_id=task_id)
+                return redirect('price_offer_makepdf', price_offer_id=price_offer_id,
+                                project_id=project_id, task_id=task_id)
             elif item_action_name == 'back':
-                return redirect('p_04_1_elozetes_arajanlatok', task_id=task_id)
+                return redirect('p_04_1_elozetes_arajanlatok', project_id=project_id, task_id=task_id)
         return redirect(request.path)  # Frissül az oldal
     return render(request, 'price_offer_update.html',
                   {'price_offer': price_offer, 'price_offer_items': price_offer_item_page,
@@ -185,7 +190,7 @@ def price_offer_update(request, price_offer_id, task_id):
                    'page_list': price_offer_item_page, 'page_range': page_range, })
 
 
-def price_offer_item_product(request, price_offer_id, price_offer_item_id, task_id):
+def price_offer_item_product(request, price_offer_id, price_offer_item_id, project_id, task_id):
     product_group = ProductGroup.objects.all().order_by('group_name')  # Összes termékcsoport
     price_offer_item = PriceOfferItem.objects.get(pk=price_offer_item_id)  # A módosítandó árajánlat tétel
 
@@ -195,12 +200,12 @@ def price_offer_item_product(request, price_offer_id, price_offer_item_id, task_
         price_offer_item.product = product  # Árajánlat tételének termék beállítása
         price_offer_item.price = product.price  # A termék alapértelmezett árának beállítása
         price_offer_item.save()
-        return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+        return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)
     return render(request, 'price_offer_item_product.html',
                   {'product_groups': product_group, 'price_offer_item': price_offer_item})
 
 
-def price_offer_item_amount(request, price_offer_id, price_offer_item_id, task_id):
+def price_offer_item_amount(request, price_offer_id, price_offer_item_id, project_id, task_id):
     price_offer_item = PriceOfferItem.objects.get(pk=price_offer_item_id)  # A módosítandó árajánlat tétel
     product = price_offer_item.product
     unit_choice = product.get_unit_display()
@@ -209,7 +214,7 @@ def price_offer_item_amount(request, price_offer_id, price_offer_item_id, task_i
         form = PriceOfferItemAmountForm(request.POST or None, instance=price_offer_item)
         if form.is_valid():
             form.save()
-            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+            return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)
     else:
         form = PriceOfferItemAmountForm(instance=price_offer_item)
 
@@ -217,7 +222,7 @@ def price_offer_item_amount(request, price_offer_id, price_offer_item_id, task_i
                   {'price_offer_item': price_offer_item, 'form': form, 'unit_choice': unit_choice})
 
 
-def price_offer_item_price(request, price_offer_id, price_offer_item_id, task_id):
+def price_offer_item_price(request, price_offer_id, price_offer_item_id, project_id, task_id):
     price_offer_item = PriceOfferItem.objects.get(pk=price_offer_item_id)  # A módosítandó árajánlat tétel
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
     currency = price_offer.currency
@@ -226,7 +231,7 @@ def price_offer_item_price(request, price_offer_id, price_offer_item_id, task_id
         form = PriceOfferItemPriceForm(request.POST or None, instance=price_offer_item)
         if form.is_valid():
             form.save()
-            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+            return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)
     else:
         form = PriceOfferItemPriceForm(instance=price_offer_item)
 
@@ -234,14 +239,14 @@ def price_offer_item_price(request, price_offer_id, price_offer_item_id, task_id
                   {'price_offer_item': price_offer_item, 'form': form, 'currency': currency})
 
 
-def price_offer_comment(request, price_offer_id, task_id):
+def price_offer_comment(request, price_offer_id, project_id, task_id):
     price_offer = PriceOffer.objects.get(pk=price_offer_id)  # A módosítandó árajánlat
 
     if request.method == 'POST':
         form = PriceOfferCommentForm(request.POST or None, instance=price_offer)
         if form.is_valid():
             form.save()
-            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+            return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)
     else:
         form = PriceOfferCommentForm(instance=price_offer)
 
@@ -249,7 +254,7 @@ def price_offer_comment(request, price_offer_id, task_id):
                   {'price_offer': price_offer, 'form': form})
 
 
-def price_offer_change_money(request, price_offer_id, task_id, change):
+def price_offer_change_money(request, price_offer_id, project_id, task_id, change):
     price_offer = PriceOffer.objects.get(pk=price_offer_id)  # A módosítandó árajánlat
 
     if change == 'HUF-EUR':
@@ -280,7 +285,7 @@ def price_offer_change_money(request, price_offer_id, task_id, change):
                 messages.success(request, f'Átváltottad az árajánlatot ({change})')
             else:
                 messages.success(request, f'Nem sikerült az tételek átváltása ({change})')
-            return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+            return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)
     else:
         form = PriceOfferChangeForm(instance=price_offer)
 
@@ -288,7 +293,7 @@ def price_offer_change_money(request, price_offer_id, task_id, change):
                   {'price_offer': price_offer, 'form': form, 'change': change, 'foreign_currency': foreign_currency})
 
 
-def price_offer_makepdf(request, price_offer_id, task_id):
+def price_offer_makepdf(request, price_offer_id, project_id, task_id):
     task = Task.objects.get(pk=task_id)
     price_offer = PriceOffer.objects.get(pk=price_offer_id)
     price_offer_items = (PriceOfferItem.objects.filter(price_offer=price_offer).
@@ -524,4 +529,4 @@ def price_offer_makepdf(request, price_offer_id, task_id):
 
     messages.success(request, f'Sikeres PDF aktualizálás.')
 
-    return redirect('price_offer_update', price_offer_id=price_offer_id, task_id=task_id)
+    return redirect('price_offer_update', price_offer_id=price_offer_id, project_id=project_id, task_id=task_id)

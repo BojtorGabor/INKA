@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h3>{{ task.customer_project.customer }} - új feladat készítése</h3>
+    </div>
+    <br/>
+
+    <div class="row">
+		<div class="col-2 mb-3">
+			{% include '02/p_02_1_ugyfel_altal_megadott_adatok.html' %}
+		</div>
+        <div class="col-6 mb-3">
+            <div class="card">
+                <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+                    <div class="row">
+                        <div class="text-center">
+                            Új feladat
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                     <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-2">
+                            <div class="col-4">
+                                    {{ form.project.label_tag }}
+                                    {{ form.project }}
+                            </div>
+                            <div class="col-8">
+                                    {{ form.comment.label_tag }}
+                                    {{ form.comment }}
+                            </div>
+                        </div>
+                    </form>
+                    <div>
+                        <button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+{% endblock %}
