@@ -98,6 +98,10 @@ urlpatterns = [
 
     path('p_05_4_felmeresi_kepek_feltoltese/<int:task_id>/',
          views_projects05.p_05_4_felmeresi_kepek_feltoltese, name='p_05_4_felmeresi_kepek_feltoltese'),
+    path('p_05_4_felmeresi_kepek_csoportositasa/<int:task_id>/',
+         views_projects05.p_05_4_felmeresi_kepek_csoportositasa, name='p_05_4_felmeresi_kepek_csoportositasa'),
+    path('p_05_4_felmeresi_kepek_tipusai/<int:task_id>/<int:specify_id>/',
+         views_projects05.p_05_4_felmeresi_kepek_tipusai, name='p_05_4_felmeresi_kepek_tipusai'),
     path('p_05_4_uj_felmeres_feladat_05_2_nek/<int:project_id>/<int:task_id>/',
          views_projects05.p_05_4_uj_felmeres_feladat_05_2_nek, name='p_05_4_uj_felmeres_feladat_05_2_nek'),
 

@@ -228,7 +228,11 @@ class Specify(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
 
     def __str__(self):
-        return f'{self.customer_project} + {self.specify_date}'
+        if self.specify_date:
+            formatted_date = self.specify_date.strftime('%Y-%m-%d %H:%M')
+        else:
+            formatted_date = 'N/A'
+        return f'{formatted_date} - {self.customer_project}'
 
 
 # Email sablonok
@@ -250,14 +254,6 @@ class StandardText(models.Model):
         return self.title
 
 
-# Fénykép típus
-class PhotoType(models.Model):
-    type = models.CharField(max_length=50)  # Fénykép típus
-
-    def __str__(self):
-        return self.type
-
-
 # Ez a függvény a SpecifyPhoto feltöltésekor az adott ügyfél könyvtárában a felmeresek alkönyvtárában levő
 # felmérés id alkönyvtárában fogja tölteni a képeket.
 def get_upload_to(instance, filename):
@@ -269,7 +265,24 @@ def get_upload_to(instance, filename):
 # Felmérések fotói
 class SpecifyPhoto(models.Model):
     specify = models.ForeignKey(Specify, on_delete=models.CASCADE)  # Felmérés
-    photo = models.ImageField(null=True, blank=True, upload_to=get_upload_to)  # Fénykép. A feltöltés helyét lásd feljebb.
+    photo = models.ImageField(null=True, blank=True, upload_to=get_upload_to)  # Fénykép feltöltés helye - lásd feljebb.
 
     def __str__(self):
-        return self.specify
+        return f"{self.specify.name} - {self.photo.name}"
+
+
+# Fénykép típus
+class PhotoType(models.Model):
+    type = models.CharField(max_length=50)  # Fénykép típus
+
+    def __str__(self):
+        return self.type
+
+
+# Felmérés fotók típusai
+class SpecifyPhotoType(models.Model):
+    specify_photo = models.ForeignKey(SpecifyPhoto, on_delete=models.CASCADE, related_name='photo_types')  # Felmérés fotó
+    photo_type = models.ForeignKey(PhotoType, on_delete=models.CASCADE, null=True, blank=True)  # Fotó típusa
+
+    def __str__(self):
+        return f"{self.specify_photo} - {self.photo_type}"

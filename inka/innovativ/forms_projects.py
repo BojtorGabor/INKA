@@ -2,7 +2,8 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ClearableFileInput
 from tinymce.widgets import TinyMCE
-from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify, SpecifyPhoto, Project
+from .models import EmailTemplate, Customer, CustomerProject, Target, Financing, Task, Specify, SpecifyPhoto, Project, \
+    PhotoType, SpecifyPhotoType
 
 
 # CSV file kiválasztása az ügyfelek importjához
@@ -208,3 +209,21 @@ class SpecifyPhotoForm(forms.ModelForm):
         fields = ['photo']
         labels = {'photo': 'Új képek feltöltése'}
         widgets = {'photo': MultipleFileInput()}
+
+
+class SpecifyPhotoTypeForm(forms.ModelForm):
+    types = forms.ModelMultipleChoiceField(queryset=PhotoType.objects.all(),
+                                           widget=forms.CheckboxSelectMultiple,
+                                           required=False)
+
+    class Meta:
+        model = SpecifyPhotoType
+        fields = ['photo_type']
+
+    def __init__(self, *args, **kwargs):
+        if 'specify_photo' in kwargs:
+            specify_photo = kwargs.pop('specify_photo')
+            initial = kwargs.get('initial', {})
+            initial['photo_type'] = specify_photo.photo_types.values_list('photo_type', flat=True)
+            kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)

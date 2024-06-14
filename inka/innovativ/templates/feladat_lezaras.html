@@ -7,8 +7,12 @@
 	<br/>
 
     <div class="row">
-		<div class="col-2 mb-3">
-			{% include '02/p_02_1_ugyfel_altal_megadott_adatok.html' %}
+		<div class="col-3 mb-3">
+			{% if project_02 %}
+				{% include '02/p_02_1_ugyfel_altal_megadott_adatok.html' %}
+			{% else %}
+				{% include 'ugyfel_adatlap.html' %}
+			{% endif %}
 		</div>
 
 		<div class="col-6 mb-3">

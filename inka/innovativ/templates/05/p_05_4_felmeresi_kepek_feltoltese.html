@@ -13,7 +13,6 @@
                 <div class="row mb-3">
                     <div class="col mb-3">
                         {% include 'ugyfel_adatlap.html' %}
-
                     </div>
                 </div>
 		    </div>
@@ -22,14 +21,14 @@
                     <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
                         <div class="row mb-1">
                             <div class="col text-center">
-                                Felmérés dőpontja
+                                Felmérés időpontja
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        {% for specify in specifys %}
+                        {% for specify in specifies %}
                             <div class="row mb-2">
-                                <div class="col">
+                                <div class="col text-center">
                                     <button type="submit" name="action" value="date_{{ specify.id }}"
                                             class="btn btn-outline-primary btn-sm me-2">
                                         {{ specify.specify_date | date:"Y.m.d H:i" }}

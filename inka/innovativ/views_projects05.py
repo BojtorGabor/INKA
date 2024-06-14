@@ -12,7 +12,7 @@ from django.template import Template, Context
 from django.utils import timezone
 
 from innovativ.forms_projects import ReasonForm, DateInputForm, SpecifyDateTimeForm, SpecifierForm, EmailTemplateForm, \
-    SpecifyPhotoForm
+    SpecifyPhotoForm, SpecifyPhotoTypeForm
 from innovativ.models import Task, Project, CustomerProject, Specify, EmailTemplate, Customer, SpecifyPhoto
 from inka.settings import DEFAULT_FROM_EMAIL
 
@@ -449,11 +449,11 @@ def p_05_3_ugyfel_atadasa_05_2_nek(request, project_id, task_id):
 def p_05_4_felmeresi_kepek_feltoltese(request, task_id):
     task = Task.objects.get(pk=task_id)
 
-    specifys = (Specify.objects.filter(status='4:', customer_project=task.customer_project).order_by('specify_date'))
+    specifies = (Specify.objects.filter(status='4:', customer_project=task.customer_project).order_by('specify_date'))
 
-    p = Paginator(specifys, 10)
+    p = Paginator(specifies, 10)
     page = request.GET.get('page', 1)
-    specifys_page = p.get_page(page)
+    specifies_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
     current_specify = ''
@@ -471,6 +471,7 @@ def p_05_4_felmeresi_kepek_feltoltese(request, task_id):
                 action_parts = action.split('_')
                 action_name = action_parts[0]
                 specify_id = action_parts[1]
+
                 current_specify = Specify.objects.get(pk=specify_id)
 
                 if action_name == 'date':
@@ -498,10 +499,43 @@ def p_05_4_felmeresi_kepek_feltoltese(request, task_id):
         else:
             form = SpecifyPhotoForm()
 
-        return render(request, '05/p_05_4_felmeresi_kepek_kigyujtese.html',
-                      {'task': task, 'specifys': specifys_page,
-                       'page_list': specifys_page, 'page_range': page_range,
+        return render(request, '05/p_05_4_felmeresi_kepek_feltoltese.html',
+                      {'task': task, 'specifies': specifies_page,
+                       'page_list': specifies_page, 'page_range': page_range,
                        'current_specify': current_specify, 'form': form})
+
+
+def p_05_4_felmeresi_kepek_csoportositasa(request, task_id):
+    task = Task.objects.get(pk=task_id)
+
+    specifies = (Specify.objects.filter(status='4:', customer_project=task.customer_project).order_by('specify_date'))
+
+    p = Paginator(specifies, 10)
+    page = request.GET.get('page', 1)
+    specifies_page = p.get_page(page)
+    page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
+
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            specify_id = request.POST.get('action')
+            return redirect('p_05_4_felmeresi_kepek_tipusai', task_id=task_id, specify_id=specify_id)
+
+        return render(request, '05/p_05_4_felmeresi_kepek_csoportositasa.html',
+                      {'task': task, 'specifies': specifies_page,
+                       'page_list': specifies_page, 'page_range': page_range,})
+
+
+def p_05_4_felmeresi_kepek_tipusai(request, task_id, specify_id):
+    task = Task.objects.get(pk=task_id)
+    specify = Specify.objects.get(pk=specify_id)
+    specify_photos = SpecifyPhoto.objects.filter(specify=specify)
+
+    return render(request, '05/p_05_4_felmeresi_kepek_tipusai.html',
+                  {'task': task, 'specify': specify, 'specify_photos': specify_photos})
 
 
 def p_05_4_uj_felmeres_feladat_05_2_nek(request, project_id, task_id):

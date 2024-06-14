@@ -132,6 +132,7 @@ def feladat_hatarido(request, task_id):
 
 def feladat_lezaras(request, project_id, task_id):
     project = Project.objects.get(pk=project_id)
+    project_02 = True if '02.' in project.name else False  # 02-nél még nem ügyfél adatlap, hanem ügyfél import adatok jelennek meg
     task = Task.objects.get(pk=task_id)
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
@@ -164,7 +165,8 @@ def feladat_lezaras(request, project_id, task_id):
         else:
             form = ReasonForm()
 
-        return render(request, 'feladat_lezaras.html', {'task': task, 'form': form})
+        return render(request, 'feladat_lezaras.html', {'task': task, 'form': form,
+                                                        'project_02': project_02})
 
 
 def feladat_keszites(request, project_id, task_id):
