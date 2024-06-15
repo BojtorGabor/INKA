@@ -90,9 +90,9 @@ def p_05_1_ugyfel_atadasa_05_2_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél project azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - ügyfelünkkel egyeztethetsz felmérést.\n'
+                                    comment=f'{task.customer_project.customer} - ügyfelünkkel egyeztethetsz felmérést.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -268,9 +268,9 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, project_id, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                                 f'nevű sablon email sikeresen kiküldve.',
+                                        created_project=project,
                                         created_user=request.user)
                     # feladat átadása 05.3. Egyeztetett felméréseknek
                     next_project = Project.objects.filter(name__startswith='05.3.')
@@ -278,10 +278,10 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, project_id, task_id):
                                         type_color='2:',
                                         project=next_project[0],  # következő projekt
                                         customer_project=task.customer_project,  # ügyfél azonosító
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
+                                        comment=f'{task.customer_project.customer} - ügyféllel egyeztetett felmérés:\n'
                                                 f'Időpont: {specify.specify_date.strftime("%Y-%m-%d %H:%M")}\n'
                                                 f'Felmérő: {specify.specifier}',
+                                        created_project=project,
                                         created_user=request.user,
                                         deadline=specify.specify_date)
                     messages.success(request, f'{task.customer_project.customer} - továbbítva: '
@@ -314,9 +314,9 @@ def p_05_2_ugyfel_atadasa_05_3_nak(request, project_id, task_id):
                                         type_color='1:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
+                                        created_project=project,
                                         created_user=request.user)
                     messages.success(request,'Hiba történt az ügyfél felé küldött e-mail küldése közben!')
                 return render(request, 'home.html', {})
@@ -350,9 +350,9 @@ def p_05_2_ugyfel_atadasa_05_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - Kérek egy új térképre illesztést.\n'
+                                    comment=f'{task.customer_project.customer} - Kérek egy új térképre illesztést.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -391,9 +391,9 @@ def p_05_3_ugyfel_atadasa_05_4_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} -  ügyfelünk felmérését feldolgozhatod.\n'
+                                    comment=f'{task.customer_project.customer} -  ügyfelünk felmérését feldolgozhatod.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -432,9 +432,9 @@ def p_05_3_ugyfel_atadasa_05_2_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} -  ügyfelünkkel egyeztess új felmérést.\n'
+                                    comment=f'{task.customer_project.customer} -  ügyfelünkkel egyeztess új felmérést.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -563,9 +563,9 @@ def p_05_4_uj_felmeres_feladat_05_2_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - Új felmérés szükséges.\n'
+                                    comment=f'{task.customer_project.customer} - Új felmérés szükséges.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -599,9 +599,9 @@ def p_05_x_ugyfel_atadasa_02_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
+                                    comment=f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -634,9 +634,9 @@ def p_05_x_ugyfel_atadasa_04_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
+                                    comment=f'{task.customer_project.customer} - A felmérés nem végezhető el.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})

@@ -80,16 +80,16 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project= new_customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                    comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                    created_project=project,
                                     created_user=request.user)
         if existing_emails:  # volt ismétlődő email
             Task.objects.create(type='1:',  # Figyelmeztető bejegyzésés
                                 type_color='1:',
                                 project=project,
-                                comment=f'Feladó: {project} - {request.user}\n\n'
-                                        f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
+                                comment=f'{file_path}\nfájl importálása során a következő email címek duplikálás miatt '
                                         f'nem kerültek be az ügyfél táblába:\n\n{existing_emails}',
+                                created_project=project,
                                 created_user=request.user)
 
             messages.success(request, 'Az importálás csak részben sikeres, voltak duplikált email címek. '
@@ -98,9 +98,9 @@ def p_01_1_ugyfel_adat_import_items(request, file_path, project):  # Import fáj
             Task.objects.create(type='4:',  # Sima esemény bejegyzés
                                 type_color='4:',
                                 project=project,
-                                comment=f'Feladó: {project} - {request.user}\n\n'
-                                        f'{file_path}\n'
+                                comment=f'{file_path}\n'
                                         f'Össszesen: {new_customer_number} új ügyfél importálása megtörtént.',
+                                created_project=project,
                                 created_user=request.user,
                                 completed_at=timezone.now().isoformat())
 
@@ -125,17 +125,17 @@ def p_01_2_ugyfel_adat_kezi_felvetele(request, project, task_id):  # Új ügyfé
                                 type_color='4:',
                                 project=project,
                                 customer_project=new_customer_project,  # ügyfél projekt azonosító
-                                comment=f'Feladó: {project} - {request.user}\n\n'
-                                        f'{new_customer}\n'
+                                comment=f'{new_customer}\n'
                                         f'nevű új ügyfél kézi felvétele megtörtént.',
+                                created_project=project,
                                 created_user=request.user,
                                 completed_at=timezone.now().isoformat())
             Task.objects.create(type='2:',  # Feladat típus
                                 type_color='2:',
                                 project=next_project[0],  # következő projekt
                                 customer_project= new_customer_project,  # ügyfél projekt azonosító
-                                comment=f'Feladó: {project} - {request.user}\n\n'
-                                        f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                comment=f'Új ügyfelünket: {new_customer} keresd fel adategyeztetés céljából!',
+                                created_project=project,
                                 created_user=request.user)
             messages.success(request, 'Sikeres új ügyfél felvétel.')
             return render(request, 'home.html', {})

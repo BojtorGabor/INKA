@@ -119,10 +119,10 @@ def p_04_1_elozetes_arajanlatok(request, project_id, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfél visszavonja a korábban elfogadott - '
+                                        comment=f'{task.customer_project.customer} ügyfél visszavonja a korábban elfogadott - '
                                                 f'{old_accepted_price_offer.created_at.date()} - '
                                                 f'{old_accepted_price_offer.id}. számú előzetes árajánlat elfogadását.',
+                                        created_project=project,
                                         created_user=request.user)
                 except PriceOffer.objects.model.DoesNotExist:  # Nem volt még Elfogadott árajánlat
                     pass
@@ -135,10 +135,10 @@ def p_04_1_elozetes_arajanlatok(request, project_id, task_id):
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} ügyfél elfogadta - '
+                                    comment=f'{task.customer_project.customer} ügyfél elfogadta - '
                                             f'{accepted_price_offer.created_at.date()} - '
                                             f'{accepted_price_offer.id}. számú előzetes árajánlatot.',
+                                    created_project=project,
                                     created_user=request.user)
             elif action_name == 'storno':  # Elfogadott előzetesből Kiküldött előzetes lesz az árajánlat
                 accepted_price_offer = PriceOffer.objects.get(pk=price_offer_id)
@@ -149,10 +149,10 @@ def p_04_1_elozetes_arajanlatok(request, project_id, task_id):
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} ügyfél visszavonta - '
+                                    comment=f'{task.customer_project.customer} ügyfél visszavonta - '
                                             f'{accepted_price_offer.created_at.date()} - '
                                             f'{accepted_price_offer.id}. számú előzetes árajánlat elfogadását.',
+                                    created_project=project,
                                     created_user=request.user)
             elif action_name == 'new':  # Új árajánlat készítése
                 # Feladat átállítva Folyamatban értékre
@@ -250,18 +250,18 @@ def p_04_1_elozetes_arajanlat_kuldes(request, price_offer_id, project_id, task_i
                                     type_color='0:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                    comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon email sikeresen kiküldve.',
+                                    created_project=project,
                                     created_user=request.user)
             else:
                 Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
                                     type_color='1:',
                                     project=task.project,
                                     customer_project=task.customer_project,
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                    comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, 'Hiba történt az e-mail küldése közben!')
             return redirect('p_04_1_elozetes_arajanlatok', task_id=task_id)
@@ -293,9 +293,9 @@ def p_04_1_ugyfel_atadasa_05_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
+                                    comment=f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
                                             f'\n{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -329,9 +329,9 @@ def p_04_1_ugyfel_atadasa_02_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél project azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - Az előzetes árajánlat előtt még egyeztess vele.\n'
+                                    comment=f'{task.customer_project.customer} - Az előzetes árajánlat előtt még egyeztess vele.\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})

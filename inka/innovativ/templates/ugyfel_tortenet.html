@@ -54,6 +54,7 @@
                             {{ task.deadline|date:"Y-m-d" }}
                         </div>
                         <div class="col-1" style="font-size: 10px;">
+                            {{ task.created_project }}
                             {{ task.created_user }}
                             <div>
                                 {{ task.created_at|date:"Y-m-d" }}

@@ -156,9 +156,9 @@ def feladat_lezaras(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - a feladat lezárva a következő ok miatt:\n'
+                                    comment=f'{task.customer_project.customer} - a feladat lezárva a következő ok miatt:\n'
                                             f'{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -192,9 +192,9 @@ def feladat_keszites(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project,  # kiválasztott projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - új feladat:\n'
+                                    comment=f'{task.customer_project.customer} - új feladat:\n'
                                             f'{form["comment"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project} felé.')
                 return render(request, 'home.html', {})

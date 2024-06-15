@@ -7,10 +7,10 @@
     <br/>
 
     <div class="row">
-		<div class="col-2 mb-3">
-			{% include '02/p_02_1_ugyfel_altal_megadott_adatok.html' %}
+		<div class="col-3 mb-3">
+			{% include 'ugyfel_adatlap.html' %}
 		</div>
-        <div class="col-8 mb-3">
+        <div class="col-7 mb-3">
             <div class="card">
                 <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
                     <div class="row">
@@ -20,8 +20,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                     <form method="post">
-                        {% csrf_token %}
+                    <form method="post">
+                    {% csrf_token %}
                         <div class="row mb-2">
                             <div class="col-3">
                                     {{ form.project.label_tag }}
@@ -32,10 +32,10 @@
                                     {{ form.comment }}
                             </div>
                         </div>
-                    </form>
-                    <div>
-                        <button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
-                    </div>
+                        <div>
+                            <button type="submit" class="btn btn-outline-info btn-sm">Rögzítés</button>
+                        </div>
+                     </form>
                 </div>
             </div>
         </div>

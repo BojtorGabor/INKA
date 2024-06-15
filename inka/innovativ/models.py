@@ -117,9 +117,12 @@ class Task(models.Model):
 
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default='0:')
     type_color = models.CharField(max_length=2, choices=COLOR_CHOICES, default='0:')
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, default=None)  # Projekt hozzárendelése
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True,
+                                default=None, related_name='project')  # Projekt hozzárendelése
     customer_project = models.ForeignKey(CustomerProject, on_delete=models.SET_NULL, null=True, default=None)  # Ügyfél projekt hozzárendelése
     comment = models.TextField(max_length=1000, null=True)  # Megjegyzés
+    created_project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True,
+                                        default=None, related_name='created_project')  # Project aki létrehozta
     created_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # User aki létrehozta
     created_at = models.DateTimeField(default=timezone.now)  # létrehozás időpontja
     completed_at = models.DateTimeField(null=True)  # befejezés időpontja

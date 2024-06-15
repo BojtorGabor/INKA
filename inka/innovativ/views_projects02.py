@@ -56,8 +56,8 @@ def p_02_1_telefonos_megkereses(request, project_id, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfél adatainak aktualizálása történt.',
+                                        comment=f'{task.customer_project.customer} ügyfél adatainak aktualizálása történt.',
+                                        created_project=project,
                                         created_user=request.user)
                     # Customer projekt értékek rögzítése
                     customer_project.installation_address = form['installation_address'].value()
@@ -117,18 +117,18 @@ def p_02_1_telefonszam_keres(request, project_id, task_id):
                                         type_color='0:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                                 f'nevű sablon email sikeresen kiküldve.',
+                                        created_project=project,
                                         created_user=request.user)
                 else:
                     Task.objects.create(type='1:',  # Figyelmeztető bejegyzés
                                         type_color='1:',
                                         project=task.project,
                                         customer_project=task.customer_project,
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
+                                        comment=f'{task.customer_project.customer} ügyfélnek - {email_template_name} - '
                                             f'nevű sablon küldése nem sikerült.',
+                                        created_project=project,
                                         created_user=request.user)
                     messages.success(request,'Hiba történt az e-mail küldése közben!')
                 return render(request, 'home.html', {})
@@ -160,9 +160,9 @@ def p_02_1_ugyfel_atadasa_04_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - ügyfelünknek adj előzetes árajánlatot.'
+                                    comment=f'{task.customer_project.customer} - ügyfelünknek adj előzetes árajánlatot.'
                                             f'\n{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -196,9 +196,9 @@ def p_02_1_ugyfel_atadasa_05_1_nek(request, project_id, task_id):
                                     type_color='2:',
                                     project=next_project[0],  # következő projekt
                                     customer_project=task.customer_project,  # ügyfél projekt azonosító
-                                    comment=f'Feladó: {project} - {request.user}\n\n'
-                                            f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
+                                    comment=f'{task.customer_project.customer} - ügyfelünknek szervezz felmérést.'
                                             f'\n{form["reason"].value()}',
+                                    created_project=project,
                                     created_user=request.user)
                 messages.success(request, f'{task.customer_project.customer} - továbbítva: {next_project[0]} felé.')
                 return render(request, 'home.html', {})
@@ -245,8 +245,8 @@ def p_02_2_uj_feladat(request):
                                         type_color='2:',
                                         project=project,  # következő projekt
                                         customer_project=new_customer_project,  # ügyfél projekt azonosító
-                                        comment=f'Feladó: {project} - {request.user}\n\n'
-                                                f'{customer_project.customer} - ügyfelünk új feladatot kezdeményezett.\n{reason}',
+                                        comment=f'{customer_project.customer} - ügyfelünk új feladatot kezdeményezett.\n{reason}',
+                                        created_project=project,
                                         created_user=request.user)
                     messages.success(request, f'{customer_project.customer} ügyfél részére {project}'
                                               f' feladatot indítottál el.')
