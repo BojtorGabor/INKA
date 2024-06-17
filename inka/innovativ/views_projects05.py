@@ -515,27 +515,79 @@ def p_05_4_felmeresi_kepek_csoportositasa(request, task_id):
     specifies_page = p.get_page(page)
     page_range = p.get_elided_page_range(number=page, on_each_side=2, on_ends=2)
 
+    current_specify = ''
+    specify_photos = ''
+
     if task.completed_at:
         messages.success(request, f'Ez a projekt már elkészült '
                                   f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
         return render(request, 'home.html', {})
     else:
         if request.method == 'POST':
-            specify_id = request.POST.get('action')
-            return redirect('p_05_4_felmeresi_kepek_tipusai', task_id=task_id, specify_id=specify_id)
+            action = request.POST.get('action')
+            if action:
+                # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+                action_parts = action.split('_')
+                action_name = action_parts[0]
+                specify_id = action_parts[1]
+
+                if action_name == 'date':
+                    return redirect('p_05_4_felmeresi_kep_kivalasztasa', task_id=task_id, specify_id=specify_id)
+                elif action_name == 'back':
+                    # Visszalépés ide: p_05_4_felmeresi_anyag_feldolgozasa
+                    return_view = getattr(app_views, 'view_names')  # Átalakítás, hogy hívható legyen
+                    return return_view(request, view_name='p_05_4_felmeresi_anyag_feldolgozasa', task_id=task_id)
 
         return render(request, '05/p_05_4_felmeresi_kepek_csoportositasa.html',
                       {'task': task, 'specifies': specifies_page,
                        'page_list': specifies_page, 'page_range': page_range,})
 
 
-def p_05_4_felmeresi_kepek_tipusai(request, task_id, specify_id):
+def p_05_4_felmeresi_kep_kivalasztasa(request, task_id, specify_id):
     task = Task.objects.get(pk=task_id)
-    specify = Specify.objects.get(pk=specify_id)
-    specify_photos = SpecifyPhoto.objects.filter(specify=specify)
+    current_specify = Specify.objects.get(pk=specify_id)
+    specify_photos = SpecifyPhoto.objects.filter(specify=specify_id).order_by('photo')
+
+    if task.completed_at:
+        messages.success(request, f'Ez a projekt már elkészült '
+                                  f'{task.completed_at.strftime("%Y.%m.%d. %H:%M")}-kor.')
+        return render(request, 'home.html', {})
+    else:
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            if action:
+                # Szétválasztjuk az egyedi azonosítót és a művelet nevét
+                action_parts = action.split('_')
+                action_name = action_parts[0]
+                specify_or_photo_id = action_parts[1]
+
+                if action_name == 'photo':
+                    return redirect('p_05_4_felmeresi_kepek_tipusai', task_id=task_id,
+                                    specify_id=specify_id, photo_id=specify_or_photo_id)
+                elif action_name == 'back':
+                    return redirect('p_05_4_felmeresi_kepek_csoportositasa', task_id=task_id)
+
+        return render(request, '05/p_05_4_felmeresi_kep_kivalasztasa.html',
+                      {'task': task, 'current_specify': current_specify, 'specify_photos': specify_photos})
+
+
+def p_05_4_felmeresi_kepek_tipusai(request, task_id, specify_id, photo_id):
+    task = Task.objects.get(pk=task_id)
+    specify_photo = SpecifyPhoto.objects.get(pk=photo_id)
+
+    if request.method == 'POST':
+        form_type = SpecifyPhotoTypeForm(request.POST, request.FILES, instance=specify_photo)
+        # form_type = ReasonForm(request.POST)
+        if form_type.is_valid():
+            form_type.save()
+            return redirect('p_05_4_felmeresi_kep_kivalasztasa', task_id=task_id, specify_id=specify_id)
+    else:
+        form_type = SpecifyPhotoTypeForm(instance=specify_photo)
+        # form_type = ReasonForm()
 
     return render(request, '05/p_05_4_felmeresi_kepek_tipusai.html',
-                  {'task': task, 'specify': specify, 'specify_photos': specify_photos})
+                  {'task': task, 'specify_photo': specify_photo,
+                   'form_type': form_type})
 
 
 def p_05_4_uj_felmeres_feladat_05_2_nek(request, project_id, task_id):

@@ -6,7 +6,8 @@
             {{ task.customer_project.target.name }} - felmérési képek csoportosítása</h3>
 	</div>
 	<br/>
-
+    <form method="POST">
+        {% csrf_token %}
         <div class="row">
             <div class="col-3 mb-3">
                 <div class="row mb-3">
@@ -14,7 +15,8 @@
                         {% include 'ugyfel_adatlap.html' %}
                     </div>
                 </div>
-		    </div>
+            </div>
+
             <div class="col-2 mb-3">
                 <div class="card">
                     <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
@@ -25,24 +27,28 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="POST">
-                            {% csrf_token %}
-                            {% for specify in specifies %}
-                                <div class="row mb-2">
-                                    <div class="col text-center">
-                                        <button type="submit" name="action" value="{{ specify.id }}"
-                                                class="btn btn-outline-primary btn-sm me-2">
-                                            {{ specify.specify_date | date:"Y.m.d H:i" }}
-                                        </button>
-                                    </div>
+                        {% for specify in specifies %}
+                            <div class="row mb-2">
+                                <div class="col text-center">
+                                    <button type="submit" name="action" value="date_{{ specify.id }}"
+                                            class="btn btn-outline-primary btn-sm me-2">
+                                        {{ specify.specify_date | date:"Y.m.d H:i" }}
+                                    </button>
                                 </div>
-                            {% endfor %}
-                        </form>
+                            </div>
+                        {% endfor %}
                         <br/>
                         {% include 'pager_bottom.html' %}
+                        <br/>
+                        <div class="col text-center">
+                            <button type="submit" name="action" value="back_0"
+                                    class="btn btn-outline-primary btn-sm me-2">
+                                Vissza
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
+    </form>
 {% endblock content %}

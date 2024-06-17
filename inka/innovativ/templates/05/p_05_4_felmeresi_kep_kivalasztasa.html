@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="text-center">
+        <h3>{{ task.customer_project.customer }} - {{ task.customer_project.installation_address }} -
+            {{ task.customer_project.target.name }} - felmérési képek csoportosítása</h3>
+	</div>
+	<br/>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-3 mb-3">
+                <div class="row mb-3">
+                    <div class="col mb-3">
+                        {% include 'ugyfel_adatlap.html' %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-9 mb-3">
+                <div class="card">
+                    <div class="card-header fs-6 badge bg-body-secondary text-wrap text-secondary p-3">
+                        <div class="row">
+                            <div class="text-center">
+                                {{ current_specify }} - felmérési képek
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% for specify_photo in specify_photos %}
+                            <div style="position: relative; display: inline-block;">
+                                <button type="submit" name="action" value="photo_{{ specify_photo.id }}"
+                                        style="border: none; background: none; padding: 0;">
+                                    <img src="{{ specify_photo.photo.url }}" class="col mx-auto d-block me-3 mb-3"
+                                         style="max-width: 200px; max-height: 200px; cursor: pointer;">
+                                </button>
+                            </div>
+                        {% endfor %}
+                        <br/>
+                        <button type="submit" class="btn btn-outline-primary btn-sm mb-3"
+                             name="action" value=back_0">Vissza</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}

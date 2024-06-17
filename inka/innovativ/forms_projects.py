@@ -211,19 +211,29 @@ class SpecifyPhotoForm(forms.ModelForm):
         widgets = {'photo': MultipleFileInput()}
 
 
-class SpecifyPhotoTypeForm(forms.ModelForm):
-    types = forms.ModelMultipleChoiceField(queryset=PhotoType.objects.all(),
-                                           widget=forms.CheckboxSelectMultiple,
-                                           required=False)
-
-    class Meta:
-        model = SpecifyPhotoType
-        fields = ['photo_type']
+class SpecifyPhotoTypeForm(forms.Form):
+    photo_types = forms.ModelMultipleChoiceField(
+        queryset=PhotoType.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label=False
+    )
 
     def __init__(self, *args, **kwargs):
-        if 'specify_photo' in kwargs:
-            specify_photo = kwargs.pop('specify_photo')
-            initial = kwargs.get('initial', {})
-            initial['photo_type'] = specify_photo.photo_types.values_list('photo_type', flat=True)
-            kwargs['initial'] = initial
+        instance = kwargs.pop('instance', None)
         super().__init__(*args, **kwargs)
+        if instance:
+            self.instance = instance
+            self.fields['photo_types'].initial = instance.photo_types.values_list('photo_type', flat=True)
+
+    def save(self, commit=True):
+        if not hasattr(self, 'instance'):
+            raise ValueError("A form instance nélkül nem menthető")
+
+        # Töröljük a meglévő SpecifyPhotoType rekordokat
+        self.instance.photo_types.all().delete()
+        # Hozzáadjuk az újonnan kiválasztott PhotoType-okat
+        for photo_type in self.cleaned_data['photo_types']:
+            SpecifyPhotoType.objects.create(specify_photo=self.instance, photo_type=photo_type)
+
+        return self.instance

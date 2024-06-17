@@ -232,7 +232,8 @@ class Specify(models.Model):
 
     def __str__(self):
         if self.specify_date:
-            formatted_date = self.specify_date.strftime('%Y-%m-%d %H:%M')
+            local_specify_date = timezone.localtime(self.specify_date)
+            formatted_date = local_specify_date.strftime('%Y-%m-%d %H:%M')
         else:
             formatted_date = 'N/A'
         return f'{formatted_date} - {self.customer_project}'
@@ -271,7 +272,11 @@ class SpecifyPhoto(models.Model):
     photo = models.ImageField(null=True, blank=True, upload_to=get_upload_to)  # Fénykép feltöltés helye - lásd feljebb.
 
     def __str__(self):
-        return f"{self.specify.name} - {self.photo.name}"
+        return f'{self.photo}'
+
+    @property
+    def photo_types(self):
+        return self.specifyphototype_set.all()
 
 
 # Fénykép típus
